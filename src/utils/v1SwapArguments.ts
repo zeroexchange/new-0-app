@@ -1,6 +1,7 @@
 import {
   AVAX,
   BNB,
+  DEV,
   CurrencyAmount,
   ETHER,
   SwapParameters,
@@ -35,9 +36,9 @@ export default function v1SwapArguments(
   }
   const isExactIn = trade.tradeType === TradeType.EXACT_INPUT
   const inputETH =
-    trade.inputAmount.currency === ETHER || trade.inputAmount.currency === AVAX || trade.inputAmount.currency === BNB
+    trade.inputAmount.currency === ETHER || trade.inputAmount.currency === AVAX || trade.inputAmount.currency === BNB || trade.inputAmount.currency === DEV
   const outputETH =
-    trade.outputAmount.currency === ETHER || trade.outputAmount.currency === AVAX || trade.outputAmount.currency === BNB
+    trade.outputAmount.currency === ETHER || trade.outputAmount.currency === AVAX || trade.outputAmount.currency === BNB || trade.outputAmount.currency === DEV
   if (inputETH && outputETH) throw new Error('ETHER to ETHER')
   const minimumAmountOut = toHex(trade.minimumAmountOut(options.allowedSlippage))
   const maximumAmountIn = toHex(trade.maximumAmountIn(options.allowedSlippage))

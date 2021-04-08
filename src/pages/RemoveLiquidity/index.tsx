@@ -1,5 +1,10 @@
-import { AVAX, BNB, ChainId, Currency, ETHER, Percent, WETH, currencyEquals } from '@zeroexchange/sdk'
-import { AVAX_ROUTER_ADDRESS, ETH_ROUTER_ADDRESS, SMART_CHAIN_ROUTER_ADDRESS } from '../../constants'
+import { AVAX, BNB, DEV, ChainId, Currency, ETHER, Percent, WETH, currencyEquals } from '@zeroexchange/sdk'
+import {
+  AVAX_ROUTER_ADDRESS,
+  ETH_ROUTER_ADDRESS,
+  SMART_CHAIN_ROUTER_ADDRESS,
+  MOONBEAM_ROUTER_ADDRESS
+} from '../../constants'
 import { ApprovalState, useApproveCallback } from '../../hooks/useApproveCallback'
 import { ArrowDown, Plus } from 'react-feather'
 import { AutoColumn, ColumnCenter } from '../../components/Column'
@@ -107,6 +112,8 @@ export default function RemoveLiquidity({
       ? ETH_ROUTER_ADDRESS
       : chainId === ChainId.SMART_CHAIN || chainId === ChainId.SMART_CHAIN_TEST
       ? SMART_CHAIN_ROUTER_ADDRESS
+      : chainId === ChainId.MOONBEAM_ALPHA
+      ? MOONBEAM_ROUTER_ADDRESS
       : AVAX_ROUTER_ADDRESS
   )
 
@@ -152,6 +159,8 @@ export default function RemoveLiquidity({
           ? ETH_ROUTER_ADDRESS
           : chainId === ChainId.SMART_CHAIN || chainId === ChainId.SMART_CHAIN_TEST
           ? SMART_CHAIN_ROUTER_ADDRESS
+          : chainId === ChainId.MOONBEAM_ALPHA
+          ? MOONBEAM_ROUTER_ADDRESS
           : AVAX_ROUTER_ADDRESS,
       value: liquidityAmount.raw.toString(),
       nonce: nonce.toHexString(),
@@ -224,8 +233,9 @@ export default function RemoveLiquidity({
     const liquidityAmount = parsedAmounts[Field.LIQUIDITY]
     if (!liquidityAmount) throw new Error('missing liquidity amount')
 
-    const currencyBIsETH = currencyB === ETHER || currencyB === AVAX || currencyB === BNB
-    const oneCurrencyIsETH = currencyA === ETHER || currencyA === AVAX || currencyA === BNB || currencyBIsETH
+    const currencyBIsETH = currencyB === ETHER || currencyB === AVAX || currencyB === BNB || currencyB === DEV
+    const oneCurrencyIsETH =
+      currencyA === ETHER || currencyA === AVAX || currencyA === BNB || currencyA === DEV || currencyBIsETH
 
     if (!tokenA || !tokenB) throw new Error('could not wrap')
 
@@ -391,6 +401,8 @@ export default function RemoveLiquidity({
         ? 'UNI '
         : chainId === ChainId.SMART_CHAIN || chainId === ChainId.SMART_CHAIN_TEST
         ? 'BNB'
+        : chainId === ChainId.MOONBEAM_ALPHA
+        ? 'DEV'
         : 'AVAX '
     return (
       <>
@@ -447,9 +459,11 @@ export default function RemoveLiquidity({
     currencyA === ETHER ||
     currencyB === ETHER ||
     currencyB === BNB ||
+    currencyA === BNB ||
     currencyB === AVAX ||
     currencyA === AVAX ||
-    currencyA === BNB
+    currencyB === DEV ||
+    currencyA === DEV
   const oneCurrencyIsWETH = Boolean(
     chainId &&
       ((currencyA && currencyEquals(WETH[chainId], currencyA)) ||
@@ -586,18 +600,21 @@ export default function RemoveLiquidity({
                         {oneCurrencyIsETH ? (
                           <StyledInternalLink
                             to={`/remove/${
-                              currencyA === ETHER || currencyB === AVAX || currencyB === BNB
+                              currencyA === ETHER || currencyB === AVAX || currencyB === BNB || currencyB === DEV
                                 ? WETH[chainId].address
                                 : currencyIdA
                             }/${
-                              currencyB === ETHER || currencyB === AVAX || currencyB === BNB
+                              currencyB === ETHER || currencyB === AVAX || currencyB === BNB || currencyB === DEV
                                 ? WETH[chainId].address
                                 : currencyIdB
                             }`}
                           >
                             {chainId && (chainId === ChainId.MAINNET || chainId === ChainId.RINKEBY) && 'Receive WETH'}
-                            {chainId && chainId === ChainId.AVALANCHE || chainId === ChainId.FUJI && 'Receive WAVAX'}
-                            {chainId && chainId === ChainId.SMART_CHAIN || chainId === ChainId.SMART_CHAIN_TEST && 'Receive WBNB'}
+                            {(chainId && chainId === ChainId.AVALANCHE) ||
+                              (chainId === ChainId.FUJI && 'Receive WAVAX')}
+                            {(chainId && chainId === ChainId.SMART_CHAIN) ||
+                              (chainId === ChainId.SMART_CHAIN_TEST && 'Receive WBNB')}
+                            {chainId && chainId === ChainId.MOONBEAM_ALPHA && 'Receive WDEV'}
                           </StyledInternalLink>
                         ) : oneCurrencyIsWETH ? (
                           <StyledInternalLink
@@ -606,8 +623,10 @@ export default function RemoveLiquidity({
                             }/${currencyB && currencyEquals(currencyB, WETH[chainId]) ? 'ETH' : currencyIdB}`}
                           >
                             {chainId && (chainId === ChainId.MAINNET || chainId === ChainId.RINKEBY) && 'Receive ETH'}
-                            {chainId && chainId === ChainId.AVALANCHE || chainId === ChainId.FUJI && 'Receive AVAX'}
-                            {chainId && chainId === ChainId.SMART_CHAIN || chainId === ChainId.SMART_CHAIN_TEST && 'Receive BNB'}
+                            {(chainId && chainId === ChainId.AVALANCHE) || (chainId === ChainId.FUJI && 'Receive AVAX')}
+                            {(chainId && chainId === ChainId.SMART_CHAIN) ||
+                              (chainId === ChainId.SMART_CHAIN_TEST && 'Receive BNB')}
+                            {chainId && chainId === ChainId.MOONBEAM_ALPHA && 'Receive DEV'}
                           </StyledInternalLink>
                         ) : null}
                       </RowBetween>

@@ -1,4 +1,4 @@
-import { AVAX, BNB, ChainId, Currency, ETHER, Token, currencyEquals } from '@zeroexchange/sdk'
+import { AVAX, BNB, DEV, ChainId, Currency, ETHER, Token, currencyEquals } from '@zeroexchange/sdk'
 
 import { AutoColumn } from '../Column'
 import { AutoRow } from '../Row'
@@ -80,18 +80,34 @@ export default function CommonBases({
               </Text>
             </BaseWrapper>
           ))}
-        {chainId && chainId === ChainId.SMART_CHAIN || chainId === ChainId.SMART_CHAIN_TEST && (
+        {(chainId && chainId === ChainId.SMART_CHAIN) ||
+          (chainId === ChainId.SMART_CHAIN_TEST && (
+            <BaseWrapper
+              onClick={() => {
+                if (!selectedCurrency || !currencyEquals(selectedCurrency, BNB)) {
+                  onSelect(BNB)
+                }
+              }}
+              disable={selectedCurrency === BNB}
+            >
+              <CurrencyLogo currency={BNB} style={{ marginRight: 8 }} />
+              <Text fontWeight={500} fontSize={16}>
+                BNB
+              </Text>
+            </BaseWrapper>
+          ))}
+        {chainId && chainId === ChainId.MOONBEAM_ALPHA && (
           <BaseWrapper
             onClick={() => {
-              if (!selectedCurrency || !currencyEquals(selectedCurrency, BNB)) {
-                onSelect(BNB)
+              if (!selectedCurrency || !currencyEquals(selectedCurrency, DEV)) {
+                onSelect(DEV)
               }
             }}
-            disable={selectedCurrency === BNB}
+            disable={selectedCurrency === DEV}
           >
-            <CurrencyLogo currency={BNB} style={{ marginRight: 8 }} />
+            <CurrencyLogo currency={DEV} style={{ marginRight: 8 }} />
             <Text fontWeight={500} fontSize={16}>
-              BNB
+              DEV
             </Text>
           </BaseWrapper>
         )}

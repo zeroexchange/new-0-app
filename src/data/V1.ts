@@ -1,6 +1,7 @@
 import {
   AVAX,
   BNB,
+  DEV,
   BigintIsh,
   Currency,
   CurrencyAmount,

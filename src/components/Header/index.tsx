@@ -270,7 +270,8 @@ const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
   [ChainId.AVALANCHE]: 'Avalanche',
   [ChainId.SMART_CHAIN]: 'SmartChain',
   [ChainId.SMART_CHAIN_TEST]: 'SmartChain',
-  [ChainId.MAINNET]: 'Ethereum'
+  [ChainId.MAINNET]: 'Ethereum',
+  [ChainId.MOONBEAM_ALPHA]: 'Moonbeam'
 }
 
 const NETWORK_SYMBOLS: any = {
@@ -280,7 +281,8 @@ const NETWORK_SYMBOLS: any = {
   Görli: 'ETH',
   Kovan: 'ETH',
   Avalanche: 'AVAX',
-  SmartChain: 'BNB'
+  SmartChain: 'BNB',
+  Moonbeam: 'DEV'
 }
 
 interface StyledCrossChainModalProps {
