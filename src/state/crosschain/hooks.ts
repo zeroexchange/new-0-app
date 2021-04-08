@@ -178,6 +178,8 @@ function GetChainNameById(chainID: number): string {
     return 'Smart Chain'
   } else if (chainID === ChainId.SMART_CHAIN_TEST) {
     return 'Smart Chain'
+  } else if (chainID === ChainId.MOONBEAM_ALPHA) {
+    return 'Moonbeam'
   }
   return ''
 }

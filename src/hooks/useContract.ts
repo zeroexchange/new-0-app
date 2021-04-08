@@ -93,6 +93,9 @@ export function useENSRegistrarContract(withSignerIfPossible?: boolean): Contrac
       case ChainId.SMART_CHAIN_TEST:
         address = '0x59F49F35495854023983C877A7781eAb3A63A0f2'
         break
+      case ChainId.MOONBEAM_ALPHA:
+        address = '0x59F49F35495854023983C877A7781eAb3A63A0f2'
+        break
     }
   }
   return useContract(address, ENS_ABI, withSignerIfPossible)

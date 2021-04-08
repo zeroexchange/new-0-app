@@ -81,7 +81,8 @@ const EMPTY_LIST: TokenAddressMap = {
     )
   },
   [ChainId.SMART_CHAIN]: {},
-  [ChainId.SMART_CHAIN_TEST]: {}
+  [ChainId.SMART_CHAIN_TEST]: {},
+  [ChainId.MOONBEAM_ALPHA]: {}
 }
 
 const listCache: WeakMap<TokenList, TokenAddressMap> | null =

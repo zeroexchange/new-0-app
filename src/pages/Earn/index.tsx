@@ -212,6 +212,8 @@ export default function Earn() {
               ? 'ETH'
               : chainId === ChainId.SMART_CHAIN || chainId === ChainId.SMART_CHAIN_TEST
               ? 'BNB'
+              : chainId === ChainId.MOONBEAM_ALPHA
+              ? 'DEV'
               : 'AVAX'
           }`}
           style={{ margin: '5px 5px 5px auto', minWidth: '186px' }}

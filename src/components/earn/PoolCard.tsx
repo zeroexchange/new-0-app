@@ -1,4 +1,4 @@
-import { AVAX, BNB, ChainId, ETHER, JSBI, TokenAmount } from '@zeroexchange/sdk'
+import { AVAX, BNB, DEV, ChainId, ETHER, JSBI, TokenAmount } from '@zeroexchange/sdk'
 import { Break, CardBGImage, CardNoise } from './styled'
 import { ButtonPrimary, ButtonWhiteBg } from '../Button'
 import { ExternalLink, StyledInternalLink, TYPE } from '../../theme'
@@ -107,8 +107,8 @@ export default function PoolCard({ stakingInfoTop }: { stakingInfoTop: StakingIn
   // fade cards if nothing staked or nothing earned yet
   const disableTop = !stakingInfo?.stakedAmount || stakingInfo.stakedAmount.equalTo(JSBI.BigInt(0))
 
-  const token = currencyA === ETHER || currencyA === AVAX || currencyA === BNB ? tokenB : tokenA
-  const WETH = currencyA === ETHER || currencyA === AVAX || currencyA === BNB ? tokenA : tokenB
+  const token = currencyA === ETHER || currencyA === AVAX || currencyA === BNB || currencyA === DEV ? tokenB : tokenA
+  const WETH = currencyA === ETHER || currencyA === AVAX || currencyA === BNB || currencyA === DEV ? tokenA : tokenB
   const backgroundColor = useColor(token)
 
   // get WETH value of staked LP tokens
