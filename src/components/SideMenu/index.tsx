@@ -124,7 +124,7 @@ export default function SideMenu({ open, setOpen }: SideMenuProps) {
             <IconLink>
               <Icon icon="charts" />
             </IconLink>
-            Charts
+            Chartsdf
           </HeaderExternalLink>
         </span>
         <span onClick={hanldeSidemenuOpen}>
