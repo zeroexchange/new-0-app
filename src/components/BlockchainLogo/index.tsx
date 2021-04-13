@@ -28,7 +28,7 @@ export default function BlockchainLogo({
     return <StyledEthereumLogo src={EthereumLogo} size={size} style={style} />
   }
 
-  if (blockchain === 'Avalanche' || blockchain === 'AVAX') {
+  if (blockchain === 'Avalanche' || blockchain === 'Fuji' || blockchain === 'AVAX') {
     return <StyledEthereumLogo src={AvaxLogo} size={size} style={style} />
   }
 
@@ -36,7 +36,7 @@ export default function BlockchainLogo({
     return <StyledEthereumLogo src={PolkadotLogo} size={size} style={style} />
   }
 
-  if (blockchain === 'Smart Chain' || blockchain === 'BNB' || blockchain === 'SmartChain') {
+  if (blockchain === 'Smart Chain' || blockchain === 'BNB' || blockchain === 'Smart Chain Test') {
     return <StyledEthereumLogo src={BSCLogo} alt="BNB" size={size} style={style} />
   }
 

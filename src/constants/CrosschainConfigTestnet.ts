@@ -82,7 +82,7 @@ export const crosschainConfig: ChainbridgeConfig = {
     {
       chainId: 2,
       networkId: 43113,
-      name: 'Avalanche',
+      name: 'Fuji',
       bridgeAddress: '0xD73CFAACEfe4812d350d38f634fA61eC3aFdFEbA',
       erc20HandlerAddress: '0xff7c781E1ed2A67a790Be70536299c7DFE4D5f33',
       rpcUrl: 'https://api.avax-test.network/ext/bc/C/rpc',
@@ -128,7 +128,7 @@ export const crosschainConfig: ChainbridgeConfig = {
     {
       chainId: 3,
       networkId: 97,
-      name: 'Smart Chain',
+      name: 'Smart Chain Test',
       bridgeAddress: '0xD73CFAACEfe4812d350d38f634fA61eC3aFdFEbA',
       erc20HandlerAddress: '0xff7c781E1ed2A67a790Be70536299c7DFE4D5f33',
       rpcUrl: 'https://data-seed-prebsc-1-s2.binance.org:8545',

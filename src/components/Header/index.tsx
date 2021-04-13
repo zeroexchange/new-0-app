@@ -266,10 +266,10 @@ const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
   [ChainId.ROPSTEN]: 'Ropsten',
   [ChainId.GÖRLI]: 'Görli',
   [ChainId.KOVAN]: 'Kovan',
-  [ChainId.FUJI]: 'Avalanche',
+  [ChainId.FUJI]: 'Fuji',
   [ChainId.AVALANCHE]: 'Avalanche',
   [ChainId.SMART_CHAIN]: 'SmartChain',
-  [ChainId.SMART_CHAIN_TEST]: 'SmartChain',
+  [ChainId.SMART_CHAIN_TEST]: 'SmartChainTest',
   [ChainId.MAINNET]: 'Ethereum',
   [ChainId.MOONBASE_ALPHA]: 'Moonbase'
 }
@@ -281,7 +281,9 @@ const NETWORK_SYMBOLS: any = {
   Görli: 'ETH',
   Kovan: 'ETH',
   Avalanche: 'AVAX',
+  Fuji: 'AVAX',
   SmartChain: 'BNB',
+  SmartChainTest: 'BNB',
   Moonbase: 'DEV'
 }
 
@@ -425,7 +427,6 @@ function NetworkSwitcher() {
   }
 
   const onSelectTransferChain = async (chain: CrosschainChain) => {
-    console.log('chain', chain)
     const { ethereum } = window
     if (ethereum) {
       let chainsConfig = null
@@ -435,7 +436,6 @@ function NetworkSwitcher() {
           chainsConfig = item
         }
       }
-      console.log('chainsConfig', chainsConfig)
       if (chainsConfig) {
         const hexChainId = '0x' + Number(chainsConfig.networkId).toString(16)
         const data = [
@@ -451,7 +451,6 @@ function NetworkSwitcher() {
             blockExplorerUrls: [chainsConfig.blockExplorer]
           }
         ]
-        console.log('data', data)
         let tx
 
         try {
@@ -463,7 +462,6 @@ function NetworkSwitcher() {
         } catch (e) {
           console.log(e)
         }
-        // const tx = (ethereum && ethereum.request) ? await ethereum['request']({ method: 'wallet_addEthereumChain', params: data }).catch() : ''
 
         if (tx) {
           console.log(tx)

@@ -171,13 +171,13 @@ function GetChainNameById(chainID: number): string {
   } else if (chainID === ChainId.RINKEBY) {
     return 'Rinkeby'
   } else if (chainID === ChainId.FUJI) {
-    return 'Avalanche'
+    return 'Fuji'
   } else if (chainID === ChainId.AVALANCHE) {
     return 'Avalanche'
   } else if (chainID === ChainId.SMART_CHAIN) {
     return 'Smart Chain'
   } else if (chainID === ChainId.SMART_CHAIN_TEST) {
-    return 'Smart Chain'
+    return 'Smart Chain Test'
   } else if (chainID === ChainId.MOONBASE_ALPHA) {
     return 'Moonbase'
   }
