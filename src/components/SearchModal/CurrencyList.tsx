@@ -163,7 +163,7 @@ function CurrencyRow({
           chainId !== ChainId.FUJI &&
           chainId !== ChainId.SMART_CHAIN &&
           chainId !== ChainId.SMART_CHAIN_TEST &&
-          chainId !== ChainId.MOONBEAM_ALPHA ? (
+          chainId !== ChainId.MOONBASE_ALPHA ? (
             <TYPE.main fontWeight={500}>
               Found by address
               <LinkStyledButton
@@ -212,7 +212,7 @@ export default function CurrencyList({
       ? Currency.ETHER
       : chainId === ChainId.SMART_CHAIN || chainId === ChainId.SMART_CHAIN_TEST
       ? Currency.BNB
-      : chainId === ChainId.MOONBEAM_ALPHA
+      : chainId === ChainId.MOONBASE_ALPHA
       ? Currency.DEV
       : Currency.AVAX
   const itemData = useMemo(() => (showETH ? [nativeToken, ...currencies] : currencies), [

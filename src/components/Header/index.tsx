@@ -18,7 +18,8 @@ import Settings from '../Settings'
 import { Text } from 'rebass'
 import Web3Status from '../Web3Status'
 import { YellowCard } from '../Card'
-import { crosschainConfig } from '../../constants/CrosschainConfig';
+import { crosschainConfig as crosschainConfigTestnet } from '../../constants/CrosschainConfigTestnet'
+import { crosschainConfig as crosschainConfigMainnet } from '../../constants/CrosschainConfig'
 import styled from 'styled-components'
 import { useActiveWeb3React } from '../../hooks'
 import { useCrosschainState } from 'state/crosschain/hooks'
@@ -26,12 +27,11 @@ import { useDarkModeManager } from '../../state/user/hooks'
 import { useETHBalances } from '../../state/wallet/hooks'
 import { useTranslation } from 'react-i18next'
 
+const crosschainConfig = process.env.REACT_APP_TESTNET ? crosschainConfigTestnet : crosschainConfigMainnet
+
 // import AvaxLogo from '../../assets/images/avax-logo.png'
 
-
-
 // import { darken } from 'polished'
-
 
 const HeaderFrame = styled.div`
   display: grid;
@@ -108,7 +108,7 @@ const HeaderExternalLink = styled(ExternalLink)`
   margin: 0 16px;
   font-size: 1rem;
   color: #c3c5cb;
-  transition: all .2s ease-in-out;
+  transition: all 0.2s ease-in-out;
   ${({ theme }) => theme.mediaWidth.upToMedium`
     margin: 0 6px;
     font-size: .85rem;
@@ -155,7 +155,7 @@ const HideSmall = styled.span`
 const NetworkCard = styled(YellowCard)`
   border-radius: 12px;
   padding: 8px 12px;
-  transition: all .2s ease-in-out;
+  transition: all 0.2s ease-in-out;
   ${({ theme }) => theme.mediaWidth.upToSmall`
     margin: 0;
     margin-right: 0.5rem;
@@ -271,7 +271,7 @@ const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
   [ChainId.SMART_CHAIN]: 'SmartChain',
   [ChainId.SMART_CHAIN_TEST]: 'SmartChain',
   [ChainId.MAINNET]: 'Ethereum',
-  [ChainId.MOONBEAM_ALPHA]: 'Moonbeam'
+  [ChainId.MOONBASE_ALPHA]: 'Moonbase'
 }
 
 const NETWORK_SYMBOLS: any = {
@@ -282,7 +282,7 @@ const NETWORK_SYMBOLS: any = {
   Kovan: 'ETH',
   Avalanche: 'AVAX',
   SmartChain: 'BNB',
-  Moonbeam: 'DEV'
+  Moonbase: 'DEV'
 }
 
 interface StyledCrossChainModalProps {
@@ -324,7 +324,7 @@ const ModalContainer = styled.div`
     li {
       display: flex;
       flex-direction: row;
-      margin-bottom: .5rem;
+      margin-bottom: 0.5rem;
       position: relative;
       padding: 12px;
       transition: all 0.2s ease-in-out;
@@ -391,7 +391,6 @@ function StyledCrossChainModal({
               onClick={() => {
                 selectTransferChain(chain)
                 onDismiss()
-
               }}
               className={`
               ${activeChain === chain.name && !isTransfer ? 'active' : ''}
@@ -409,12 +408,9 @@ function StyledCrossChainModal({
   )
 }
 
-
 function NetworkSwitcher() {
   const { chainId } = useActiveWeb3React()
-  const {
-    availableChains: allChains,
-  } = useCrosschainState()
+  const { availableChains: allChains } = useCrosschainState()
   const availableChains = useMemo(() => {
     return allChains.filter(i => i.name !== (chainId ? CHAIN_LABELS[chainId] : 'Ethereum'))
   }, [allChains])
@@ -429,37 +425,51 @@ function NetworkSwitcher() {
   }
 
   const onSelectTransferChain = async (chain: CrosschainChain) => {
-    let { ethereum } = window;
+    console.log('chain', chain)
+    const { ethereum } = window
     if (ethereum) {
-      let chainsConfig = null;
+      let chainsConfig = null
       for (const item of crosschainConfig.chains) {
+        console.log('item', item)
         if (item.chainId === +chain.chainID) {
           chainsConfig = item
         }
       }
+      console.log('chainsConfig', chainsConfig)
       if (chainsConfig) {
-        const hexChainId = "0x" + Number(chainsConfig.networkId).toString(16);
-        const data = [{
-          chainId: hexChainId,
-          chainName: chainsConfig.name,
-          nativeCurrency:
+        const hexChainId = '0x' + Number(chainsConfig.networkId).toString(16)
+        const data = [
           {
-            name: chainsConfig.nativeTokenSymbol,
-            symbol: chainsConfig.nativeTokenSymbol,
-            decimals: 18
-          },
-          rpcUrls: [chainsConfig.rpcUrl],
-          blockExplorerUrls: [chainsConfig.blockExplorer],
-        }]
-        /* eslint-disable */
-        const tx = (ethereum && ethereum.request) ? await ethereum['request']({ method: 'wallet_addEthereumChain', params: data }).catch() : ''
+            chainId: hexChainId,
+            chainName: chainsConfig.name,
+            nativeCurrency: {
+              name: chainsConfig.nativeTokenSymbol,
+              symbol: chainsConfig.nativeTokenSymbol,
+              decimals: 18
+            },
+            rpcUrls: [chainsConfig.rpcUrl],
+            blockExplorerUrls: [chainsConfig.blockExplorer]
+          }
+        ]
+        console.log('data', data)
+        let tx
+
+        try {
+          if (ethereum && ethereum.request) {
+            tx = await ethereum['request']({ method: 'wallet_addEthereumChain', params: data })
+          } else {
+            tx = ''
+          }
+        } catch (e) {
+          console.log(e)
+        }
+        // const tx = (ethereum && ethereum.request) ? await ethereum['request']({ method: 'wallet_addEthereumChain', params: data }).catch() : ''
 
         if (tx) {
           console.log(tx)
         }
       }
     }
-
   }
   return (
     <>
@@ -501,7 +511,12 @@ export default function Header() {
       <HeaderRow>
         <Title href=".">
           <UniIcon>
-            <img width={'54px'} style={{ marginLeft: '1.5rem', marginRight: '1.5rem' }} src={isDark ? LogoDark : Logo} alt="logo" />
+            <img
+              width={'54px'}
+              style={{ marginLeft: '1.5rem', marginRight: '1.5rem' }}
+              src={isDark ? LogoDark : Logo}
+              alt="logo"
+            />
           </UniIcon>
         </Title>
         <HeaderLinks>

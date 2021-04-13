@@ -3,7 +3,7 @@ import {
   AVAX_ROUTER_ADDRESS,
   ETH_ROUTER_ADDRESS,
   SMART_CHAIN_ROUTER_ADDRESS,
-  MOONBEAM_ROUTER_ADDRESS
+  MOONBASE_ROUTER_ADDRESS
 } from '../constants'
 import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers'
 
@@ -36,7 +36,7 @@ const ETHERSCAN_PREFIXES: { [chainId in ChainId]: string } = {
   43114: 'AVALANCHE',
   97: 'SMART_CHAIN_TEST',
   56: 'SMART_CHAIN',
-  1287: 'MOONBEAM_ALPHA'
+  1287: 'MOONBASE_ALPHA'
 }
 
 export function getEtherscanLink(
@@ -57,8 +57,8 @@ export function getEtherscanLink(
   if (chainId === ChainId.SMART_CHAIN) {
     prefix = `https://bscscan.com`
   }
-  if (chainId === ChainId.MOONBEAM_ALPHA) {
-    prefix = `https://explorer-mumbai.maticvigil.com`
+  if (chainId === ChainId.MOONBASE_ALPHA) {
+    prefix = `https://moonbase.subscan.io/`
   }
   switch (type) {
     case 'transaction': {
@@ -132,8 +132,8 @@ export function getRouterContract(chainId: ChainId, library: Web3Provider, accou
       ? ETH_ROUTER_ADDRESS
       : chainId === ChainId.SMART_CHAIN || chainId === ChainId.SMART_CHAIN_TEST
       ? SMART_CHAIN_ROUTER_ADDRESS
-      : chainId === ChainId.MOONBEAM_ALPHA
-      ? MOONBEAM_ROUTER_ADDRESS
+      : chainId === ChainId.MOONBASE_ALPHA
+      ? MOONBASE_ROUTER_ADDRESS
       : AVAX_ROUTER_ADDRESS,
     IUniswapV2Router02ABI,
     library,

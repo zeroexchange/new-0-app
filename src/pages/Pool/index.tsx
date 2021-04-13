@@ -171,7 +171,7 @@ export default function Pool() {
                       ? 'ETH'
                       : chainId === ChainId.SMART_CHAIN || chainId === ChainId.SMART_CHAIN_TEST
                       ? 'BNB'
-                      : chainId === ChainId.MOONBEAM_ALPHA
+                      : chainId === ChainId.MOONBASE_ALPHA
                       ? 'DEV'
                       : 'AVAX'
                   }`}

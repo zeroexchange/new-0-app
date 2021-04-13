@@ -21,6 +21,6 @@ export function unwrappedToken(token: Token, chainId?: ChainId): Currency {
   if ((token.equals(WETH[token.chainId]) && chainId === ChainId.AVALANCHE) || chainId === ChainId.FUJI) return AVAX
   if ((token.equals(WETH[token.chainId]) && chainId === ChainId.SMART_CHAIN) || chainId === ChainId.SMART_CHAIN_TEST)
     return BNB
-  if (token.equals(WETH[token.chainId]) && chainId === ChainId.MOONBEAM_ALPHA) return DEV
+  if (token.equals(WETH[token.chainId]) && chainId === ChainId.MOONBASE_ALPHA) return DEV
   return token
 }

@@ -3,7 +3,7 @@ import {
   AVAX_ROUTER_ADDRESS,
   ETH_ROUTER_ADDRESS,
   SMART_CHAIN_ROUTER_ADDRESS,
-  MOONBEAM_ROUTER_ADDRESS
+  MOONBASE_ROUTER_ADDRESS
 } from '../../constants'
 import { ApprovalState, useApproveCallback } from '../../hooks/useApproveCallback'
 import { AutoColumn, ColumnCenter } from '../../components/Column'
@@ -133,8 +133,8 @@ export default function AddLiquidity({
       ? ETH_ROUTER_ADDRESS
       : chainId === ChainId.SMART_CHAIN || chainId === ChainId.SMART_CHAIN_TEST
       ? SMART_CHAIN_ROUTER_ADDRESS
-      : chainId === ChainId.MOONBEAM_ALPHA
-      ? MOONBEAM_ROUTER_ADDRESS
+      : chainId === ChainId.MOONBASE_ALPHA
+      ? MOONBASE_ROUTER_ADDRESS
       : AVAX_ROUTER_ADDRESS
   )
   const [approvalB, approveBCallback] = useApproveCallback(
@@ -143,8 +143,8 @@ export default function AddLiquidity({
       ? ETH_ROUTER_ADDRESS
       : chainId === ChainId.SMART_CHAIN || chainId === ChainId.SMART_CHAIN_TEST
       ? SMART_CHAIN_ROUTER_ADDRESS
-      : chainId === ChainId.MOONBEAM_ALPHA
-      ? MOONBEAM_ROUTER_ADDRESS
+      : chainId === ChainId.MOONBASE_ALPHA
+      ? MOONBASE_ROUTER_ADDRESS
       : AVAX_ROUTER_ADDRESS
   )
 
@@ -211,7 +211,7 @@ export default function AddLiquidity({
 
     try {
       let gas
-      if (chainId === ChainId.AVALANCHE || chainId === ChainId.SMART_CHAIN || chainId === ChainId.MOONBEAM_ALPHA) {
+      if (chainId === ChainId.AVALANCHE || chainId === ChainId.SMART_CHAIN || chainId === ChainId.MOONBASE_ALPHA) {
         gas = BigNumber.from(350000)
       } else {
         gas = await estimate(...args, value ? { value } : {})

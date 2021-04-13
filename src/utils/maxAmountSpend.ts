@@ -20,7 +20,7 @@ export function maxAmountSpend(currencyAmount?: CurrencyAmount): CurrencyAmount 
         : currencyAmount?.currency === BNB
         ? ChainId.SMART_CHAIN_TEST
         : currencyAmount?.currency === DEV
-        ? ChainId.MOONBEAM_ALPHA
+        ? ChainId.MOONBASE_ALPHA
         : ChainId.FUJI
       : currencyAmount?.currency === ETHER
       ? ChainId.MAINNET

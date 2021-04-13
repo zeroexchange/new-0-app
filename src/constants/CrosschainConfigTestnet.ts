@@ -175,14 +175,14 @@ export const crosschainConfig: ChainbridgeConfig = {
     {
       chainId: 4,
       networkId: 1287,
-      name: 'Moonbeam',
+      name: 'Moonbase',
       bridgeAddress: '0xD73CFAACEfe4812d350d38f634fA61eC3aFdFEbA',
       erc20HandlerAddress: '0xff7c781E1ed2A67a790Be70536299c7DFE4D5f33',
       rpcUrl: 'https://rpc.testnet.moonbeam.network',
       type: 'Ethereum',
       gasLimit: 6721975,
       defaultGasPrice: 12.5,
-      blockExplorer: 'https://moonbeam-explorer.netlify.app/',
+      blockExplorer: 'https://moonbase.subscan.io/',
       nativeTokenSymbol: 'DEV',
       tokens: [
         {

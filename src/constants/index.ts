@@ -12,7 +12,7 @@ export const SMART_CHAIN_ROUTER_ADDRESS = process.env.REACT_APP_TESTNET
 export const ETH_ROUTER_ADDRESS = process.env.REACT_APP_TESTNET
   ? '0x70Ee974E2339E41D582593622c8a653842d9d52d'
   : '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D'
-export const MOONBEAM_ROUTER_ADDRESS = process.env.REACT_APP_TESTNET ? '0x86675584A0642197A11f2FCf4Bd85224a3351b13' : ''
+export const MOONBASE_ROUTER_ADDRESS = process.env.REACT_APP_TESTNET ? '0x86675584A0642197A11f2FCf4Bd85224a3351b13' : ''
 
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 export const AVAX_ADDRESS = '0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7'
@@ -166,7 +166,7 @@ export const UNI: { [chainId in ChainId]: Token } = {
   [ChainId.AVALANCHE]: new Token(ChainId.AVALANCHE, UNI_ADDRESS, 18, 'UNI', 'Uniswap'),
   [ChainId.SMART_CHAIN]: new Token(ChainId.SMART_CHAIN, UNI_ADDRESS, 18, 'UNI', 'Uniswap'),
   [ChainId.SMART_CHAIN_TEST]: new Token(ChainId.SMART_CHAIN, UNI_ADDRESS, 18, 'UNI', 'Uniswap'),
-  [ChainId.MOONBEAM_ALPHA]: new Token(ChainId.MOONBEAM_ALPHA, UNI_ADDRESS, 18, 'UNI', 'Uniswap')
+  [ChainId.MOONBASE_ALPHA]: new Token(ChainId.MOONBASE_ALPHA, UNI_ADDRESS, 18, 'UNI', 'Uniswap')
 }
 
 export const COMMON_CONTRACT_NAMES: { [address: string]: string } = {
@@ -191,7 +191,7 @@ const WETH_ONLY: ChainTokenList = {
   [ChainId.AVALANCHE]: [WETH[ChainId.AVALANCHE]],
   [ChainId.SMART_CHAIN]: [WETH[ChainId.SMART_CHAIN]],
   [ChainId.SMART_CHAIN_TEST]: [WETH[ChainId.SMART_CHAIN_TEST]],
-  [ChainId.MOONBEAM_ALPHA]: [WETH[ChainId.MOONBEAM_ALPHA]]
+  [ChainId.MOONBASE_ALPHA]: [WETH[ChainId.MOONBASE_ALPHA]]
 }
 
 // used to construct intermediary pairs for trading
@@ -227,7 +227,7 @@ export const SUGGESTED_BASES: ChainTokenList = {
   [ChainId.SMART_CHAIN]: [],
   [ChainId.SMART_CHAIN_TEST]: [],
   [ChainId.FUJI]: [],
-  [ChainId.MOONBEAM_ALPHA]: []
+  [ChainId.MOONBASE_ALPHA]: []
 }
 
 // used to construct the list of all pairs we consider by default in the frontend
@@ -373,9 +373,9 @@ export const CHAIN_LABELS: { [chainId in ChainId]?: string } = {
   [ChainId.AVALANCHE]: 'Avalanche',
   [ChainId.SMART_CHAIN]: 'Smart Chain',
   [ChainId.SMART_CHAIN_TEST]: 'Smart Chain',
-  [ChainId.MOONBEAM_ALPHA]: 'Moonbeam'
+  [ChainId.MOONBASE_ALPHA]: 'Moonbase'
 }
 
-export const SUPPORTED_CHAINS = ['Ethereum', 'Avalanche', 'Smart Chain', 'Moonbeam', 'Polkadot']
+export const SUPPORTED_CHAINS = ['Ethereum', 'Avalanche', 'Smart Chain', 'Moonbase', 'Polkadot']
 
 export const ETH_RPCS = ['Ethereum', 'Rinkeby']

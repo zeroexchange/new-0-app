@@ -115,7 +115,7 @@ export function tryParseAmount(value?: string, currency?: Currency): CurrencyAmo
                 : currency?.symbol === 'BNB'
                 ? ChainId.SMART_CHAIN_TEST
                 : currency?.symbol === 'DEV'
-                ? ChainId.MOONBEAM_ALPHA
+                ? ChainId.MOONBASE_ALPHA
                 : ChainId.FUJI
               : currency?.symbol === 'ETH'
               ? ChainId.MAINNET

@@ -96,7 +96,7 @@ export default function CommonBases({
               </Text>
             </BaseWrapper>
           ))}
-        {chainId && chainId === ChainId.MOONBEAM_ALPHA && (
+        {chainId && chainId === ChainId.MOONBASE_ALPHA && (
           <BaseWrapper
             onClick={() => {
               if (!selectedCurrency || !currencyEquals(selectedCurrency, DEV)) {
