@@ -72,10 +72,10 @@ export function getEtherscanLink(
     prefix = `https://bscscan.com`
   }
   if (chainId === ChainId.MOONBASE_ALPHA) {
-    prefix = `https://moonbase.subscan.io/`
+    prefix = `https://moonbase.subscan.io`
   }
   if (chainId === ChainId.MUMBAI) {
-    prefix = `https://explorer-mumbai.maticvigil.com/`
+    prefix = `https://explorer-mumbai.maticvigil.com`
   }
   switch (type) {
     case 'transaction': {
