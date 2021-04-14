@@ -2,6 +2,7 @@ import {
   AVAX,
   BNB,
   DEV,
+  MATIC,
   Currency,
   CurrencyAmount,
   ETHER,
@@ -99,7 +100,8 @@ export function useDerivedMintInfo(
         return dependentCurrency === ETHER ||
           dependentCurrency === AVAX ||
           dependentCurrency === BNB ||
-          dependentCurrency === DEV
+          dependentCurrency === DEV ||
+          dependentCurrency === MATIC
           ? CurrencyAmount.ether(dependentTokenAmount.raw, chainId)
           : dependentTokenAmount
       }

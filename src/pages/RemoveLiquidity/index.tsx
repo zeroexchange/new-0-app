@@ -1,9 +1,10 @@
-import { AVAX, BNB, DEV, ChainId, Currency, ETHER, Percent, WETH, currencyEquals } from '@zeroexchange/sdk'
+import { AVAX, BNB, DEV, MATIC, ChainId, Currency, ETHER, Percent, WETH, currencyEquals } from '@zeroexchange/sdk'
 import {
   AVAX_ROUTER_ADDRESS,
   ETH_ROUTER_ADDRESS,
   SMART_CHAIN_ROUTER_ADDRESS,
-  MOONBASE_ROUTER_ADDRESS
+  MOONBASE_ROUTER_ADDRESS,
+  MUMBAI_ROUTER_ADDRESS
 } from '../../constants'
 import { ApprovalState, useApproveCallback } from '../../hooks/useApproveCallback'
 import { ArrowDown, Plus } from 'react-feather'
@@ -114,6 +115,8 @@ export default function RemoveLiquidity({
       ? SMART_CHAIN_ROUTER_ADDRESS
       : chainId === ChainId.MOONBASE_ALPHA
       ? MOONBASE_ROUTER_ADDRESS
+      : chainId === ChainId.MUMBAI
+      ? MUMBAI_ROUTER_ADDRESS
       : AVAX_ROUTER_ADDRESS
   )
 
@@ -161,6 +164,8 @@ export default function RemoveLiquidity({
           ? SMART_CHAIN_ROUTER_ADDRESS
           : chainId === ChainId.MOONBASE_ALPHA
           ? MOONBASE_ROUTER_ADDRESS
+          : chainId === ChainId.MUMBAI
+          ? MUMBAI_ROUTER_ADDRESS
           : AVAX_ROUTER_ADDRESS,
       value: liquidityAmount.raw.toString(),
       nonce: nonce.toHexString(),
@@ -233,9 +238,15 @@ export default function RemoveLiquidity({
     const liquidityAmount = parsedAmounts[Field.LIQUIDITY]
     if (!liquidityAmount) throw new Error('missing liquidity amount')
 
-    const currencyBIsETH = currencyB === ETHER || currencyB === AVAX || currencyB === BNB || currencyB === DEV
+    const currencyBIsETH =
+      currencyB === ETHER || currencyB === AVAX || currencyB === BNB || currencyB === DEV || currencyB === MATIC
     const oneCurrencyIsETH =
-      currencyA === ETHER || currencyA === AVAX || currencyA === BNB || currencyA === DEV || currencyBIsETH
+      currencyA === ETHER ||
+      currencyA === AVAX ||
+      currencyA === BNB ||
+      currencyA === DEV ||
+      currencyA === MATIC ||
+      currencyBIsETH
 
     if (!tokenA || !tokenB) throw new Error('could not wrap')
 
@@ -403,6 +414,8 @@ export default function RemoveLiquidity({
         ? 'BNB'
         : chainId === ChainId.MOONBASE_ALPHA
         ? 'DEV'
+        : chainId === ChainId.MUMBAI
+        ? 'MATIC'
         : 'AVAX '
     return (
       <>
@@ -463,7 +476,9 @@ export default function RemoveLiquidity({
     currencyB === AVAX ||
     currencyA === AVAX ||
     currencyB === DEV ||
-    currencyA === DEV
+    currencyA === DEV ||
+    currencyB === MATIC ||
+    currencyA === MATIC
   const oneCurrencyIsWETH = Boolean(
     chainId &&
       ((currencyA && currencyEquals(WETH[chainId], currencyA)) ||
@@ -600,11 +615,19 @@ export default function RemoveLiquidity({
                         {oneCurrencyIsETH ? (
                           <StyledInternalLink
                             to={`/remove/${
-                              currencyA === ETHER || currencyB === AVAX || currencyB === BNB || currencyB === DEV
+                              currencyA === ETHER ||
+                              currencyB === AVAX ||
+                              currencyB === BNB ||
+                              currencyB === DEV ||
+                              currencyB === MATIC
                                 ? WETH[chainId].address
                                 : currencyIdA
                             }/${
-                              currencyB === ETHER || currencyB === AVAX || currencyB === BNB || currencyB === DEV
+                              currencyB === ETHER ||
+                              currencyB === AVAX ||
+                              currencyB === BNB ||
+                              currencyB === DEV ||
+                              currencyB === MATIC
                                 ? WETH[chainId].address
                                 : currencyIdB
                             }`}
@@ -615,6 +638,7 @@ export default function RemoveLiquidity({
                             {(chainId && chainId === ChainId.SMART_CHAIN) ||
                               (chainId === ChainId.SMART_CHAIN_TEST && 'Receive WBNB')}
                             {chainId && chainId === ChainId.MOONBASE_ALPHA && 'Receive WDEV'}
+                            {chainId && chainId === ChainId.MUMBAI && 'Receive WMATIC'}
                           </StyledInternalLink>
                         ) : oneCurrencyIsWETH ? (
                           <StyledInternalLink
@@ -627,6 +651,7 @@ export default function RemoveLiquidity({
                             {(chainId && chainId === ChainId.SMART_CHAIN) ||
                               (chainId === ChainId.SMART_CHAIN_TEST && 'Receive BNB')}
                             {chainId && chainId === ChainId.MOONBASE_ALPHA && 'Receive DEV'}
+                            {chainId && chainId === ChainId.MUMBAI && 'Receive MATIC'}
                           </StyledInternalLink>
                         ) : null}
                       </RowBetween>

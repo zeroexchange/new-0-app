@@ -3,6 +3,7 @@ import BSCLogo from '../../assets/images/binance-logo.png'
 import EthereumLogo from '../../assets/images/ethereum-logo.png'
 import PolkadotLogo from '../../assets/images/polkadot-logo.png'
 import DEVLogo from '../../assets/images/moonbeam-logo.png'
+import MATICLogo from '../../assets/images/polygon-logo.png'
 import React from 'react'
 import styled from 'styled-components'
 
@@ -42,6 +43,9 @@ export default function BlockchainLogo({
 
   if (blockchain === 'Moonbase' || blockchain === 'DEV' || blockchain === 'MoonbaseAlpha') {
     return <StyledEthereumLogo src={DEVLogo} alt="DEV" size={size} style={style} />
+  }
+  if (blockchain === 'Mumbai' || blockchain === 'MATIC') {
+    return <StyledEthereumLogo src={MATICLogo} alt="MATIC" size={size} style={style} />
   }
 
   return <StyledEthereumLogo src={EthereumLogo} size={size} style={style} />

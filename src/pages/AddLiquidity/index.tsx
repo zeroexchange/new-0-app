@@ -1,9 +1,10 @@
-import { AVAX, BNB, DEV, ChainId, Currency, ETHER, TokenAmount, WETH, currencyEquals } from '@zeroexchange/sdk'
+import { AVAX, BNB, DEV, MATIC, ChainId, Currency, ETHER, TokenAmount, WETH, currencyEquals } from '@zeroexchange/sdk'
 import {
   AVAX_ROUTER_ADDRESS,
   ETH_ROUTER_ADDRESS,
   SMART_CHAIN_ROUTER_ADDRESS,
-  MOONBASE_ROUTER_ADDRESS
+  MOONBASE_ROUTER_ADDRESS,
+  MUMBAI_ROUTER_ADDRESS
 } from '../../constants'
 import { ApprovalState, useApproveCallback } from '../../hooks/useApproveCallback'
 import { AutoColumn, ColumnCenter } from '../../components/Column'
@@ -135,6 +136,8 @@ export default function AddLiquidity({
       ? SMART_CHAIN_ROUTER_ADDRESS
       : chainId === ChainId.MOONBASE_ALPHA
       ? MOONBASE_ROUTER_ADDRESS
+      : chainId === ChainId.MUMBAI
+      ? MUMBAI_ROUTER_ADDRESS
       : AVAX_ROUTER_ADDRESS
   )
   const [approvalB, approveBCallback] = useApproveCallback(
@@ -145,6 +148,8 @@ export default function AddLiquidity({
       ? SMART_CHAIN_ROUTER_ADDRESS
       : chainId === ChainId.MOONBASE_ALPHA
       ? MOONBASE_ROUTER_ADDRESS
+      : chainId === ChainId.MUMBAI
+      ? MUMBAI_ROUTER_ADDRESS
       : AVAX_ROUTER_ADDRESS
   )
 
@@ -177,9 +182,11 @@ export default function AddLiquidity({
       currencyA === AVAX ||
       currencyB === AVAX ||
       currencyA === DEV ||
-      currencyB === DEV
+      currencyB === DEV ||
+      currencyA === MATIC ||
+      currencyB === MATIC
     ) {
-      const tokenBIsETH = currencyB === ETHER || currencyB === AVAX || currencyB === BNB || currencyB === DEV
+      const tokenBIsETH = currencyB === ETHER || currencyB === AVAX || currencyB === BNB || currencyB === DEV || currencyB === MATIC
       estimate = router.estimateGas.addLiquidityETH
       method = router.addLiquidityETH
       args = [
@@ -211,7 +218,7 @@ export default function AddLiquidity({
 
     try {
       let gas
-      if (chainId === ChainId.AVALANCHE || chainId === ChainId.SMART_CHAIN || chainId === ChainId.MOONBASE_ALPHA) {
+      if (chainId === ChainId.AVALANCHE || chainId === ChainId.SMART_CHAIN || chainId === ChainId.MOONBASE_ALPHA || chainId === ChainId.MUMBAI) {
         gas = BigNumber.from(350000)
       } else {
         gas = await estimate(...args, value ? { value } : {})
