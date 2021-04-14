@@ -1,4 +1,15 @@
-import { AVAX, BNB, DEV, ChainId, Currency, CurrencyAmount, ETHER, Token, currencyEquals } from '@zeroexchange/sdk'
+import {
+  AVAX,
+  BNB,
+  DEV,
+  MATIC,
+  ChainId,
+  Currency,
+  CurrencyAmount,
+  ETHER,
+  Token,
+  currencyEquals
+} from '@zeroexchange/sdk'
 import { FadedSpan, MenuItem } from './styleds'
 import { LinkStyledButton, TYPE } from '../../theme'
 import React, { CSSProperties, MutableRefObject, useCallback, useMemo } from 'react'
@@ -30,6 +41,8 @@ function currencyKey(currency: Currency): string {
     return 'BNB'
   } else if (currency === DEV) {
     return 'DEV'
+  } else if (currency === MATIC) {
+    return 'MATIC'
   } else {
     return ''
   }
@@ -163,7 +176,8 @@ function CurrencyRow({
           chainId !== ChainId.FUJI &&
           chainId !== ChainId.SMART_CHAIN &&
           chainId !== ChainId.SMART_CHAIN_TEST &&
-          chainId !== ChainId.MOONBASE_ALPHA ? (
+          chainId !== ChainId.MOONBASE_ALPHA &&
+          chainId !== ChainId.MUMBAI ? (
             <TYPE.main fontWeight={500}>
               Found by address
               <LinkStyledButton
@@ -214,6 +228,8 @@ export default function CurrencyList({
       ? Currency.BNB
       : chainId === ChainId.MOONBASE_ALPHA
       ? Currency.DEV
+      : chainId === ChainId.MUMBAI
+      ? Currency.MATIC
       : Currency.AVAX
   const itemData = useMemo(() => (showETH ? [nativeToken, ...currencies] : currencies), [
     currencies,

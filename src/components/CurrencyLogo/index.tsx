@@ -5,6 +5,7 @@ import AvaxLogo from '../../assets/images/avax-logo.png'
 import BNBLogo from '../../assets/images/binance-coin-logo.webp'
 import BTCLogo from '../../assets/images/crosschain/wBTC.png'
 import DEVLogo from '../../assets/images/moonbeam-logo.png'
+import MATICLogo from '../../assets/images/polygon-logo.png'
 import BUSDLogo from '../../assets/images/busd-logo.png'
 import DAILogo from '../../assets/images/crosschain/wDAI.png'
 import EthereumLogo from '../../assets/images/ethereum-logo.png'
@@ -115,6 +116,15 @@ export default function CurrencyLogo({
     currency?.symbol === 'eDEV'
   ) {
     return <StyledEthereumLogo src={DEVLogo} alt="DEV" size={size} style={style} />
+  }
+
+  if (
+    currency?.symbol === 'MATIC' ||
+    currency?.symbol === 'WMATIC' ||
+    currency?.symbol === 'wMATIC' ||
+    currency?.symbol === 'eMATIC'
+  ) {
+    return <StyledEthereumLogo src={MATICLogo} alt="MATIC" size={size} style={style} />
   }
 
   // cross chain

@@ -214,6 +214,8 @@ export default function Earn() {
               ? 'BNB'
               : chainId === ChainId.MOONBASE_ALPHA
               ? 'DEV'
+              : chainId === ChainId.MUMBAI
+              ? 'MATIC'
               : 'AVAX'
           }`}
           style={{ margin: '5px 5px 5px auto', minWidth: '186px' }}

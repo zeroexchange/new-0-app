@@ -1,4 +1,4 @@
-import { AVAX, BNB, DEV, ChainId, CurrencyAmount, ETHER, JSBI } from '@zeroexchange/sdk'
+import { AVAX, BNB, DEV, MATIC, ChainId, CurrencyAmount, ETHER, JSBI } from '@zeroexchange/sdk'
 
 import { MIN_ETH } from '../constants'
 
@@ -21,6 +21,8 @@ export function maxAmountSpend(currencyAmount?: CurrencyAmount): CurrencyAmount 
         ? ChainId.SMART_CHAIN_TEST
         : currencyAmount?.currency === DEV
         ? ChainId.MOONBASE_ALPHA
+        : currencyAmount?.currency === MATIC
+        ? ChainId.MUMBAI
         : ChainId.FUJI
       : currencyAmount?.currency === ETHER
       ? ChainId.MAINNET

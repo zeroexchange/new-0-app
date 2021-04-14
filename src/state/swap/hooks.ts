@@ -2,6 +2,7 @@ import {
   AVAX,
   BNB,
   DEV,
+  MATIC,
   ChainId,
   Currency,
   CurrencyAmount,
@@ -61,6 +62,9 @@ export function useSwapActionHandlers(): {
       if (currency === DEV) {
         selected = 'DEV'
       }
+      if (currency === MATIC) {
+        selected = 'MATIC'
+      }
       dispatch(
         selectCurrency({
           field,
@@ -116,6 +120,8 @@ export function tryParseAmount(value?: string, currency?: Currency): CurrencyAmo
                 ? ChainId.SMART_CHAIN_TEST
                 : currency?.symbol === 'DEV'
                 ? ChainId.MOONBASE_ALPHA
+                : currency?.symbol === 'MATIC'
+                ? ChainId.MUMBAI
                 : ChainId.FUJI
               : currency?.symbol === 'ETH'
               ? ChainId.MAINNET
