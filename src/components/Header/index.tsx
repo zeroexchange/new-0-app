@@ -6,12 +6,16 @@ import Row, { RowFixed } from '../Row'
 import { CHAIN_LABELS } from '../../constants'
 import { ChainId } from '@zeroexchange/sdk'
 import ClaimModal from '../claim/ClaimModal'
+import CrossChainModal from 'components/CrossChainModal'
 // import EthereumLogo from '../../assets/images/ethereum-logo.png'
 import Logo from '../../assets/svg/logo.svg'
 import LogoDark from '../../assets/images/0-icon.png'
 import Menu from '../Menu'
 import Modal from 'components/Modal'
 import { NavLink } from 'react-router-dom'
+import PlainPopup from 'components/Popups/PlainPopup'
+import { PopupContent } from 'state/application/actions'
+import PopupItem from 'components/Popups/PopupItem'
 import Settings from '../Settings'
 import { Text } from 'rebass'
 import Web3Status from '../Web3Status'
@@ -24,10 +28,6 @@ import { useCrosschainState } from 'state/crosschain/hooks'
 import { useDarkModeManager } from '../../state/user/hooks'
 import { useETHBalances } from '../../state/wallet/hooks'
 import { useTranslation } from 'react-i18next'
-import CrossChainModal from 'components/CrossChainModal'
-import PopupItem from 'components/Popups/PopupItem'
-import { PopupContent } from 'state/application/actions'
-import PlainPopup from 'components/Popups/PlainPopup'
 
 const crosschainConfig = process.env.REACT_APP_TESTNET ? crosschainConfigTestnet : crosschainConfigMainnet
 
@@ -247,6 +247,9 @@ const StyledNavLink = styled(NavLink).attrs({
   margin: 0 16px;
   font-weight: 500;
   transition: all 0.2s ease-in-out;
+  &.yellow {
+    color: #fced30;
+  }
   &.${activeClassName} {
     border-radius: 12px;
     font-weight: 600;
