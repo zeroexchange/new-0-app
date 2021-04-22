@@ -252,6 +252,9 @@ const StyledNavLink = styled(NavLink).attrs({
     font-weight: 600;
     color: ${({ theme }) => theme.primary1};
   }
+  &.yellow {
+    color: #fced30;
+  }
 
   :hover,
   :focus {
@@ -400,6 +403,9 @@ export default function Header() {
             <Book size={16} style={{ marginRight: '4px', marginTop: '2px', marginBottom: '-2px' }} />
             Guides
           </HeaderExternalLink>
+          <StyledNavLink id={`wsb-nav-link`} to={'/wsb-sale'} className="yellow">
+            WSB Sale
+          </StyledNavLink>
         </HeaderLinks>
       </HeaderRow>
 
