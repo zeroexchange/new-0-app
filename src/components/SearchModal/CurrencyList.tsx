@@ -124,12 +124,11 @@ function CurrencyRow({
   const selectedTokenList = useSelectedTokenList()
   const isOnSelectedList = isTokenOnList(selectedTokenList, currency)
   const customAdded = useIsUserAddedToken(currency)
-  let balanceData = {}
-  for (let i = 0; i < tokenBalances.length; i++) {
-    balanceData[tokenBalances[i].address] = weiToEthNum(
-      new BigNumber(tokenBalances[i]?.amount),
-      tokenBalances[i]?.decimals
-    )
+  let balanceData: any = null
+
+  if (tokenBalances && currency?.address) {
+    const tokenData = tokenBalances[currency?.address?.toLowerCase()]
+    balanceData = tokenData?.amount
   }
 
   const removeToken = useRemoveUserAddedToken()
@@ -184,11 +183,7 @@ function CurrencyRow({
       <TokenTags currency={currency} />
       <RowFixed style={{ justifySelf: 'flex-end' }}>
         {(chainId === ChainId.MAINNET || !currency.address) && (
-          <Balance
-            balance={
-              currency?.address ? balanceData[currency?.address.toLowerCase()] || 0 : userEthBalance?.toSignificant(4)
-            }
-          />
+          <Balance balance={currency?.address ? balanceData || 0 : userEthBalance?.toSignificant(4)} />
         )}
       </RowFixed>
     </MenuItem>
@@ -215,7 +210,7 @@ export default function CurrencyList({
   searchQuery: string | undefined
 }) {
   const { chainId } = useActiveWeb3React()
-  const tokenBalances = useTokenBalances()
+  const tokenBalances = useTokenBalances(chainId)
 
   const nativeToken =
     chainId === ChainId.MAINNET || chainId === ChainId.RINKEBY

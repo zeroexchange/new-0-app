@@ -256,6 +256,6 @@ export function useTrackedTokenPairs(): [Token, Token][] {
   }, [combinedList])
 }
 
-export function useTokenBalances(): string[] | undefined {
-  return useSelector<AppState, AppState['user']['tokenBalances']>(state => state.user.tokenBalances)
+export function useTokenBalances(chainId: ChainId | undefined) {
+  return useSelector<AppState, AppState['user']['tokenBalances']>(state => state.user.tokenBalances[chainId as ChainId])
 }

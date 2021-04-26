@@ -4,7 +4,7 @@ import { AutoRow, RowBetween } from '../../components/Row'
 import { ButtonConfirmed, ButtonError, ButtonLight, ButtonPrimary } from '../../components/Button'
 import { CHAIN_LABELS, ETH_RPCS } from '../../constants'
 import Card, { GreyCard } from '../../components/Card'
-import { ChainId, CurrencyAmount, JSBI, Token, TokenAmount, Trade } from '@zeroexchange/sdk'
+import { ChainId, CurrencyAmount, JSBI, Token, TokenAmount, Trade, ETHER } from '@zeroexchange/sdk'
 import {
   ChainTransferState,
   CrosschainChain,
@@ -61,7 +61,7 @@ import TradePrice from '../../components/swap/TradePrice'
 import confirmPriceImpactWithoutFee from '../../components/swap/confirmPriceImpactWithoutFee'
 import { getTokenBalances } from 'api'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
-import { setTokenBalances } from '../../state/user/actions'
+import { addBalanceToken } from '../../state/user/actions'
 import { useActiveWeb3React } from '../../hooks'
 import { useCurrency } from '../../hooks/Tokens'
 import { useDispatch } from 'react-redux'
@@ -297,7 +297,6 @@ export default function Swap() {
 
   const { BreakCrosschainSwap, GetAllowance } = useCrosschainHooks()
   //const [tokenBalances, setTokeBalancesData] = useState([])
-  const tokenBalances = useTokenBalances()
   const dispatch = useDispatch<AppDispatch>()
 
   // token warning stuff
@@ -317,16 +316,22 @@ export default function Swap() {
   const { account, chainId } = useActiveWeb3React()
   const userEthBalance = useETHBalances(account ? [account] : [], chainId)?.[account ?? '']
 
+  const tokenBalances = useTokenBalances(chainId)
   const getTokenBalancesList = async () => {
     const res = await getTokenBalances(account)
     if (res.status === 200) {
       const filteredBalances = res?.payload?.records.filter((token: any) => token?.name && parseFloat(token.amount) > 0)
-      dispatch(setTokenBalances(filteredBalances))
+      filteredBalances.forEach((item: any) => {
+        const chainId = ChainId.MAINNET
+        const amount = weiToEthNum(new BigNumber(item?.amount), item?.decimals)
+        const tokenData = { ...item, chainId, amount }
+        dispatch(addBalanceToken(tokenData))
+      })
     }
   }
 
   useEffect(() => {
-    if (chainId === ChainId.MAINNET || true) {
+    if (chainId === ChainId.MAINNET) {
       getTokenBalancesList()
     }
   }, [chainId, account])
@@ -909,7 +914,7 @@ export default function Swap() {
             {account && userEthBalance && (
               <BalanceRow isColumn={isColumn}>
                 <TextBalance>Your Balances</TextBalance>
-                <BalanceCard>
+                <BalanceCard onClick={() => handleInputSelect(ETHER)}>
                   <BubbleBase />
                   <BoxFlex>
                     <StyledEthereumLogo src={EthereumLogo} />
@@ -925,32 +930,33 @@ export default function Swap() {
                     <Icon icon="copyClipboard" />
                   </CopyImage>
                 </BalanceCard>
-                {tokenBalances?.map((token: any, index) => {
-                  const onClickCopyClipboard = async (e: any) => {
-                    e.stopPropagation()
-                    copyToClipboard(token.address)
-                    await wait(1)
-                  }
+                {tokenBalances &&
+                  Object.values(tokenBalances)?.map((token: any, index) => {
+                    const onClickCopyClipboard = async (e: any) => {
+                      e.stopPropagation()
+                      copyToClipboard(token?.address)
+                      await wait(1)
+                    }
 
-                  return (
-                    <BalanceCard key={index}>
-                      <BubbleBase />
-                      <BoxFlex>
-                        <CurrencyLogo size="48px" currency={token} />
-                        <Box>
-                          <CrossChain>
-                            {token?.symbol}
-                            <span>{token?.name}</span>
-                          </CrossChain>
-                          <AdressWallet>{weiToEthNum(new BigNumber(token?.amount), token?.decimals)}</AdressWallet>
-                        </Box>
-                      </BoxFlex>
-                      <CopyImage onClick={onClickCopyClipboard}>
-                        <Icon icon="copyClipboard" />
-                      </CopyImage>
-                    </BalanceCard>
-                  )
-                })}
+                    return (
+                      <BalanceCard key={index}>
+                        <BubbleBase />
+                        <BoxFlex onClick={() => handleInputSelect(token)}>
+                          <CurrencyLogo size="48px" currency={token} />
+                          <Box>
+                            <CrossChain>
+                              {token?.symbol}
+                              <span>{token?.name}</span>
+                            </CrossChain>
+                            <AdressWallet>{token?.amount}</AdressWallet>
+                          </Box>
+                        </BoxFlex>
+                        <CopyImage onClick={onClickCopyClipboard}>
+                          <Icon icon="copyClipboard" />
+                        </CopyImage>
+                      </BalanceCard>
+                    )
+                  })}
               </BalanceRow>
             )}
           </SwapFlex>

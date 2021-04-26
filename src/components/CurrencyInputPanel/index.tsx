@@ -1,6 +1,6 @@
 import { Check, Copy } from 'react-feather'
 import { Currency, Pair } from '@zeroexchange/sdk'
-import React, { useCallback, useContext, useState } from 'react'
+import React, { useCallback, useContext, useState, useEffect } from 'react'
 import styled, { ThemeContext } from 'styled-components'
 
 // import BlockchainLogo from '../BlockchainLogo'
@@ -18,6 +18,9 @@ import { returnBalanceNum } from '../../constants'
 import { useActiveWeb3React } from '../../hooks'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
 import { useTranslation } from 'react-i18next'
+import { addBalanceToken } from '../../state/user/actions'
+import { useDispatch } from 'react-redux'
+import { AppDispatch } from '../../state'
 
 const InputRow = styled.div<{ selected: boolean }>`
   ${({ theme }) => theme.flexRowNoWrap}
@@ -108,11 +111,12 @@ const StyledDropDown = styled(DropDown)<{ selected: boolean }>`
 `};
 `
 
-const InputPanel = styled.div<{ hideInput?: boolean, transferPage?: boolean }>`
+const InputPanel = styled.div<{ hideInput?: boolean; transferPage?: boolean }>`
   ${({ theme }) => theme.flexColumnNoWrap}
   position: relative;
   background: ${({ transferPage }) => (transferPage ? 'rgba(18, 21, 56, 0.24)' : 'rgba(18, 21, 56, 0.54)')};
-  box-shadow: ${({ transferPage }) => (transferPage ? 'inset 2px 2px 5px rgba(255, 255, 255, 0.12)' : 'inset 2px 2px 5px rgba(255, 255, 255, 0.095)')};
+  box-shadow: ${({ transferPage }) =>
+    transferPage ? 'inset 2px 2px 5px rgba(255, 255, 255, 0.12)' : 'inset 2px 2px 5px rgba(255, 255, 255, 0.095)'};
   backdrop-filter: blur(28px);
   border-radius: 44px;
   z-index: 1;
@@ -251,13 +255,29 @@ export default function CurrencyInputPanel({
   const [modal2Open, setModal2Open] = useState(false)
   const { account, chainId } = useActiveWeb3React()
   const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currency ?? undefined, chainId)
+  const hasABalance = !!(selectedCurrencyBalance && parseFloat(selectedCurrencyBalance.toSignificant(6)) > 1 / 10e18)
   const theme = useContext(ThemeContext)
+  const dispatch = useDispatch<AppDispatch>()
 
   const handleDismissSearch = useCallback(() => {
     setModalOpen(false)
   }, [setModalOpen])
 
-  const hasABalance = !!(selectedCurrencyBalance && parseFloat(selectedCurrencyBalance.toSignificant(6)) > 1 / 10e18)
+  const addBalanceTokenData = useCallback(() => {
+    if (selectedCurrencyBalance) {
+      const balanceTokenData = {
+        ...currency,
+        amount: selectedCurrencyBalance.toSignificant(6)
+      }
+      dispatch(addBalanceToken(balanceTokenData))
+    }
+  }, [dispatch, selectedCurrencyBalance])
+
+  useEffect(() => {
+    if (selectedCurrencyBalance && hasABalance) {
+      addBalanceTokenData()
+    }
+  }, [selectedCurrencyBalance])
 
   // hack to fix AWAX
   let altCurrency = currency

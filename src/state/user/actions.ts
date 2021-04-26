@@ -28,3 +28,5 @@ export const removeSerializedPair = createAction<{ chainId: number; tokenAAddres
 )
 export const toggleURLWarning = createAction<void>('app/toggleURLWarning')
 export const setTokenBalances = createAction<any>('user/setTokenBalances')
+export const addBalanceToken = createAction<any>('user/addBalanceToken')
+export const removeBalanceToken = createAction<any>('user/removeBalanceToken')

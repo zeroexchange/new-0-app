@@ -12,7 +12,9 @@ import {
   updateUserDeadline,
   updateUserExpertMode,
   updateUserSlippageTolerance,
-  setTokenBalances
+  setTokenBalances,
+  addBalanceToken,
+  removeBalanceToken
 } from './actions'
 
 import { createReducer } from '@reduxjs/toolkit'
@@ -50,7 +52,9 @@ export interface UserState {
 
   timestamp: number
   URLWarningVisible: boolean
-  tokenBalances: []
+  tokenBalances: {
+    [chainId: number]: {}
+  }
 }
 
 function pairKey(token0Address: string, token1Address: string) {
@@ -67,7 +71,7 @@ export const initialState: UserState = {
   pairs: {},
   timestamp: currentTimestamp(),
   URLWarningVisible: true,
-  tokenBalances: []
+  tokenBalances: {}
 }
 
 export default createReducer(initialState, builder =>
@@ -86,7 +90,9 @@ export default createReducer(initialState, builder =>
       }
 
       state.lastUpdateVersionTimestamp = currentTimestamp()
-      state.tokenBalances = []
+      if (typeof state.tokenBalances !== 'object') {
+        state.tokenBalances = {}
+      }
     })
     .addCase(updateUserDarkMode, (state, action) => {
       state.userDarkMode = action.payload.userDarkMode
@@ -142,5 +148,13 @@ export default createReducer(initialState, builder =>
     })
     .addCase(setTokenBalances, (state, { payload: tokenBalances }) => {
       state.tokenBalances = tokenBalances || []
+    })
+    .addCase(addBalanceToken, (state, { payload: tokenData }) => {
+      state.tokenBalances[tokenData.chainId] = state.tokens[tokenData.chainId] || {}
+      state.tokenBalances[tokenData.chainId][tokenData.address] = tokenData
+    })
+    .addCase(removeBalanceToken, (state, { payload: tokenData }) => {
+      state.tokenBalances[tokenData.chainId] = state.tokens[tokenData.chainId] || {}
+      delete state.tokenBalances[tokenData.chainId][tokenData.address]
     })
 )
