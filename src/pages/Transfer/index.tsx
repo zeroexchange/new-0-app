@@ -443,24 +443,25 @@ export default function Transfer() {
                 onShowTransferChainModal={showTransferChainModal}
               />
               <RowBetweenTransfer>
-
-                <div style={{ maxWidth: '260px'}}>
-                  { transferAmount.length && transferAmount !== '0' && currentToken && currencies[Field.INPUT] ?
-                    (<SpanAmount>
+                <div style={{ maxWidth: '260px' }}>
+                  {transferAmount.length && transferAmount !== '0' && currentToken && currencies[Field.INPUT] ? (
+                    <SpanAmount>
                       You will receive {formattedAmounts[Field.INPUT]} {currentToken.symbol} on {targetChain.name}
-                    </SpanAmount>) : ''
-                  }
+                    </SpanAmount>
+                  ) : (
+                    ''
+                  )}
                 </div>
 
                 <BottomGroupingTransfer>
-                  {isCrossChain && transferAmount.length && transferAmount !== '0' && currentToken && currencies[Field.INPUT] ? (
+                  {isCrossChain &&
+                  transferAmount.length &&
+                  transferAmount !== '0' &&
+                  currentToken &&
+                  currencies[Field.INPUT] ? (
                     <>
-                      <ButtonPrimary
-                        onClick={showConfirmTransferModal}
-                      >
-                        <TYPE.white>
-                          Transfer
-                        </TYPE.white>
+                      <ButtonPrimary onClick={showConfirmTransferModal}>
+                        <TYPE.white>Transfer</TYPE.white>
                       </ButtonPrimary>
                     </>
                   ) : !account ? (
