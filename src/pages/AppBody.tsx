@@ -2,15 +2,25 @@ import React from 'react'
 import styled from 'styled-components'
 
 export const BodyWrapper = styled.div`
+  font-family: Poppins;
   position: relative;
-  max-width: 675px;
+  width: 620px;
+  max-width: 100%;
+  padding: 28px 34px;
+  min-height: 570px;
+  background: rgba(47, 53, 115, 0.32);
+  box-shadow: inset 2px 2px 5px rgba(255, 255, 255, 0.095);
+  backdrop-filter: blur(28px);
+  border-radius: 44px;
+  margin-right: 2rem;
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    margin-top: 20px
+    margin-right: auto;
+    margin-left: auto;
+  `};
+  ${({ theme }) => theme.mediaWidth.upToSmall`
   width: 100%;
-  background: #2f357352;
-  border: 2px solid rgba(103, 82, 247, .45);
-  box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.01), 0px 4px 8px rgba(0, 0, 0, 0.04), 0px 16px 24px rgba(0, 0, 0, 0.04),
-    0px 24px 32px rgba(0, 0, 0, 0.01);
-  border-radius: 30px;
-  padding: 3rem;
+  `};
 `
 
 /**

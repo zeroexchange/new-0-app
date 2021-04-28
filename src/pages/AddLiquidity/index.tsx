@@ -33,7 +33,7 @@ import { PoolPriceBar } from './PoolPriceBar'
 import { RouteComponentProps } from 'react-router-dom'
 import { TYPE } from '../../theme'
 import { Text } from 'rebass'
-import { ThemeContext } from 'styled-components'
+import styled, { ThemeContext } from 'styled-components'
 import { TransactionResponse } from '@ethersproject/providers'
 import { currencyId } from '../../utils/currencyId'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
@@ -44,6 +44,18 @@ import { useTransactionAdder } from '../../state/transactions/hooks'
 import useTransactionDeadline from '../../hooks/useTransactionDeadline'
 import { useWalletModalToggle } from '../../state/application/hooks'
 import { wrappedCurrency } from '../../utils/wrappedCurrency'
+
+const Title = styled.h1`
+  width: 100%;
+  padding: 0px 64px;
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+  padding: 0;
+  text-align: center;
+  font-size: 49px;
+  margin-top: 40px;
+  margin-bottom: 0px;
+`};
+`
 
 export default function AddLiquidity({
   match: {
@@ -201,7 +213,8 @@ export default function AddLiquidity({
       currencyA === MATIC ||
       currencyB === DEV
     ) {
-      const tokenBIsETH = currencyB === ETHER || currencyB === AVAX || currencyB === BNB || currencyB === DEV || currencyB === MATIC
+      const tokenBIsETH =
+        currencyB === ETHER || currencyB === AVAX || currencyB === BNB || currencyB === DEV || currencyB === MATIC
       estimate = router.estimateGas.addLiquidityETH
       method = router.addLiquidityETH
       args = [
@@ -364,6 +377,7 @@ export default function AddLiquidity({
 
   return (
     <>
+      <Title>Add Liquidity</Title>
       <AppBody>
         <AddRemoveTabs creating={isCreate} adding={true} />
         <Wrapper>
