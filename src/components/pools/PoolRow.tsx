@@ -42,7 +42,7 @@ const Details = styled.div`
   border-bottom: 1px solid rgba(167, 177, 244, 0.1);
   padding: 22px 45px;
   ${({ theme }) =>
-  theme.mediaWidth.upToExtraSmall`
+    theme.mediaWidth.upToExtraSmall`
     display: flex;
     flex-direction: column;
     padding: 12px 10px;
@@ -212,6 +212,7 @@ export default function PoolRow({
     valueOfTotalStakedAmountInWETH
   ])
 
+
   if (stakingInfoTop.isHidden) {
     return (<></>);
   }
@@ -237,14 +238,14 @@ export default function PoolRow({
           <TYPE.main fontWeight={500} fontSize={15} style={{ textAlign: 'center' }}>
             {stakingInfo?.active
               ? stakingInfo?.totalRewardRate?.multiply(BIG_INT_SECONDS_IN_WEEK)?.toFixed(0, { groupSeparator: ',' }) ??
-                '-'
+              '-'
               : '0'}
             {' ZERO / week'}
           </TYPE.main>
         </Cell>
         <Cell mobile={false}>
           <TYPE.main fontWeight={500} fontSize={15} style={{ textAlign: 'center' }}>
-           {stakingInfoAPR ? stakingInfoAPR +'%' : '-'}
+            {stakingInfoAPR ? stakingInfoAPR + '%' : '-'}
           </TYPE.main>
         </Cell>
         <Cell mobile={false}>
@@ -269,7 +270,7 @@ export default function PoolRow({
         </Cell>
         <Cell style={{ width: '45px' }}></Cell>
       </Wrapper>
-      {showDetails && (
+      { showDetails && (
         <tr>
           <td colSpan={8}>
             <Details>
