@@ -1,8 +1,8 @@
 import { AVAX, BNB, ChainId, DEV, ETHER, JSBI, MATIC, TokenAmount } from '@zeroexchange/sdk'
 import { ButtonOutlined, ButtonPrimary } from '../Button'
-import { ExternalLink, StyledInternalLink, TYPE } from '../../theme'
+import { StyledInternalLink, TYPE } from '../../theme'
 import React, { useEffect, useState } from 'react'
-import { useTokenBalance, useTokenBalancesWithLoadingIndicator } from '../../state/wallet/hooks'
+import { useTokenBalance } from '../../state/wallet/hooks'
 
 import { BIG_INT_SECONDS_IN_WEEK } from '../../constants'
 import { CountUp } from 'use-count-up'
@@ -54,6 +54,20 @@ const Logo = styled(DoubleCurrencyLogo)`
 const Cell = styled.td<{ mobile?: boolean }>`
   display: table-cell;
   padding: 16px 8px;
+  :first-child {
+    width: 45px;
+  }
+  :last-child {
+    width: 45px;
+  }
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+  :first-child {
+    width: 15px;
+  }
+  :last-child {
+    width: 15px;
+  }
+  `};
   ${({ theme, mobile = true }) =>
     !mobile &&
     theme.mediaWidth.upToMedium`
@@ -214,7 +228,7 @@ export default function PoolRow({
 
 
   if (stakingInfoTop.isHidden) {
-    return (<></>);
+    return <></>
   }
   return (
     <>
@@ -225,7 +239,7 @@ export default function PoolRow({
         onClick={toggleDetails}
         showDetails={showDetails}
       >
-        <Cell style={{ width: '45px' }}></Cell>
+        <Cell></Cell>
         <Cell>
           <TitleCell>
             <Logo currency0={currency0} currency1={currency1} size={24} style={{ marginRight: '8px' }} />
@@ -268,7 +282,7 @@ export default function PoolRow({
             <DropdownArrow />
           </DetailsCell>
         </Cell>
-        <Cell style={{ width: '45px' }}></Cell>
+        <Cell></Cell>
       </Wrapper>
       { showDetails && (
         <tr>
