@@ -6,7 +6,7 @@ import { IDO_LIST } from '../../constants/idos';
 import IdoRow from '../../components/ZeroGravity/IdoRow';
 import PageContainer from '../../components/PageContainer'
 import Toggle from '../../components/Toggle';
-import styled from 'styled-components'
+import styled from 'styled-components';
 
 const StyledExternalLink = styled(ExternalLink)`
   text-decoration: none !important;
@@ -90,6 +90,7 @@ const HeaderSection = styled.div<{ width?: any }>`
   font-weight: bold;
   color: #A7B1F4;
 `
+
 export default function ZeroGravityList() {
 
   const [showActive, setShowActive] = useState(true);
