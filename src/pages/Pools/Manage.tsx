@@ -475,6 +475,7 @@ export default function Manage({
               </StatValue>
             </Stat>
             {
+              (!isGongolaRewards) ? (
                 <StyledInternalLink className="add-liquidity-link"
                   to={{
                     pathname: `/add/${currencyA && currencyId(currencyA)}/${currencyB && currencyId(currencyB)}`,
@@ -484,6 +485,11 @@ export default function Manage({
                 >
                   <ButtonOutlined className="add-liquidity-button">Add Liquidity</ButtonOutlined>
                 </StyledInternalLink>
+              ) : (
+                  <div className="add-liquidity-link">
+                    <ButtonOutlined className="add-liquidity-button" onClick={() => window.open(`https://app.gondola.finance/#/deposit/${currencyA?.symbol}`, '_blank')}>Add Liquidity</ButtonOutlined>
+                  </div>
+                )
             }
 
 

@@ -107,6 +107,16 @@ export const STAKING_REWARDS_INFO: {
       }
     },
     {
+      tokens: [zUSDT, pngUSDT,],
+      stakingRewardAddress: '0x7e7bAFF135c42ed90C0EdAb16eAe48ecEa417018', //this case it is the address of the proxy contract for pool
+      // to see https://cchain.explorer.avax.network/address/0x7e7bAFF135c42ed90C0EdAb16eAe48ecEa417018
+      rewardInfo: {
+        chain: 'Gondola', tokenId: 8,
+        poolAddress: '0xc37ECFA7Bbf1dF92Da7C4A3d92d8CF8657D1FF7f',
+        masterChefAddress: '0x34C8712Cc527a8E6834787Bd9e3AD4F2537B0f50'
+      }
+    },
+    {
       tokens: [zZERO, zETH],
       stakingRewardAddress: '0x7b35150abde10F98f44DEd0d02e7E942321fbbe0'
     },
