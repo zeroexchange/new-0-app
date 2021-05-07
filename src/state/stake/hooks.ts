@@ -55,7 +55,8 @@ export const REWARDS_DURATION_DAYS = 30
 export const STAKING_REWARDS_INFO: {
   [chainId in ChainId]?: {
     tokens: [Token, Token]
-    stakingRewardAddress: string
+    stakingRewardAddress: string,
+    rewardInfo?: any
   }[]
 } = {
   [ChainId.MAINNET]: [
@@ -205,7 +206,11 @@ export const STAKING_REWARDS_INFO: {
     // },
     {
       tokens: [bscZERO, bscINDA],
-      stakingRewardAddress: '0xb466598db72798Ec6118afbFcA29Bc7F1009cad6'
+      stakingRewardAddress: '0xb466598db72798Ec6118afbFcA29Bc7F1009cad6',
+      rewardInfo: {
+        lpToken: 'INDA', decimals: 2, rewardToken: bscINDA
+      }
+
     },
   ]
 }
@@ -230,6 +235,8 @@ export interface StakingInfo {
   periodFinish: Date | undefined
   // if pool is active
   active: boolean
+  lpTokenName?: string | undefined
+  tokenDecimals?: number | undefined
   // calculates a hypothetical amount of token distributed to the active account per second.
   getHypotheticalRewardRate: (
     stakedAmount: TokenAmount,
@@ -249,13 +256,13 @@ export function useStakingInfo(pairToFilterBy?: Pair | null): StakingInfo[] {
     () =>
       chainId
         ? STAKING_REWARDS_INFO[chainId]?.filter(stakingRewardInfo =>
-            pairToFilterBy === undefined
-              ? true
-              : pairToFilterBy === null
+          pairToFilterBy === undefined
+            ? true
+            : pairToFilterBy === null
               ? false
               : pairToFilterBy.involvesToken(stakingRewardInfo.tokens[0]) &&
-                pairToFilterBy.involvesToken(stakingRewardInfo.tokens[1])
-          ) ?? []
+              pairToFilterBy.involvesToken(stakingRewardInfo.tokens[1])
+        ) ?? []
         : [],
     [chainId, pairToFilterBy]
   )
@@ -328,10 +335,13 @@ export function useStakingInfo(pairToFilterBy?: Pair | null): StakingInfo[] {
         const dummyPair = new Pair(new TokenAmount(tokens[0], '0'), new TokenAmount(tokens[1], '0'))
 
         // check for account, if no account set to 0
+        const currentPair = info.find(pair => pair.stakingRewardAddress === rewardsAddress)
 
+        const rewardRateContract = (currentPair?.rewardInfo
+          && currentPair?.rewardInfo?.rewardToken) ? currentPair?.rewardInfo?.rewardToken : uni
         const stakedAmount = new TokenAmount(dummyPair.liquidityToken, JSBI.BigInt(balanceState?.result?.[0] ?? 0))
         const totalStakedAmount = new TokenAmount(dummyPair.liquidityToken, JSBI.BigInt(totalSupplyState.result?.[0]))
-        const totalRewardRate = new TokenAmount(uni, JSBI.BigInt(rewardRateState.result?.[0]))
+        const totalRewardRate = new TokenAmount(rewardRateContract, JSBI.BigInt(rewardRateState.result?.[0]))
 
         const getHypotheticalRewardRate = (
           stakedAmount: TokenAmount,
@@ -355,17 +365,22 @@ export function useStakingInfo(pairToFilterBy?: Pair | null): StakingInfo[] {
         const active =
           periodFinishSeconds && currentBlockTimestamp ? periodFinishSeconds > currentBlockTimestamp.toNumber() : true
 
+        const lpToken = (currentPair?.rewardInfo && currentPair?.rewardInfo.lpToken) ? currentPair?.rewardInfo.lpToken : undefined
+        const decimals = (currentPair?.rewardInfo && currentPair?.rewardInfo.decimals) ? currentPair?.rewardInfo.decimals : undefined
+
         memo.push({
           stakingRewardAddress: rewardsAddress,
           tokens: info[index].tokens,
           periodFinish: periodFinishMs > 0 ? new Date(periodFinishMs) : undefined,
-          earnedAmount: new TokenAmount(uni, JSBI.BigInt(earnedAmountState?.result?.[0] ?? 0)),
+          earnedAmount: new TokenAmount(rewardRateContract, JSBI.BigInt(earnedAmountState?.result?.[0] ?? 0)),
           rewardRate: individualRewardRate,
           totalRewardRate: totalRewardRate,
           stakedAmount: stakedAmount,
           totalStakedAmount: totalStakedAmount,
           getHypotheticalRewardRate,
-          active
+          active,
+          lpTokenName: lpToken,
+          tokenDecimals: decimals
         })
       }
       return memo
