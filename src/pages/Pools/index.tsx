@@ -345,7 +345,6 @@ export default function Pools() {
 
   const [apyRequested, setApyRequested] = useState(true)
   const getAllAPY = async () => {
-    console.log('requested')
       const res = await getAllPoolsAPY()
       if (!res.hasError) {
         dispatch(setAprAdata({aprData: res?.data}))
