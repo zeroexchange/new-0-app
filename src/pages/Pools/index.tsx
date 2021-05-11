@@ -19,7 +19,11 @@ import { unwrappedToken } from '../../utils/wrappedCurrency'
 import { useActiveWeb3React } from '../../hooks'
 import { useWalletModalToggle } from '../../state/application/hooks'
 import useWindowDimensions from './../../hooks/useWindowDimensions'
-
+import { useDispatch } from 'react-redux'
+import { AppDispatch } from '../../state'
+import {setAprAdata} from './../../state/pools/actions'
+import {usePoolsState} from './../../state/pools/hooks'
+import {AprObjectProps} from './../../state/pools/actions'
 const numeral = require('numeral')
 
 const PageWrapper = styled.div`
@@ -241,13 +245,6 @@ const HeaderCellSpan = styled.span`
   position: relative;
 `
 
-export type APYObjectProps = {
-  APY: number
-  name: String
-  chain: String
-  contract_addr: String
-}
-
 export type SortedTitleProps = {
   title: String
   sortedMode: String
@@ -257,7 +254,9 @@ export default function Pools() {
 
   //@ts-ignore
   const serializePoolControls = JSON.parse(localStorage.getItem('PoolControls'))
-  const { width } = useWindowDimensions()
+  const dispatch = useDispatch<AppDispatch>()
+  const aprAllData = usePoolsState()
+  const {aprData} = aprAllData
   const { account, chainId } = useActiveWeb3React()
   const stakingInfos = useStakingInfo()
   const toggleWalletModal = useWalletModalToggle()
@@ -320,7 +319,6 @@ export default function Pools() {
     })
   }
 
-  const [apyData, setApyData] = useState([{}])
   const [weeklyEarnings, setWeeklyEarnings] = useState({})
   const [readyForHarvest, setReadyForHarvest] = useState({})
   const [totalLiquidity, setTotalLiquidity] = useState({})
@@ -335,10 +333,9 @@ export default function Pools() {
   }
 
   //  APR
-  if (apyData && apyData.length) {
+  if (aprData && aprData.length) {
     arrayToShow.forEach((arrItem, index) => {
-      //@ts-ignore
-      apyData.forEach((dataItem: APYObjectProps) => {
+      aprData.forEach((dataItem: AprObjectProps) => {
         if (dataItem?.contract_addr === arrItem.stakingRewardAddress) {
           arrayToShow[index]['APR'] = dataItem.APY
         }
@@ -346,15 +343,14 @@ export default function Pools() {
     })
   }
 
-  const [apyRequested, setApyRequested] = useState(false)
+  const [apyRequested, setApyRequested] = useState(true)
   const getAllAPY = async () => {
-    if (!apyRequested) {
-      setApyRequested(true)
+    console.log('requested')
       const res = await getAllPoolsAPY()
       if (!res.hasError) {
-        setApyData(res?.data)
+        dispatch(setAprAdata({aprData: res?.data}))
+        setApyRequested(false)
       }
-    }
   }
 
   const [showClaimRewardModal, setShowClaimRewardModal] = useState<boolean>(false)
@@ -458,9 +454,8 @@ export default function Pools() {
     setFilteredMode(sortedMode)
   }
 
-  getAllAPY()
-
   useEffect(() => {
+    !aprData.length && getAllAPY()
     let earnings: any = 0
     let harvest: any = 0
     Object.keys(weeklyEarnings).forEach(key => {
@@ -503,9 +498,9 @@ export default function Pools() {
         </>
       )}
       <Title>Pools</Title>
-        { !visibleItems || !apyRequested && <CustomLightSpinner src={Circle} alt="loader" size={'90px'} />}
+        { !visibleItems && apyRequested && <CustomLightSpinner src={Circle} alt="loader" size={'90px'} />}
         <PageContainer>
-          {account !== null && visibleItems?.length > 0 && apyRequested && (
+          {account !== null && visibleItems?.length > 0 && !apyRequested && (
             <StatsWrapper>
               <Stat className="weekly">
                 <StatLabel>Weekly Earnings:</StatLabel>
