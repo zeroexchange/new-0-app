@@ -3,7 +3,6 @@ import { CustomLightSpinner, StyledInternalLink, TYPE } from '../../theme'
 import React, { useEffect, useMemo, useState } from 'react'
 import { STAKING_REWARDS_INFO, useStakingInfo } from '../../state/stake/hooks'
 import styled, { keyframes } from 'styled-components'
-
 import Circle from '../../assets/images/blue-loader.svg'
 import ClaimRewardModal from '../../components/pools/ClaimRewardModal'
 import DropdownArrow from './../../assets/svg/DropdownArrow'
