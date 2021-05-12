@@ -1,5 +1,6 @@
 import './snow.css'
 
+import { AddressClaimModal, Header, Popups, SideMenu, URLWarning, Web3ReactManager } from '../components'
 import {
   OpenClaimAddressModalAndRedirectToSwap,
   RedirectPathToHomeOnly,
@@ -20,7 +21,6 @@ import { ApplicationModal } from '../state/application/actions'
 import DarkModeQueryParamReader from '../theme/DarkModeQueryParamReader'
 import GraphQLProvider from './../graphql'
 import Guides from './Guides'
-import { Header, Popups, SideMenu, Web3ReactManager, AddressClaimModal, URLWarning} from '../components'
 import Home from './Home'
 import Manage from './Pools/Manage'
 import MigrateV1 from './MigrateV1'
