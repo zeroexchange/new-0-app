@@ -12,18 +12,17 @@ import PoolCard from '../../components/pools/PoolCard'
 import PoolControls from '../../components/pools/PoolControls'
 import PoolRow from '../../components/pools/PoolRow'
 import ZeroIcon from '../../assets/svg/zero_icon.svg'
+import { useDispatch } from 'react-redux'
+import { AppDispatch } from '../../state'
+import { setAprData } from './../../state/pools/actions'
+import { usePoolsState } from './../../state/pools/hooks'
+import { AprObjectProps } from './../../state/pools/actions'
 import { getAllPoolsAPY } from 'api'
 import { useActiveWeb3React } from '../../hooks'
 import { useWalletModalToggle } from '../../state/application/hooks'
 import { searchItems } from 'utils/searchItems'
 import { setOptions, sortPoolsItems } from 'utils/sortPoolsPage'
 import { NoWalletConnected } from '../../components/NoWalletConnected'
-import { useDispatch } from 'react-redux'
-import { AppDispatch } from '../../state'
-import { setAprData } from './../../state/pools/actions'
-import { usePoolsState } from './../../state/pools/hooks'
-import { AprObjectProps } from './../../state/pools/actions'
-
 const numeral = require('numeral')
 
 const PageWrapper = styled.div`
