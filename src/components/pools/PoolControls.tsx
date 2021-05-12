@@ -1,13 +1,11 @@
-import React, { useState, useEffect } from 'react'
-
 import CardMode from '../../assets/svg/CardMode'
 import ListMode from '../../assets/svg/ListMode'
+import React from 'react'
 import SearchBar from '../../components/SearchBar'
 import Select from '../../components/Select'
 import { TYPE } from '../../theme'
 import TogglePool from '../../components/TooglePool'
 import styled from 'styled-components'
-
 
 const Controls = styled.div`
   display: flex;
@@ -114,9 +112,10 @@ export interface PoolControlsProps {
   setShowFinished: () => void
   showStaked: boolean
   setShowStaked: () => void
-  onSelectFilter: any
   setFilteredMode: any
-  sortedData: any
+  options: any
+  activeFilteredMode: string
+  serializePoolControls: any
 }
 
 function PoolControls({
@@ -128,22 +127,11 @@ function PoolControls({
   setShowFinished,
   showStaked,
   setShowStaked,
-  onSelectFilter,
   setFilteredMode,
-  sortedData
+  options,
+  activeFilteredMode,
+  serializePoolControls
 }: PoolControlsProps) {
-  let serializePoolsControl = {}
-  //@ts-ignore
-  if (JSON.parse(localStorage.getItem('PoolControls'))) {
-    //@ts-ignore
-    serializePoolsControl = JSON.parse(localStorage.getItem('PoolControls'))
-  }
-
-  const selectFilter = (e: any) => {
-    onSelectFilter(e.value)
-    setFilteredMode(e.value)
-  }
-
   return (
     <Controls>
       <SearchGroup>
@@ -155,51 +143,30 @@ function PoolControls({
           toggle={setShowFinished}
           isStaked={showStaked}
           setShowStaked={setShowStaked}
+          serializePoolControls={serializePoolControls}
         />
       </ToggleGroup>
       <Group>
         <ControlGroup>
           <ControlLabel>
             <TYPE.main fontWeight={600} fontSize={12}>
-              {`Sort by: `}
+              Sort by:
             </TYPE.main>
           </ControlLabel>
-          <Select
-            options={sortedData}
-            onChange={e => {
-              selectFilter(e)
-              const clone = { ...serializePoolsControl, sortedMode: e.value }
-              localStorage.setItem('PoolControls', JSON.stringify(clone))
-            }}
-            sortedData={sortedData}
-          />
+          <Select options={options} onChange={e => setFilteredMode(e)} activeOption={activeFilteredMode} />
         </ControlGroup>
 
         <ControlGroup>
           <ControlLabel>
             <TYPE.main fontWeight={600} fontSize={12}>
-              {`Mode: `}
+              Mode:
             </TYPE.main>
           </ControlLabel>
           <InputContainer>
-            <Button
-              isSelected={displayMode === 'table'}
-              onClick={() => {
-                setDisplayMode('table')
-                const clone = { ...serializePoolsControl, displayMode: 'table' }
-                localStorage.setItem('PoolControls', JSON.stringify(clone))
-              }}
-            >
+            <Button isSelected={displayMode === 'table'} onClick={() => setDisplayMode('table')}>
               <ListMode />
             </Button>
-            <Button
-              isSelected={displayMode === 'grid'}
-              onClick={() => {
-                setDisplayMode('grid')
-                const clone = { ...serializePoolsControl, displayMode: 'grid' }
-                localStorage.setItem('PoolControls', JSON.stringify(clone))
-              }}
-            >
+            <Button isSelected={displayMode === 'grid'} onClick={() => setDisplayMode('grid')}>
               <CardMode />
             </Button>
           </InputContainer>

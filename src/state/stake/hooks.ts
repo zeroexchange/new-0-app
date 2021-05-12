@@ -15,6 +15,7 @@ import {
   bscBUSD,
   bscDAI,
   bscETH,
+  bscINDA,
   bscSUSHI,
   bscUNI,
   bscUSDC,
@@ -32,7 +33,7 @@ import {
   pngDAI,
   pngETH,
   pngUSDT,
-  bscINDA
+  GDL
 } from '../../constants'
 import { NEVER_RELOAD, useMultipleContractSingleData } from '../multicall/hooks'
 
@@ -96,24 +97,27 @@ export const STAKING_REWARDS_INFO: {
     }
   ],
   [ChainId.AVALANCHE]: [
-    {
-      tokens: [pngETH, zETH],
-      stakingRewardAddress: '0x7c815BBc21FED2B97CA163552991A5C30d6a2336', //this case it is the address of the proxy contract for pool
-      // to see https://cchain.explorer.avax.network/address/0x7c815BBc21FED2B97CA163552991A5C30d6a2336
-      rewardInfo: {
-        chain: 'Gondola', tokenId: 7,
-        poolAddress: '0xc37ECFA7Bbf1dF92Da7C4A3d92d8CF8657D1FF7f',
-        masterChefAddress: '0x34C8712Cc527a8E6834787Bd9e3AD4F2537B0f50'
-      }
-    },
+    // {
+    //   tokens: [pngETH, zETH],
+    //   stakingRewardAddress: '0x7c815BBc21FED2B97CA163552991A5C30d6a2336', //this case it is the address of the proxy contract for pool
+    //   // to see https://cchain.explorer.avax.network/address/0x7c815BBc21FED2B97CA163552991A5C30d6a2336
+    //   rewardInfo: {
+    //     chain: 'Gondola', tokenId: 7,
+    //     poolAddress: '0xc37ECFA7Bbf1dF92Da7C4A3d92d8CF8657D1FF7f',
+    //     masterChefAddress: '0x34C8712Cc527a8E6834787Bd9e3AD4F2537B0f50',
+    //     rewardsTokenSymbol: 'GND'
+    //   }
+    // },
     {
       tokens: [zUSDT, pngUSDT,],
       stakingRewardAddress: '0x7e7bAFF135c42ed90C0EdAb16eAe48ecEa417018', //this case it is the address of the proxy contract for pool
       // to see https://cchain.explorer.avax.network/address/0x7e7bAFF135c42ed90C0EdAb16eAe48ecEa417018
       rewardInfo: {
         chain: 'Gondola', tokenId: 8,
-        poolAddress: '0xc37ECFA7Bbf1dF92Da7C4A3d92d8CF8657D1FF7f',
-        masterChefAddress: '0x34C8712Cc527a8E6834787Bd9e3AD4F2537B0f50'
+        poolAddress: '0x842cc3a5cDf13cFdA564b315b3F3a2E8aBF0eb0A',
+        masterChefAddress: '0x34C8712Cc527a8E6834787Bd9e3AD4F2537B0f50',
+        rewardsTokenSymbol: 'GDL',
+        rewardsToken: GDL
       }
     },
     {
@@ -178,18 +182,6 @@ export const STAKING_REWARDS_INFO: {
     }
   ],
   [ChainId.SMART_CHAIN]: [
-    // {
-    //   tokens: [WBNB, bscINDA],
-    //   stakingRewardAddress: '0x2624f69F15Fa828a21e8Ff6eE58F050840bb60D4'
-    // },
-    // {
-    //   tokens: [bscBUSD, bscINDA],
-    //   stakingRewardAddress: '0x337BDB3197e705c5E2b2630dC571d08608204001'
-    // },
-    // {
-    //   tokens: [bscZERO, bscINDA],
-    //   stakingRewardAddress: '0xef72591604218e31d3fe1978742324d963129953'
-    // },
     {
       tokens: [bscZERO, bscBUSD],
       stakingRewardAddress: '0x389a83ce9Da4bceeD934Bcb68c3A9Beb8A10135e'
@@ -233,7 +225,20 @@ export const STAKING_REWARDS_INFO: {
     {
       tokens: [bscZERO, bscDAI],
       stakingRewardAddress: '0xa8630279dBFb97a92a7C477c17FF4466b619A3d2'
-    }
+    },
+    // {
+    //   tokens: [WBNB, bscINDA],
+    //   stakingRewardAddress: '0x2624f69F15Fa828a21e8Ff6eE58F050840bb60D4'
+    // },
+    // {
+    //   tokens: [bscBUSD, bscINDA],
+    //   stakingRewardAddress: '0x337BDB3197e705c5E2b2630dC571d08608204001'
+    // },
+    {
+      tokens: [bscZERO, bscINDA],
+      stakingRewardAddress: '0xb466598db72798Ec6118afbFcA29Bc7F1009cad6',
+      rewardInfo: { rewardToken: bscINDA }
+    },
   ]
 }
 
@@ -257,6 +262,9 @@ export interface StakingInfo {
   periodFinish: Date | undefined
   // if pool is active
   active: boolean
+  rewardsTokenSymbol?: string | undefined
+  // chainId
+  chainId?: ChainId
   // calculates a hypothetical amount of token distributed to the active account per second.
   getHypotheticalRewardRate: (
     stakedAmount: TokenAmount,
@@ -360,10 +368,13 @@ export function useStakingInfo(pairToFilterBy?: Pair | null): StakingInfo[] {
         const dummyPair = new Pair(new TokenAmount(tokens[0], '0'), new TokenAmount(tokens[1], '0'))
 
         // check for account, if no account set to 0
+        const currentPair = info.find(pair => pair.stakingRewardAddress === rewardsAddress)
 
+        const rewardsToken = currentPair?.rewardInfo?.rewardsToken ?? ZERO;
         const stakedAmount = new TokenAmount(dummyPair.liquidityToken, JSBI.BigInt(balanceState?.result?.[0] ?? 0))
         const totalStakedAmount = new TokenAmount(dummyPair.liquidityToken, JSBI.BigInt(totalSupplyState.result?.[0]))
-        const totalRewardRate = new TokenAmount(uni, JSBI.BigInt(rewardRateState.result?.[0]))
+
+        const totalRewardRate = new TokenAmount(rewardsToken, JSBI.BigInt(rewardRateState.result?.[0]))
 
         const getHypotheticalRewardRate = (
           stakedAmount: TokenAmount,
@@ -371,7 +382,7 @@ export function useStakingInfo(pairToFilterBy?: Pair | null): StakingInfo[] {
           totalRewardRate: TokenAmount
         ): TokenAmount => {
           return new TokenAmount(
-            uni,
+            rewardsToken,
             JSBI.greaterThan(totalStakedAmount.raw, JSBI.BigInt(0))
               ? JSBI.divide(JSBI.multiply(totalRewardRate.raw, stakedAmount.raw), totalStakedAmount.raw)
               : JSBI.BigInt(0)
@@ -387,11 +398,24 @@ export function useStakingInfo(pairToFilterBy?: Pair | null): StakingInfo[] {
         const active =
           periodFinishSeconds && currentBlockTimestamp ? periodFinishSeconds > currentBlockTimestamp.toNumber() : true
 
+        const lpToken = currentPair?.rewardInfo?.lpToken
+        if (rewardRateState.result && currentPair?.rewardInfo) {
+          console.log('dummyPair :>> ', dummyPair);
+          console.log('getHypotheticalRewardRate :>> ', getHypotheticalRewardRate);
+          console.log('active :>> ', active);
+          console.log('@@@@@@@@@@@@@@@currentPair :>> ', currentPair);
+          console.log('totalRewardRate :>> ', totalRewardRate);
+          console.dir(rewardRateState);
+          console.log('earnedAmountState?.result :>> ', earnedAmountState?.result)
+          console.log('individualRewardRate :>> ', individualRewardRate);
+          console.log('totalStakedAmount :>> ', totalStakedAmount);
+          console.log('stakedAmount :>> ', stakedAmount);
+        }
         memo.push({
           stakingRewardAddress: rewardsAddress,
           tokens: tokens,
           periodFinish: periodFinishMs > 0 ? new Date(periodFinishMs) : undefined,
-          earnedAmount: new TokenAmount(uni, JSBI.BigInt(earnedAmountState?.result?.[0] ?? 0)),
+          earnedAmount: new TokenAmount(rewardsToken, JSBI.BigInt(earnedAmountState?.result?.[0] ?? 0)),
           rewardRate: individualRewardRate,
           totalRewardRate: totalRewardRate,
           stakedAmount: stakedAmount,
@@ -399,7 +423,8 @@ export function useStakingInfo(pairToFilterBy?: Pair | null): StakingInfo[] {
           getHypotheticalRewardRate,
           active,
           gondolaTokenId: currentItem?.rewardInfo?.tokenId,
-          gondolaRewardAddress: currentItem?.rewardInfo?.masterChefAddress
+          gondolaRewardAddress: currentItem?.rewardInfo?.masterChefAddress,
+          rewardsTokenSymbol: currentItem?.rewardInfo?.rewardsTokenSymbol
         })
       }
       return memo

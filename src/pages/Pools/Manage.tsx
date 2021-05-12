@@ -1,8 +1,9 @@
 import { AVAX, BNB, ChainId, DEV, ETHER, JSBI, MATIC, Pair, TokenAmount } from '@zeroexchange/sdk'
+import { abi as IUniswapV2PairABI } from '@uniswap/v2-core/build/IUniswapV2Pair.json'
 import { BIG_INT_SECONDS_IN_WEEK, BIG_INT_ZERO } from '../../constants'
 import { ButtonOutlined, ButtonPrimary, ButtonSuccess } from '../../components/Button'
 import { CardBGImage, CardNoise, CardSection, DataCard } from '../../components/pools/styled'
-import React, { useCallback, useContext, useMemo, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { RowBetween, RowCenter } from '../../components/Row'
 import { StyledInternalLink, TYPE } from '../../theme'
 import styled, { ThemeContext } from 'styled-components'
@@ -34,6 +35,10 @@ import { useTotalSupply } from '../../data/TotalSupply'
 import useUSDCPrice from '../../utils/useUSDCPrice'
 import { useWalletModalToggle } from '../../state/application/hooks'
 import { wrappedCurrency } from '../../utils/wrappedCurrency'
+import { Interface } from '@ethersproject/abi'
+import { getPairState } from './hooks'
+import { useGondolaSwapContract } from 'hooks/useContract'
+const PAIR_INTERFACE = new Interface(IUniswapV2PairABI)
 
 const PageWrapper = styled.div`
   flex-direction: column;
@@ -254,7 +259,6 @@ const VoteCard = styled(DataCard)`
 const DataRow = styled(RowBetween)`
   justify-content: center;
   gap: 12px;
-
   ${({ theme }) => theme.mediaWidth.upToSmall`
     flex-direction: column;
     gap: 12px;
@@ -309,10 +313,25 @@ export default function Manage({
   // get currencies and pair
   const [currencyA, currencyB] = [useCurrency(currencyIdA), useCurrency(currencyIdB)]
   const tokenA = wrappedCurrency(currencyA ?? undefined, chainId)
+  console.log("🚀 ~ file: Manage.tsx ~ line 311 ~ tokenA", tokenA)
   const tokenB = wrappedCurrency(currencyB ?? undefined, chainId)
+  console.log("🚀 ~ file: Manage.tsx ~ line 313 ~ tokenB", tokenB)
 
   const [, stakingTokenPair] = usePair(tokenA, tokenB)
+  console.log("🚀 ~ file: Manage.tsx ~ line 314 ~ stakingTokenPair", stakingTokenPair)
+  // const stPair = stakingTokenPair ?? '0x842cc3a5cDf13cFdA564b315b3F3a2E8aBF0eb0A'
+  const contract = useGondolaSwapContract('0x3CE2B891071054ee10d4b5eD5a9446f9016F90d8')
+  useEffect(() => {
+    if (contract?.getTokenBalance) {
+      contract?.getTokenBalance(0)
+        .then((res: any) => console.log('#############res :>> ', res.toString()))
+        .catch((err: any) => console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!err :>> ', err))
+    }
+
+  }, [contract])
+  const statePair = getPairState(contract, tokenA, tokenB)
   const baseStakingInfo = useStakingInfo(stakingTokenPair)
+  console.log("🚀 ~ file: Manage.tsx ~ line 315 ~ baseStakingInfo", baseStakingInfo)
   const stakingInfo = baseStakingInfo.find(x => x.stakingRewardAddress === stakingRewardAddress);
 
   // detect existing unstaked LP position to show add button if none found
@@ -348,7 +367,7 @@ export default function Manage({
     )
   }
 
-  const countUpAmount = stakingInfo?.earnedAmount?.toFixed(6) ?? '0'
+  const countUpAmount = stakingInfo?.earnedAmount?.toFixed(Math.min(6, stakingInfo?.earnedAmount?.currency.decimals)) ?? '0'
   const countUpAmountPrevious = usePrevious(countUpAmount) ?? '0'
 
   // get the USD value of staked WETH
@@ -421,6 +440,7 @@ export default function Manage({
   }
 
   const symbol = WETH?.symbol
+  console.log('stakingInfo :>> ', stakingInfo);
   return (
     <>
       {stakingInfo && (
@@ -590,7 +610,6 @@ export default function Manage({
 }
 
 /* ====
-
 <PageWrapper>
   <RowBetween style={{ gap: '24px' }}>
     <TYPE.mediumHeader style={{ margin: 0 }}>
@@ -598,7 +617,6 @@ export default function Manage({
     </TYPE.mediumHeader>
     <DoubleCurrencyLogo currency0={currencyA ?? undefined} currency1={currencyB ?? undefined} size={24} />
   </RowBetween>
-
   <DataRow style={{ gap: '24px' }}>
     <PoolData>
       <AutoColumn gap="sm">
@@ -624,7 +642,6 @@ export default function Manage({
       </AutoColumn>
     </PoolData>
   </DataRow>
-
   {showAddLiquidityButton && (
     <VoteCard>
       <CardSection>
@@ -650,7 +667,6 @@ export default function Manage({
       </CardSection>
     </VoteCard>
   )}
-
   {!showAddLiquidityButton && stakingInfo && (
     <ButtonPrimary
       padding="8px"
@@ -662,7 +678,6 @@ export default function Manage({
       {`Add more ${currencyA?.symbol}/${currencyB?.symbol} liquidity`}
     </ButtonPrimary>
   )}
-
   {stakingInfo && (
     <>
       <StakingModal
@@ -683,7 +698,6 @@ export default function Manage({
       />
     </>
   )}
-
   <PositionInfo gap="lg" justify="center" dim={showAddLiquidityButton}>
     <BottomSection gap="lg" justify="center">
       <StyledDataCard disabled={disableTop} bgColor={backgroundColor} showBackground={!showAddLiquidityButton}>
@@ -746,7 +760,6 @@ export default function Manage({
           </RowBetween>
         </AutoColumn>
       </StyledBottomCard>
-
       {!userLiquidityUnstaked ? null : userLiquidityUnstaked.equalTo('0') ? null : !stakingInfo?.active ? null : (
         <StyledBox>
           <TYPE.main>{userLiquidityUnstaked?.toSignificant(6)} ZERO LP tokens</TYPE.main>
@@ -756,7 +769,6 @@ export default function Manage({
         </StyledBox>
       )}
     </BottomSection>
-
     {!account ? (
       <Card padding="40px">
         <TYPE.body color={theme.text3} textAlign="center">
@@ -790,17 +802,14 @@ export default function Manage({
         </TYPE.body>
       </EmptyProposals>
     )}
-
     <TYPE.main style={{ textAlign: 'center' }} fontSize={14}>
       <span role="img" aria-label="wizard-icon" style={{ marginRight: '8px' }}>
         ⭐️
       </span>
       When you withdraw, the contract will automagically claim ZERO on your behalf!
     </TYPE.main>
-
     {!showAddLiquidityButton && (
       <DataRow style={{ marginBottom: '1rem' }}>
-
         {!userLiquidityUnstaked ? null : userLiquidityUnstaked.equalTo('0') ? null : !stakingInfo?.active ? null : (
           <ButtonPrimary
             padding="8px"
@@ -812,7 +821,6 @@ export default function Manage({
             Remove Liquidity
           </ButtonPrimary>
         )}
-
         {stakingInfo?.stakedAmount?.greaterThan(JSBI.BigInt(0)) && (
           <>
             <ButtonPrimary
@@ -830,7 +838,4 @@ export default function Manage({
     )}
   </PositionInfo>
 </PageWrapper>
-
-
-
 */
