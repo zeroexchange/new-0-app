@@ -116,7 +116,7 @@ export interface PoolControlsProps {
   serializePoolControls: any
 }
 
-function PoolControls({
+export function PoolControls({
   displayMode,
   setDisplayMode,
   searchText,
@@ -174,4 +174,3 @@ function PoolControls({
   )
 }
 
-export default PoolControls

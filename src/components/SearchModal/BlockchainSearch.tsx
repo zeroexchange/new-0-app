@@ -1,23 +1,28 @@
 import { CloseIcon } from '../../theme'
 import { Currency, ETHER, Token } from '@zeroexchange/sdk'
-import { PaddedColumn, SearchInput, Separator } from './styleds'
 import React, { KeyboardEvent, RefObject, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
-import { RowBetween } from '../Row'
 import { useAllTokens, useToken } from '../../hooks/Tokens'
 
 import AutoSizer from 'react-virtualized-auto-sizer'
-import Column from '../Column'
-import CommonBases from './CommonBases'
-import CurrencyList from './CurrencyList'
+import {
+  Column,
+  QuestionHelper,
+  RowBetween,
+  CommonBases,
+  CurrencyList,
+  SortButton,
+  PaddedColumnSearchModal,
+  SearchInputSearchModal,
+  SeparatorSearchModal,
+  filterTokens,
+  useTokenComparator
+} from '../../components'
 import { FixedSizeList } from 'react-window'
-import QuestionHelper from '../QuestionHelper'
-import SortButton from './SortButton'
+
 import { Text } from 'rebass'
 import { ThemeContext } from 'styled-components'
-import { filterTokens } from './filtering'
 import { isAddress } from '../../utils'
 import { useActiveWeb3React } from '../../hooks'
-import { useTokenComparator } from './sorting'
 import { useTranslation } from 'react-i18next'
 
 interface BlockchainSearchProps {
@@ -54,7 +59,7 @@ export function BlockchainSearch({
 
   useEffect(() => {
     if (isAddressSearch) {
-     console.log('isAddressSearch:>> ', isAddressSearch);
+      console.log('isAddressSearch:>> ', isAddressSearch)
     }
   }, [isAddressSearch])
 
@@ -130,7 +135,7 @@ export function BlockchainSearch({
 
   return (
     <Column style={{ width: '100%', flex: '1 1' }}>
-      <PaddedColumn gap="14px">
+      <PaddedColumnSearchModal gap="14px">
         <RowBetween>
           <Text fontWeight={500} fontSize={16}>
             Select a Blockchain
@@ -138,7 +143,7 @@ export function BlockchainSearch({
           </Text>
           <CloseIcon onClick={onDismiss} />
         </RowBetween>
-        <SearchInput
+        <SearchInputSearchModal
           type="text"
           id="token-search-input"
           placeholder={t('tokenSearchPlaceholder')}
@@ -156,9 +161,9 @@ export function BlockchainSearch({
           </Text>
           <SortButton ascending={invertSearchOrder} toggleSortOrder={() => setInvertSearchOrder(iso => !iso)} />
         </RowBetween>
-      </PaddedColumn>
+      </PaddedColumnSearchModal>
 
-      <Separator />
+      <SeparatorSearchModal />
 
       <div style={{ flex: '1' }}>
         <AutoSizer disableWidth>
@@ -177,7 +182,7 @@ export function BlockchainSearch({
         </AutoSizer>
       </div>
 
-      <Separator />
+      <SeparatorSearchModal />
     </Column>
   )
 }

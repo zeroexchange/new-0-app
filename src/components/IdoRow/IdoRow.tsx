@@ -1,4 +1,4 @@
-import { ButtonOutlined, ButtonPrimary } from '../../components/Button'
+import { ButtonPrimary } from '../../components'
 
 import { NavLink } from 'react-router-dom'
 import React from 'react'

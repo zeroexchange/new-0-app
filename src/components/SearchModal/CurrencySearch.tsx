@@ -1,28 +1,32 @@
 import { ChainId, Currency, ETHER, Token } from '@zeroexchange/sdk'
 import { CloseIcon } from '../../theme'
-import { PaddedColumn, SearchInput, Separator } from './styleds'
 import React, { KeyboardEvent, RefObject, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
-import { RowBetween } from '../Row'
 import { useAllTokens, useToken } from '../../hooks/Tokens'
 
 import AutoSizer from 'react-virtualized-auto-sizer'
-import Card from '../Card'
-import Column from '../Column'
-import CommonBases from './CommonBases'
-import CurrencyList from './CurrencyList'
 import { DEFAULT_TOKEN_LIST as DEFAULT_TOKEN_LIST_MAINNET } from '../../constants/DefaultTokenList'
 import { DEFAULT_TOKEN_LIST as DEFAULT_TOKEN_LIST_TESTNET } from '../../constants/DefaultTokenListTestnet'
 import { FixedSizeList } from 'react-window'
-import { ListLoader } from '../index'
-import QuestionHelper from '../QuestionHelper'
-import SortButton from './SortButton'
+import {
+  ListLoader,
+  Card,
+  Column,
+  QuestionHelper,
+  RowBetween,
+  CommonBases,
+  CurrencyList,
+  SortButton,
+  PaddedColumnSearchModal,
+  SearchInputSearchModal,
+  SeparatorSearchModal,
+  filterTokens,
+  useTokenComparator
+} from '../../components'
 import { Text } from 'rebass'
 import { ThemeContext } from 'styled-components'
-import { filterTokens } from './filtering'
 import { isAddress } from '../../utils'
 import { useActiveWeb3React } from '../../hooks'
 import { useCrosschainState } from '../../state/crosschain/hooks'
-import { useTokenComparator } from './sorting'
 import { useTranslation } from 'react-i18next'
 import { useUserAddedTokens } from '../../state/user/hooks'
 
@@ -94,10 +98,6 @@ export function CurrencySearch({
     }
   }, [isAddressSearch])
 
-  // const showETH: boolean = useMemo(() => {
-  //   const s = searchQuery.toLowerCase().trim()
-  //   return s === '' || s === 'e' || s === 'et' || s === 'eth' || s.includes('ava')
-  // }, [searchQuery])
 
   const showETH = true
 
@@ -109,12 +109,6 @@ export function CurrencySearch({
     // the search list should only show by default tokens that are in our pools
     return filterTokens([...availableTokensArray], searchQuery)
 
-    // return filterTokens(
-    //   chainId === ChainId.MAINNET || chainId === ChainId.RINKEBY
-    //     ? [...Object.values(allTokens)]
-    //     : [...availableTokensArray, ...Object.values(allTokens)],
-    //   searchQuery
-    // )
   }, [isAddressSearch, searchToken, searchQuery, chainId, availableTokensArray])
 
   const filteredSortedTokens: Token[] = useMemo(() => {
@@ -176,7 +170,7 @@ export function CurrencySearch({
 
   return (
     <Column style={{ width: '100%', flex: '1 1' }}>
-      <PaddedColumn gap="14px">
+      <PaddedColumnSearchModal gap="14px">
         <RowBetween>
           <Text fontWeight={500} fontSize={16}>
             Select a token
@@ -187,7 +181,7 @@ export function CurrencySearch({
           <CloseIcon onClick={onDismiss} />
         </RowBetween>
         {!isCrossChain && (
-          <SearchInput
+          <SearchInputSearchModal
             type="text"
             id="token-search-input"
             placeholder={t('tokenSearchPlaceholder')}
@@ -206,9 +200,9 @@ export function CurrencySearch({
           </Text>
           <SortButton ascending={invertSearchOrder} toggleSortOrder={() => setInvertSearchOrder(iso => !iso)} />
         </RowBetween>
-      </PaddedColumn>
+      </PaddedColumnSearchModal>
 
-      <Separator />
+      <SeparatorSearchModal />
       <div style={{ flex: '1' }}>
         <AutoSizer disableWidth>
           {({ height }) => (
@@ -227,16 +221,9 @@ export function CurrencySearch({
         <ListLoader />
       </div>
 
-      <Separator />
+      <SeparatorSearchModal />
       <Card>
         <RowBetween>
-          {/*<LinkStyledButton
-            style={{ fontWeight: 500, color: theme.text2, fontSize: 16 }}
-            onClick={onChangeList}
-            id="currency-search-change-list-button"
-          >
-            Manage Lists
-          </LinkStyledButton>*/}
         </RowBetween>
       </Card>
     </Column>

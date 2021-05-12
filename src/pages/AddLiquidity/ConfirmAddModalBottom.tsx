@@ -1,9 +1,7 @@
 import { Currency, CurrencyAmount, Fraction, Percent } from '@zeroexchange/sdk'
 import React from 'react'
 import { Text } from 'rebass'
-import { ButtonPrimary } from '../../components/Button'
-import { RowBetween, RowFixed } from '../../components/Row'
-import { CurrencyLogo } from '../../components'
+import { CurrencyLogo, ButtonPrimary, RowBetween, RowFixed } from '../../components'
 import { Field } from '../../state/mint/actions'
 import { TYPE } from '../../theme'
 

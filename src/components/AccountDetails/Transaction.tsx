@@ -6,15 +6,14 @@ import { useActiveWeb3React } from '../../hooks'
 import { getEtherscanLink } from '../../utils'
 import { ExternalLink } from '../../theme'
 import { useAllTransactions } from '../../state/transactions/hooks'
-import { RowFixed } from '../Row'
-import { Loader } from '../index'
+import { Loader, RowFixed } from '../../components'
 
 const TransactionWrapper = styled.div``
 
 const TransactionStatusText = styled.div`
   margin-right: 0.5rem;
   display: flex;
-  align-items: center;
+  align-items: center;s
   :hover {
     text-decoration: underline;
   }

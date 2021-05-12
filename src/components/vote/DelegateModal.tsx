@@ -1,19 +1,15 @@
 import React, { useState } from 'react'
 
-import { AutoColumn } from '../Column'
 import styled from 'styled-components'
-import { RowBetween } from '../Row'
 import { TYPE } from '../../theme'
 import { X } from 'react-feather'
-import { ButtonPrimary } from '../Button'
 import { useActiveWeb3React } from '../../hooks'
-import {AddressInputPanel, Modal} from '../index'
+import {AddressInputPanel, Modal, ButtonPrimary, AutoColumn, LoadingView, SubmittedView, RowBetween} from '../../components'
 import { isAddress } from 'ethers/lib/utils'
 import useENS from '../../hooks/useENS'
 import { useDelegateCallback } from '../../state/governance/hooks'
 import { useTokenBalance } from '../../state/wallet/hooks'
 import { UNI } from '../../constants'
-import { LoadingView, SubmittedView } from '../ModalViews'
 
 const ContentWrapper = styled(AutoColumn)`
   width: 100%;
@@ -38,7 +34,7 @@ interface VoteModalProps {
   title: string
 }
 
-export default function DelegateModal({ isOpen, onDismiss, title }: VoteModalProps) {
+export function DelegateModal({ isOpen, onDismiss, title }: VoteModalProps) {
   const { account, chainId } = useActiveWeb3React()
 
   // state for delegate input

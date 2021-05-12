@@ -5,13 +5,11 @@ import ArrowDropdown from './../../assets/svg/dropdown_arrow.svg'
 import { BlockchainLogo, CrossChainModal } from '../index'
 import { CHAIN_LABELS } from '../../constants'
 import { ChainId } from '@zeroexchange/sdk'
-import ClaimModal from '../claim/ClaimModal'
-import { Loader } from '../index'
-import PlainPopup from 'components/Popups/PlainPopup'
+import { ClaimModal } from 'components'
+import { Loader, PlainPopup } from '../../components'
 import { PopupContent } from 'state/application/actions'
 import { Text } from 'rebass'
-import { Web3Status } from '../index'
-import { YellowCard } from '../Card'
+import { Web3Status, YellowCard } from '../index'
 import ZeroLogo from '../../assets/images/zero-logo-text.png'
 import { useActiveWeb3React } from '../../hooks'
 import { useCrosschainState } from 'state/crosschain/hooks'
@@ -245,7 +243,7 @@ const NetworkSwitcher = () => {
     </div>
   )
 }
-const Header = () => {
+export const Header = () => {
   const { account, chainId } = useActiveWeb3React()
   const userEthBalance = useETHBalances(account ? [account] : [], chainId)?.[account ?? '']
   let label,
@@ -289,5 +287,3 @@ const Header = () => {
     </HeaderFrame>
   )
 }
-
-export default Header

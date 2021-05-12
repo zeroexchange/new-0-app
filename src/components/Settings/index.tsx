@@ -1,29 +1,24 @@
 import React, { useContext, useRef, useState } from 'react'
-import { RowBetween, RowFixed } from '../Row'
 import { X } from 'react-feather'
 import styled, { ThemeContext } from 'styled-components'
 import { useExpertModeManager, useUserSlippageTolerance, useUserTransactionTTL } from '../../state/user/hooks'
 import { useModalOpen, useToggleSettingsMenu } from '../../state/application/hooks'
 
 import { ApplicationModal } from '../../state/application/actions'
-import { AutoColumn } from '../Column'
-import { ButtonError } from '../Button'
-import { Modal, TransactionSettings } from '../index'
-import QuestionHelper from '../QuestionHelper'
+import {
+  Modal,
+  TransactionSettings,
+  ButtonError,
+  AutoColumn,
+  QuestionHelper,
+  RowBetween,
+  RowFixed
+} from '../../components'
 import SettingIcon from './SettingIcon'
 import { TYPE } from '../../theme'
 import { Text } from 'rebass'
 import Toggle from '../Toggle'
 import { useOnClickOutside } from '../../hooks/useOnClickOutside'
-
-// const StyledMenuIcon = styled(Settings)`
-//   height: 20px;
-//   width: 20px;
-
-//   > * {
-//     stroke: ${({ theme }) => theme.text1};
-//   }
-// `
 
 const StyledCloseIcon = styled(X)`
   height: 20px;

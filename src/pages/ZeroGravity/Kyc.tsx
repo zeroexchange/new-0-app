@@ -1,8 +1,7 @@
 import React, { useState } from 'react'
 
-import { ButtonOutlined } from 'components/Button'
 import { CgCheckO } from 'react-icons/cg'
-import { PageContainer } from 'components'
+import { PageContainer, ButtonOutlined } from 'components'
 import styled from 'styled-components'
 
 const Title = styled.h1`

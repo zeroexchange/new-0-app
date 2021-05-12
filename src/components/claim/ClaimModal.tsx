@@ -1,5 +1,4 @@
-import { AutoColumn, ColumnCenter } from '../Column'
-import { Break, CardBGImage, CardBGImageSmaller, CardNoise, CardSection, DataCard } from '../pools/styled'
+import { Break, CardBGImage, CardBGImageSmaller, CardNoise, CardSection, DataCard } from '../Pools/styled'
 import { CloseIcon, CustomLightSpinner, ExternalLink, TYPE, UniTokenAnimated } from '../../theme'
 import { JSBI, TokenAmount } from '@zeroexchange/sdk'
 import React, { useEffect, useState } from 'react'
@@ -7,10 +6,9 @@ import { useClaimCallback, useUserClaimData, useUserUnclaimedAmount } from '../.
 import { useModalOpen, useToggleSelfClaimModal } from '../../state/application/hooks'
 
 import { ApplicationModal } from '../../state/application/actions'
-import { ButtonPrimary } from '../Button'
 import Circle from '../../assets/images/blue-loader.svg'
-import { Confetti, Modal } from '../index'
-import { RowBetween } from '../Row'
+import { Confetti, Modal, ButtonPrimary, RowBetween} from '../../components'
+import {  AutoColumn, ColumnCenter } from '../../components/Column'
 import { Text } from 'rebass'
 import { getEtherscanLink } from '../../utils'
 import { isAddress } from 'ethers/lib/utils'
@@ -44,7 +42,7 @@ const ConfirmedIcon = styled(ColumnCenter)`
 const SOCKS_AMOUNT = 1000
 const USER_AMOUNT = 400
 
-export default function ClaimModal() {
+export function ClaimModal() {
   const isOpen = useModalOpen(ApplicationModal.SELF_CLAIM)
   const toggleClaimModal = useToggleSelfClaimModal()
 

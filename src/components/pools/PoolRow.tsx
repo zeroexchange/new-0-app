@@ -1,11 +1,11 @@
 import { AVAX, BNB, DEV, ETHER, JSBI, MATIC, TokenAmount } from '@zeroexchange/sdk'
-import { ButtonOutlined, ButtonPrimary } from '../Button'
 import React, { useCallback, useEffect, useState } from 'react'
 import { StyledInternalLink, TYPE } from '../../theme'
 
 import { BIG_INT_SECONDS_IN_WEEK } from '../../constants'
 import { CountUp } from 'use-count-up'
-import { DoubleCurrencyLogo } from '../index'
+import { ButtonOutlined, ButtonPrimary } from '../index'
+import DoubleCurrencyLogo from '../DoubleCurrencyLogo/DoubleCurrencyLogo'
 import DropdownArrow from '../../assets/svg/DropdownArrow'
 import { StakingInfo } from '../../state/stake/hooks'
 import { currencyId } from '../../utils/currencyId'
@@ -106,7 +106,7 @@ const DetailsBox = styled.div`
   justify-content: center;
   display: flex;
 `
-export default function PoolRow({
+export function PoolRow({
   stakingInfoTop,
   sendDataUp,
   harvestSent,

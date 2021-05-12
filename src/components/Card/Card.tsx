@@ -4,7 +4,7 @@ import { Box } from 'rebass/styled-components'
 import React from 'react'
 import styled from 'styled-components'
 
-const Card = styled(Box)<{ padding?: string; border?: string; borderRadius?: string }>`
+export const Card = styled(Box)<{ padding?: string; border?: string; borderRadius?: string }>`
   width: 100%;
   border-radius: 16px;
   padding: 1.25rem;
@@ -12,7 +12,6 @@ const Card = styled(Box)<{ padding?: string; border?: string; borderRadius?: str
   border: ${({ border }) => border};
   border-radius: ${({ borderRadius }) => borderRadius};
 `
-export default Card
 
 export const LightCard = styled(Card)`
   border: 1px solid ${({ theme }) => theme.bg2};

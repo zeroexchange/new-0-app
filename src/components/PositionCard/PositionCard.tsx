@@ -1,10 +1,16 @@
-import { AutoRow, RowBetween, RowFixed } from '../Row'
-import Card, { GreyCard, LightCard } from '../Card'
 import { JSBI, Pair, Percent, TokenAmount } from '@zeroexchange/sdk'
 import React, { useState } from 'react'
 import { TYPE } from '../../theme'
-import { AutoColumn } from '../Column'
-import { CurrencyLogo, DoubleCurrencyLogo } from '../index'
+import {
+  CurrencyLogo,
+  DoubleCurrencyLogo,
+  Card,
+  GreyCard,
+  LightCard,
+  AutoColumn,
+  AutoRow,
+  RowFixed
+} from '../../components'
 import { Dots } from '../swap/styleds'
 import { Text } from 'rebass'
 import { darken } from 'polished'
@@ -16,8 +22,14 @@ import { useColor } from '../../hooks/useColor'
 import { useTokenBalance } from '../../state/wallet/hooks'
 import { useTotalSupply } from '../../data/TotalSupply'
 
-export const FixedHeightRow = styled(RowBetween)`
+export const FixedHeightRow = styled.div`
   height: 24px;
+  justify-content: space-between;
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    &.is-mobile {
+      flex-direction: column;
+    }
+  `};
 `
 
 export const HoverCard = styled(Card)`
@@ -148,7 +160,7 @@ export function MinimalPositionCard({ pair, showUnwrapped = false, border }: Pos
   )
 }
 
-export default function FullPositionCard({ pair, border, stakedBalance }: PositionCardProps) {
+export function FullPositionCard({ pair, border, stakedBalance }: PositionCardProps) {
   const { account, chainId } = useActiveWeb3React()
 
   const currency0 = unwrappedToken(pair.token0, chainId)
@@ -220,22 +232,6 @@ export default function FullPositionCard({ pair, border, stakedBalance }: Positi
               {!currency0 || !currency1 ? <Dots>Loading</Dots> : `${currency0.symbol}/${currency1.symbol}`}
             </Text>
           </AutoRow>
-
-          {/*<RowFixed gap="8px">
-            <ButtonEmpty padding="6px 8px" borderRadius="12px" width="170px" onClick={() => setShowMore(!showMore)}>
-              {showMore ? (
-                <>
-                  Hide Stats
-                  <ChevronUp size="20" style={{ marginLeft: '10px' }} />
-                </>
-              ) : (
-                <>
-                  View Stats
-                  <ChevronDown size="20" style={{ marginLeft: '10px' }} />
-                </>
-              )}
-            </ButtonEmpty>
-          </RowFixed>*/}
         </FixedHeightRow>
 
         {showMore && (

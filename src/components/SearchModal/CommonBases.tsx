@@ -1,9 +1,5 @@
 import { AVAX, BNB, DEV, MATIC, ChainId, Currency, ETHER, Token, currencyEquals } from '@zeroexchange/sdk'
-
-import { AutoColumn } from '../Column'
-import { AutoRow } from '../Row'
-import { CurrencyLogo } from '../index'
-import QuestionHelper from '../QuestionHelper'
+import { CurrencyLogo, AutoColumn, QuestionHelper, AutoRow} from '../../components'
 import React from 'react'
 import { SUGGESTED_BASES } from '../../constants'
 import { Text } from 'rebass'
@@ -25,7 +21,7 @@ const BaseWrapper = styled.div<{ disable?: boolean }>`
   ${({ disable }) => disable && `opacity: .4`}
 `
 
-export default function CommonBases({
+export function CommonBases({
   chainId,
   onSelect,
   selectedCurrency

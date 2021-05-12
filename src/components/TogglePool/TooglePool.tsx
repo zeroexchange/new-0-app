@@ -1,5 +1,5 @@
 import React from 'react'
-import Row from 'components/Row'
+import { Row } from 'components'
 import styled from 'styled-components'
 
 const ToggleElement = styled.span<{ isActive?: boolean; isOnSwitch?: boolean }>`

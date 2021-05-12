@@ -1,9 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { useActivePopups } from '../../state/application/hooks'
-import { AutoColumn } from '../Column'
-import PopupItem from './PopupItem'
-import ClaimPopup from './ClaimPopup'
+import { AutoColumn, PopupItem, ClaimPopup } from '../../components'
 import { useURLWarningVisible } from '../../state/user/hooks'
 
 const MobilePopupWrapper = styled.div<{ height: string | number }>`
@@ -44,7 +42,7 @@ const FixedPopupColumn = styled(AutoColumn) <{ extraPadding: boolean }>`
   `};
 `
 
- const Popups = () => {
+ export const Popups = () => {
   // get all popups
   const activePopups = useActivePopups()
 
@@ -71,5 +69,3 @@ const FixedPopupColumn = styled(AutoColumn) <{ extraPadding: boolean }>`
     </>
   )
 }
-
-export default Popups

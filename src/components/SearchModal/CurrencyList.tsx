@@ -10,20 +10,15 @@ import {
   Token,
   currencyEquals
 } from '@zeroexchange/sdk'
-import { FadedSpan, MenuItem } from './styleds'
 import { LinkStyledButton, TYPE } from '../../theme'
 import React, { CSSProperties, MutableRefObject, useCallback, useMemo } from 'react'
 import { useAddUserToken, useRemoveUserAddedToken } from '../../state/user/hooks'
 
 import BigNumber from 'bignumber.js'
-import Column from '../Column'
-import { CurrencyLogo, Loader } from '../index'
+import { CurrencyLogo, Loader, Column, RowFixed, FadedSpanSearchModal, MenuItemSearchModal, MouseoverTooltip} from '../../components'
 import { FixedSizeList } from 'react-window'
-import { MouseoverTooltip } from '../Tooltip'
-import { RowFixed } from '../Row'
 import { Text } from 'rebass'
 import { WrappedTokenInfo } from '../../state/lists/hooks'
-import { isTokenOnList } from '../../utils'
 import { returnBalanceNum } from '../../constants'
 import styled from 'styled-components'
 import { useActiveWeb3React } from '../../hooks'
@@ -152,7 +147,7 @@ function CurrencyRow({
   }
 
   return (
-    <MenuItem
+    <MenuItemSearchModal
       style={{
         ...style,
         background: '#1f224a',
@@ -169,7 +164,7 @@ function CurrencyRow({
           {currency.symbol}
         </Text>
         {!isNative() && (
-          <FadedSpan>
+          <FadedSpanSearchModal>
             {customAdded ? (
               <TYPE.main fontWeight={500}>
                 Added by user
@@ -197,18 +192,18 @@ function CurrencyRow({
                 </LinkStyledButton>
               </TYPE.main>
             ) : null}
-          </FadedSpan>
+          </FadedSpanSearchModal>
         )}
       </Column>
       <TokenTags currency={currency} />
       <RowFixed style={{ justifySelf: 'flex-end' }}>
         {balance && hasABalance ? <Balance balance={balance} /> : account && !balance ? <Loader /> : 0}
       </RowFixed>
-    </MenuItem>
+    </MenuItemSearchModal>
   )
 }
 
-export default function CurrencyList({
+export function CurrencyList({
   height,
   currencies,
   selectedCurrency,

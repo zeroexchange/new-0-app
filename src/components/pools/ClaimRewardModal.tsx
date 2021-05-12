@@ -1,16 +1,12 @@
 import { CloseIcon, TYPE } from '../../theme'
-import { LoadingView, SubmittedView } from '../ModalViews'
 import React, { useState } from 'react'
-import { Modal } from '../index'
-import { AutoColumn } from '../Column'
-import { ButtonError } from '../Button'
-import { RowBetween } from '../Row'
+import { Modal, ButtonError, AutoColumn, SubmittedView, LoadingView, RowBetween} from '../../components'
 import { StakingInfo } from '../../state/stake/hooks'
+import { useStakingContract } from '../../hooks/useContract'
 import { TransactionResponse } from '@ethersproject/providers'
 import styled from 'styled-components'
 import toEllipsis from './../../utils/toEllipsis'
 import { useActiveWeb3React } from '../../hooks'
-import { useStakingContract } from '../../hooks/useContract'
 import { useTransactionAdder } from '../../state/transactions/hooks'
 
 const ContentWrapper = styled(AutoColumn)`
@@ -25,7 +21,7 @@ interface StakingModalProps {
   stakingInfo: StakingInfo
 }
 
-export default function ClaimRewardModal({ isOpen, onDismiss, stakingInfo }: StakingModalProps) {
+export function ClaimRewardModal({ isOpen, onDismiss, stakingInfo }: StakingModalProps) {
   const { account } = useActiveWeb3React()
 
   // monitor call to help UI loading state

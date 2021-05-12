@@ -2,8 +2,8 @@ import { AlertCircle, CheckCircle } from 'react-feather'
 import React, { useContext } from 'react'
 import styled, { ThemeContext } from 'styled-components'
 
-import { AutoColumn } from '../Column'
-import { AutoRow } from '../Row'
+import { AutoColumn } from '../../components'
+import { AutoRow } from '../../components/Row'
 import { ExternalLink } from '../../theme/components'
 import { TYPE } from '../../theme'
 import { getEtherscanLink } from '../../utils'
@@ -14,7 +14,7 @@ const RowNoFlex = styled(AutoRow)`
   flex-wrap: nowrap;
 `
 
-export default function TransactionPopup({
+export function TransactionPopup({
   hash,
   success,
   summary

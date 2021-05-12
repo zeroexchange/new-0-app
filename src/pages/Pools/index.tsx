@@ -1,28 +1,22 @@
 import { CustomLightSpinner, StyledInternalLink, TYPE } from '../../theme'
+import { useDispatch } from 'react-redux'
 import React, { useEffect, useMemo, useState } from 'react'
 import { STAKING_REWARDS_INFO, useStakingInfo } from '../../state/stake/hooks'
 import { setOptions, sortPoolsItems } from 'utils/sortPoolsPage'
 import styled, { keyframes } from 'styled-components'
-import { useDispatch } from 'react-redux'
-
-import { ButtonOutlined } from '../../components/Button'
 import Circle from '../../assets/images/blue-loader.svg'
-import ClaimRewardModal from '../../components/pools/ClaimRewardModal'
 import DropdownArrow from './../../assets/svg/DropdownArrow'
-import PoolCard from '../../components/pools/PoolCard'
-import PoolControls from '../../components/pools/PoolControls'
-import PoolRow from '../../components/pools/PoolRow'
 import ZeroIcon from '../../assets/svg/zero_icon.svg'
 import { getAllPoolsAPY } from 'api'
 import { searchItems } from 'utils/searchItems'
 import { useActiveWeb3React } from '../../hooks'
 import { useWalletModalToggle } from '../../state/application/hooks'
-
 import { AppDispatch } from '../../state'
 import { setAprData } from './../../state/pools/actions'
 import { usePoolsState } from './../../state/pools/hooks'
 import { AprObjectProps } from './../../state/pools/actions'
-import { NoWalletConnected, PageContainer } from '../../components'
+
+import { NoWalletConnected, PageContainer, ButtonOutlined, ClaimRewardModal, PoolCard, PoolControls, PoolRow } from '../../components'
 const numeral = require('numeral')
 
 const PageWrapper = styled.div`

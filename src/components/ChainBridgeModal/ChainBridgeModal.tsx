@@ -1,8 +1,7 @@
 import ChainBridgeItem from './ChainBridgeItem'
 import { CloseIcon } from '../../theme/components'
-import { Modal } from '../index'
+import { Modal, RowBetween } from '../../components'
 import React from 'react'
-import { RowBetween } from '../Row'
 import styled from 'styled-components'
 import { useCrosschainState } from '../../state/crosschain/hooks'
 
