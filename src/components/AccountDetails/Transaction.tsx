@@ -7,7 +7,7 @@ import { getEtherscanLink } from '../../utils'
 import { ExternalLink } from '../../theme'
 import { useAllTransactions } from '../../state/transactions/hooks'
 import { RowFixed } from '../Row'
-import Loader from '../Loader'
+import { Loader } from '../index'
 
 const TransactionWrapper = styled.div``
 

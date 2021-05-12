@@ -7,7 +7,6 @@ import { ButtonOutlined } from '../../components/Button'
 import Circle from '../../assets/images/blue-loader.svg'
 import ClaimRewardModal from '../../components/pools/ClaimRewardModal'
 import DropdownArrow from './../../assets/svg/DropdownArrow'
-import PageContainer from './../../components/PageContainer'
 import PoolCard from '../../components/pools/PoolCard'
 import PoolControls from '../../components/pools/PoolControls'
 import PoolRow from '../../components/pools/PoolRow'
@@ -22,7 +21,7 @@ import { useActiveWeb3React } from '../../hooks'
 import { useWalletModalToggle } from '../../state/application/hooks'
 import { searchItems } from 'utils/searchItems'
 import { setOptions, sortPoolsItems } from 'utils/sortPoolsPage'
-import { NoWalletConnected } from '../../components/NoWalletConnected'
+import { NoWalletConnected, PageContainer } from '../../components'
 const numeral = require('numeral')
 
 const PageWrapper = styled.div`

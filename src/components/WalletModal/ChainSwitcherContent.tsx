@@ -5,40 +5,36 @@ import { CrosschainChain, setTargetChain } from 'state/crosschain/actions'
 import { useCrosschainState } from 'state/crosschain/hooks'
 import { useDispatch } from 'react-redux'
 import { AppDispatch } from 'state'
-import CrossChainModal from 'components/CrossChainModal'
+import { CrossChainModal } from 'components'
 
-export default function ChainSwitcherContent({
-}: {
-}) {
-    const { chainId } = useActiveWeb3React()
-    const dispatch = useDispatch<AppDispatch>()
-    const {
-        availableChains: allChains
-    } = useCrosschainState()
-    const [crossChainModalOpen, setShowCrossChainModal] = useState(true)
-    const hideCrossChainModal = () => {
-        setShowCrossChainModal(false)
-    }
-    
-    const onSelectTransferChain = (chain: CrosschainChain) => {
-        dispatch(
-            setTargetChain({
-                chain
-            })
-        )
-    }
+export default function ChainSwitcherContent({}: {}) {
+  const { chainId } = useActiveWeb3React()
+  const dispatch = useDispatch<AppDispatch>()
+  const { availableChains: allChains } = useCrosschainState()
+  const [crossChainModalOpen, setShowCrossChainModal] = useState(true)
+  const hideCrossChainModal = () => {
+    setShowCrossChainModal(false)
+  }
 
-    const availableChains = useMemo(() => {
-        return allChains.filter(i => i.name !== (chainId ? CHAIN_LABELS[chainId] : 'Ethereum'))
-    }, [allChains])
-
-    return (
-        <CrossChainModal
-            isOpen={crossChainModalOpen}
-            onDismiss={hideCrossChainModal}
-            supportedChains={availableChains}
-            selectTransferChain={onSelectTransferChain}
-            activeChain={chainId ? CHAIN_LABELS[chainId] : 'Ethereum'}
-            />
+  const onSelectTransferChain = (chain: CrosschainChain) => {
+    dispatch(
+      setTargetChain({
+        chain
+      })
     )
+  }
+
+  const availableChains = useMemo(() => {
+    return allChains.filter(i => i.name !== (chainId ? CHAIN_LABELS[chainId] : 'Ethereum'))
+  }, [allChains])
+
+  return (
+    <CrossChainModal
+      isOpen={crossChainModalOpen}
+      onDismiss={hideCrossChainModal}
+      supportedChains={availableChains}
+      selectTransferChain={onSelectTransferChain}
+      activeChain={chainId ? CHAIN_LABELS[chainId] : 'Ethereum'}
+    />
+  )
 }

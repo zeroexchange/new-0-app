@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import Modal from '../Modal'
+import { Modal } from '../index'
 import { AutoColumn } from '../Column'
 import styled from 'styled-components'
 import { RowBetween } from '../Row'

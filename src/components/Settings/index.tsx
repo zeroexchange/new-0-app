@@ -8,13 +8,12 @@ import { useModalOpen, useToggleSettingsMenu } from '../../state/application/hoo
 import { ApplicationModal } from '../../state/application/actions'
 import { AutoColumn } from '../Column'
 import { ButtonError } from '../Button'
-import Modal from '../Modal'
+import { Modal, TransactionSettings } from '../index'
 import QuestionHelper from '../QuestionHelper'
 import SettingIcon from './SettingIcon'
 import { TYPE } from '../../theme'
 import { Text } from 'rebass'
 import Toggle from '../Toggle'
-import TransactionSettings from '../TransactionSettings'
 import { useOnClickOutside } from '../../hooks/useOnClickOutside'
 
 // const StyledMenuIcon = styled(Settings)`
@@ -80,7 +79,7 @@ const StyledMenu = styled.div`
 
 const MenuFlyout = styled.span`
   min-width: 21.125rem;
-  background: rgba(47,53,115,0.72);
+  background: rgba(47, 53, 115, 0.72);
   backdrop-filter: blur(100px);
   border-radius: 44px;
   padding: 10px;
@@ -176,7 +175,7 @@ export default function SettingsTab() {
         </ModalContentWrapper>
       </Modal>
       <StyledMenuButton onClick={toggle} id="open-settings-dialog-button">
-      <SettingIcon/>
+        <SettingIcon />
         {expertMode ? (
           <EmojiWrapper>
             <span role="img" aria-label="wizard-icon">

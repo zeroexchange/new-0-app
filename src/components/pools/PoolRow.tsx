@@ -5,7 +5,7 @@ import { StyledInternalLink, TYPE } from '../../theme'
 
 import { BIG_INT_SECONDS_IN_WEEK } from '../../constants'
 import { CountUp } from 'use-count-up'
-import DoubleCurrencyLogo from '../DoubleLogo'
+import { DoubleCurrencyLogo } from '../index'
 import DropdownArrow from '../../assets/svg/DropdownArrow'
 import { StakingInfo } from '../../state/stake/hooks'
 import { currencyId } from '../../utils/currencyId'
@@ -192,7 +192,8 @@ export default function PoolRow({
 
   const symbol = WETH?.symbol
 
-  const countUpAmount = stakingInfo?.earnedAmount?.toFixed(Math.min(6, stakingInfo?.earnedAmount?.currency.decimals)) ?? '0'
+  const countUpAmount =
+    stakingInfo?.earnedAmount?.toFixed(Math.min(6, stakingInfo?.earnedAmount?.currency.decimals)) ?? '0'
   const countUpAmountPrevious = usePrevious(countUpAmount) ?? '0'
 
   useEffect(() => {
@@ -206,9 +207,7 @@ export default function PoolRow({
       : `${valueOfTotalStakedAmountInWETH?.toSignificant(4)}`
 
     // this prevents infinite loops / re-renders
-    if (harvestSent === readyToHarvest &&
-      earningsSent === singleWeeklyEarnings &&
-      liquiditySent === liquidityValue) {
+    if (harvestSent === readyToHarvest && earningsSent === singleWeeklyEarnings && liquiditySent === liquidityValue) {
       return
     }
 
@@ -228,7 +227,6 @@ export default function PoolRow({
     valueOfTotalStakedAmountInUSDC,
     valueOfTotalStakedAmountInWETH
   ])
-
 
   if (stakingInfoTop.isHidden) {
     return <></>
@@ -255,7 +253,7 @@ export default function PoolRow({
           <TYPE.main fontWeight={500} fontSize={15} style={{ textAlign: 'center' }}>
             {stakingInfo?.active
               ? stakingInfo?.totalRewardRate?.multiply(BIG_INT_SECONDS_IN_WEEK)?.toFixed(0, { groupSeparator: ',' }) ??
-              '-'
+                '-'
               : '0'}
             {` ${stakingInfo?.rewardsTokenSymbol ?? 'ZERO'} / week`}
           </TYPE.main>
@@ -287,7 +285,7 @@ export default function PoolRow({
         </Cell>
         <Cell></Cell>
       </Wrapper>
-      { showDetails && (
+      {showDetails && (
         <tr>
           <td colSpan={8}>
             <Details>
