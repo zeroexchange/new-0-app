@@ -1,3 +1,5 @@
+import { CloseIcon, TYPE } from '../../theme'
+import { LoadingView, SubmittedView } from '../ModalViews'
 import React, { useState } from 'react'
 import { Modal, ButtonError, AutoColumn, SubmittedView, LoadingView, RowBetween} from '../../components'
 import styled from 'styled-components'
@@ -5,9 +7,11 @@ import { TYPE, CloseIcon } from '../../theme'
 import { StakingInfo } from '../../state/stake/hooks'
 import { useStakingContract } from '../../hooks/useContract'
 import { TransactionResponse } from '@ethersproject/providers'
-import { useTransactionAdder } from '../../state/transactions/hooks'
-import { useActiveWeb3React } from '../../hooks'
+import styled from 'styled-components'
 import toEllipsis from './../../utils/toEllipsis'
+import { useActiveWeb3React } from '../../hooks'
+import { useStakingContract } from '../../hooks/useContract'
+import { useTransactionAdder } from '../../state/transactions/hooks'
 
 const ContentWrapper = styled(AutoColumn)`
   width: 100%;
@@ -81,7 +85,7 @@ export function ClaimRewardModal({ isOpen, onDismiss, stakingInfo }: StakingModa
                     : 0
                 )}
               </TYPE.body>
-              <TYPE.body>Unclaimed ZERO</TYPE.body>
+              <TYPE.body>Unclaimed {stakingInfo?.rewardsTokenSymbol || 'ZERO'}</TYPE.body>
             </AutoColumn>
           )}
           <TYPE.subHeader style={{ textAlign: 'center' }}>
@@ -95,7 +99,7 @@ export function ClaimRewardModal({ isOpen, onDismiss, stakingInfo }: StakingModa
       {attempting && !hash && (
         <LoadingView onDismiss={wrappedOnDismiss}>
           <AutoColumn gap="12px" justify={'center'}>
-            <TYPE.body fontSize={20}>Claiming {stakingInfo?.earnedAmount?.toSignificant(6)} ZERO</TYPE.body>
+            <TYPE.body fontSize={20}>Claiming {stakingInfo?.earnedAmount?.toSignificant(6)} {stakingInfo?.rewardsTokenSymbol || 'ZERO'}</TYPE.body>
           </AutoColumn>
         </LoadingView>
       )}
@@ -103,7 +107,7 @@ export function ClaimRewardModal({ isOpen, onDismiss, stakingInfo }: StakingModa
         <SubmittedView onDismiss={wrappedOnDismiss} hash={hash}>
           <AutoColumn gap="12px" justify={'center'}>
             <TYPE.largeHeader>Transaction Submitted</TYPE.largeHeader>
-            <TYPE.body fontSize={20}>Claimed ZERO!</TYPE.body>
+            <TYPE.body fontSize={20}>Claimed {stakingInfo?.rewardsTokenSymbol || 'ZERO'}!</TYPE.body>
           </AutoColumn>
         </SubmittedView>
       )}
