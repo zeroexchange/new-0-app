@@ -9,10 +9,7 @@ import { StakingInfo, useDerivedStakeInfo } from '../../state/stake/hooks'
 import { usePairContract, useStakingContract } from '../../hooks/useContract'
 
 import { AutoColumn } from '../Column'
-import CurrencyInputPanel from '../CurrencyInputPanel'
-import DoubleCurrencyLogo from '../DoubleLogo'
-import Modal from '../Modal'
-import ProgressCircles from '../ProgressSteps'
+import { CurrencyInputPanel, DoubleCurrencyLogo, Modal, ProgressCircles } from '../index'
 import { TransactionResponse } from '@ethersproject/providers'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
 import { splitSignature } from 'ethers/lib/utils'
@@ -204,7 +201,9 @@ export default function StakingModal({ isOpen, onDismiss, stakingInfo, userLiqui
             <CloseIcon onClick={wrappedOnDismiss} />
           </RowBetween>
           <RowCenter>
-            <TYPE.mediumHeader>Deposit {dummyPair?.token0.symbol} - {dummyPair?.token1.symbol}</TYPE.mediumHeader>
+            <TYPE.mediumHeader>
+              Deposit {dummyPair?.token0.symbol} - {dummyPair?.token1.symbol}
+            </TYPE.mediumHeader>
           </RowCenter>
           <CurrencyInputPanel
             value={typedValue}

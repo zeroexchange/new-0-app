@@ -1,10 +1,8 @@
 import CardMode from '../../assets/svg/CardMode'
 import ListMode from '../../assets/svg/ListMode'
 import React from 'react'
-import SearchBar from '../../components/SearchBar'
-import Select from '../../components/Select'
+import { SearchBar, Select, TogglePool } from '../../components'
 import { TYPE } from '../../theme'
-import TogglePool from '../../components/TooglePool'
 import styled from 'styled-components'
 
 const Controls = styled.div`

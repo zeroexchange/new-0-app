@@ -2,7 +2,7 @@ import { AVAX, BNB, DEV, MATIC, ChainId, Currency, ETHER, Token, currencyEquals 
 
 import { AutoColumn } from '../Column'
 import { AutoRow } from '../Row'
-import CurrencyLogo from '../CurrencyLogo'
+import { CurrencyLogo } from '../index'
 import QuestionHelper from '../QuestionHelper'
 import React from 'react'
 import { SUGGESTED_BASES } from '../../constants'

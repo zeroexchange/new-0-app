@@ -12,7 +12,7 @@ import CurrencyList from './CurrencyList'
 import { DEFAULT_TOKEN_LIST as DEFAULT_TOKEN_LIST_MAINNET } from '../../constants/DefaultTokenList'
 import { DEFAULT_TOKEN_LIST as DEFAULT_TOKEN_LIST_TESTNET } from '../../constants/DefaultTokenListTestnet'
 import { FixedSizeList } from 'react-window'
-import ListLoader from '../ListLoader';
+import { ListLoader } from '../index'
 import QuestionHelper from '../QuestionHelper'
 import { RowBetween } from '../Row'
 import SortButton from './SortButton'
@@ -108,7 +108,7 @@ export function CurrencySearch({
     if (isAddressSearch) return searchToken ? [searchToken] : []
 
     // the search list should only show by default tokens that are in our pools
-    return filterTokens([...availableTokensArray], searchQuery);
+    return filterTokens([...availableTokensArray], searchQuery)
 
     // return filterTokens(
     //   chainId === ChainId.MAINNET || chainId === ChainId.RINKEBY

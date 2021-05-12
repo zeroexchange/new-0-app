@@ -1,8 +1,6 @@
-// import BlockchainLogo from '../BlockchainLogo';
-import { ChevronsRight, RefreshCcw } from 'react-feather'
-
 import React from 'react'
 import styled from 'styled-components'
+import { ChevronsRight, RefreshCcw } from 'react-feather'
 
 const TabsContainer = styled.div`
   display: flex;

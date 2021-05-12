@@ -7,7 +7,7 @@ import { Web3ReactProvider, createWeb3ReactRoot } from '@web3-react/core'
 
 import App from './pages/App'
 import ApplicationUpdater from './state/application/updater'
-import Blocklist from './components/Blocklist'
+import { BlockList } from './components'
 import { HashRouter } from 'react-router-dom'
 import ListsUpdater from './state/lists/updater'
 import MulticallUpdater from './state/multicall/updater'
@@ -46,7 +46,7 @@ ReactDOM.render(
     <FixedGlobalStyle />
     <Web3ReactProvider getLibrary={getLibrary}>
       <Web3ProviderNetwork getLibrary={getLibrary}>
-        <Blocklist>
+        <BlockList>
           <Provider store={store}>
             <Updaters />
             <ThemeProvider>
@@ -56,7 +56,7 @@ ReactDOM.render(
               </HashRouter>
             </ThemeProvider>
           </Provider>
-        </Blocklist>
+        </BlockList>
       </Web3ProviderNetwork>
     </Web3ReactProvider>
   </StrictMode>,

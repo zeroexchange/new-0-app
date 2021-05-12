@@ -1,13 +1,13 @@
-import { ButtonOutlined } from '../../components/Button'
-import React, { useMemo, useState } from 'react';
 
-import { ExternalLink, Title } from '../../theme'
-import { IDO_LIST } from '../../constants/idos';
-import IdoRow from '../../components/ZeroGravity/IdoRow';
-import PageContainer from '../../components/PageContainer'
-import Toggle from '../../components/Toggle';
+import React, { useMemo, useState } from 'react'
 import styled from 'styled-components';
 import moment from 'moment';
+
+import { ButtonOutlined } from '../../components/Button'
+import { ExternalLink, Title } from '../../theme'
+import { IDO_LIST } from '../../constants/idos';
+import Toggle from '../../components/Toggle';
+import { PageContainer, IdoRow } from '../../components'
 
 const StyledExternalLink = styled(ExternalLink)`
   text-decoration: none !important;
@@ -25,7 +25,8 @@ const SubTitle = styled.h3`
   margin-top: 20px;
   margin-bottom: 20px;
   font-size: 1.5rem;
-  margin-left: auto; margin-right: auto;
+  margin-left: auto;
+  margin-right: auto;
   ${({ theme }) => theme.mediaWidth.upToSmall`
   font-size: 1rem;
 `};
@@ -75,26 +76,25 @@ const HeaderSection = styled.div<{ width?: any }>`
   width: 120px;
   padding-left: 10px;
   padding-right: 10px;
-  font-size: .8rem;
+  font-size: 0.8rem;
   font-weight: bold;
-  color: #A7B1F4;
+  color: #a7b1f4;
 `
 
 export default function ZeroGravityList() {
+  const [showActive, setShowActive] = useState(true)
 
-  const [showActive, setShowActive] = useState(true);
-
-  const IdoListComplete = IDO_LIST; // fetch this list from the server
+  const IdoListComplete = IDO_LIST // fetch this list from the server
 
   const IdoListFiltered = useMemo(() => {
     if (showActive) {
-      return IdoListComplete.filter(item => moment(item?.endDate??'').isAfter(moment.now()))
+      return IdoListComplete.filter(item => moment(item?.endDate ?? '').isAfter(moment.now()))
     }
-    return IdoListComplete.filter(item => moment(item?.endDate??'').isBefore(moment.now()))
+    return IdoListComplete.filter(item => moment(item?.endDate ?? '').isBefore(moment.now()))
   }, [showActive, IdoListComplete])
 
   const onHandleToggleActive = () => {
-    setShowActive(!showActive);
+    setShowActive(!showActive)
   }
 
   return (
@@ -109,7 +109,7 @@ export default function ZeroGravityList() {
             toggle={onHandleToggleActive}
             activeText="Live"
             inActiveText="Finished"
-            width="186px" 
+            width="186px"
           />
           <StyledExternalLink href={`https://0.exchange/partners`}>
             <ButtonOutlined className="launch-button green">Launch My Token</ButtonOutlined>
@@ -118,34 +118,19 @@ export default function ZeroGravityList() {
 
         <ListContainer>
           <HeadersWrap>
-            <div style={{ marginRight: 'auto', maxWidth: '240px'}}></div>
-            <HeaderSection>
-              Tier
-            </HeaderSection>
-            <HeaderSection>
-              Launching
-            </HeaderSection>
-            <HeaderSection>
-              Total Raise
-            </HeaderSection>
-            <HeaderSection>
-              Min Alloc.
-            </HeaderSection>
-            <HeaderSection>
-              Max Alloc.
-            </HeaderSection>
-            <HeaderSection style={{ width: '152px'}}>
-            </HeaderSection>
+            <div style={{ marginRight: 'auto', maxWidth: '240px' }}></div>
+            <HeaderSection>Tier</HeaderSection>
+            <HeaderSection>Launching</HeaderSection>
+            <HeaderSection>Total Raise</HeaderSection>
+            <HeaderSection>Min Alloc.</HeaderSection>
+            <HeaderSection>Max Alloc.</HeaderSection>
+            <HeaderSection style={{ width: '152px' }}></HeaderSection>
           </HeadersWrap>
           {IdoListFiltered?.map((idoInfo: any) => {
-            return (
-              <IdoRow
-                idoInfo={idoInfo}
-              />
-            )
+            return <IdoRow idoInfo={idoInfo} />
           })}
         </ListContainer>
-
       </PageContainer>
-    </>)
+    </>
+  )
 }

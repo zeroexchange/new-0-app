@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react'
 import { StyledInternalLink, TYPE } from '../../theme'
 
 import { CountUp } from 'use-count-up'
-import DoubleCurrencyLogo from '../DoubleLogo'
+import { DoubleCurrencyLogo } from '../index'
 import SettingIcon from '../Settings/SettingIcon'
 import { StakingInfo } from '../../state/stake/hooks'
 import { currencyId } from '../../utils/currencyId'
@@ -178,7 +178,8 @@ export default function PoolCard({
     )
   }
 
-  const countUpAmount = stakingInfo?.earnedAmount?.toFixed(Math.min(6, stakingInfo?.earnedAmount?.currency.decimals)) ?? '0'
+  const countUpAmount =
+    stakingInfo?.earnedAmount?.toFixed(Math.min(6, stakingInfo?.earnedAmount?.currency.decimals)) ?? '0'
   const countUpAmountPrevious = usePrevious(countUpAmount) ?? '0'
 
   // get the USD value of staked WETH
@@ -191,7 +192,9 @@ export default function PoolCard({
   useEffect(() => {
     const contract = stakingInfo?.stakingRewardAddress
     const singleWeeklyEarnings = stakingInfo?.active
-      ? stakingInfo?.rewardRate?.multiply(BIG_INT_SECONDS_IN_WEEK)?.toSignificant(Math.min(4, stakingInfo?.earnedAmount?.currency.decimals), { groupSeparator: ',' }) ?? '-'
+      ? stakingInfo?.rewardRate
+          ?.multiply(BIG_INT_SECONDS_IN_WEEK)
+          ?.toSignificant(Math.min(4, stakingInfo?.earnedAmount?.currency.decimals), { groupSeparator: ',' }) ?? '-'
       : '0'
     const readyToHarvest = countUpAmount
     const liquidityValue = valueOfTotalStakedAmountInUSDC
@@ -199,10 +202,8 @@ export default function PoolCard({
       : `${valueOfTotalStakedAmountInWETH?.toSignificant(4)}`
 
     // this prevents infinite loops / re-renders
-    if (harvestSent === readyToHarvest &&
-        earningsSent === singleWeeklyEarnings &&
-        liquiditySent === liquidityValue) {
-      return;
+    if (harvestSent === readyToHarvest && earningsSent === singleWeeklyEarnings && liquiditySent === liquidityValue) {
+      return
     }
 
     if (
@@ -253,7 +254,7 @@ export default function PoolCard({
           </TYPE.main>
           <TYPE.main fontWeight={500} fontSize={15}>
             {stakingInfo?.active
-              ? stakingInfo?.totalRewardRate?.multiply(BIG_INT_SECONDS_IN_WEEK)?.toFixed( 0, { groupSeparator: ',' }) ??
+              ? stakingInfo?.totalRewardRate?.multiply(BIG_INT_SECONDS_IN_WEEK)?.toFixed(0, { groupSeparator: ',' }) ??
                 '-'
               : '0'}
             {` ${stakingInfo?.rewardsTokenSymbol ?? 'ZERO'} / week`}
@@ -265,7 +266,7 @@ export default function PoolCard({
           </TYPE.main>
           <TYPE.main fontWeight={500} fontSize={15}>
             {valueOfTotalStakedAmountInUSDC
-              ? `$${valueOfTotalStakedAmountInUSDC.toFixed( 0, { groupSeparator: ',' })}`
+              ? `$${valueOfTotalStakedAmountInUSDC.toFixed(0, { groupSeparator: ',' })}`
               : `${valueOfTotalStakedAmountInWETH?.toSignificant(4, { groupSeparator: ',' }) ?? '-'} ${symbol}`}
           </TYPE.main>
         </Row>

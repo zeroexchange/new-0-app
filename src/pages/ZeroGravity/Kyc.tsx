@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'
+import styled from 'styled-components';
+import { CgCheckO } from 'react-icons/cg';
 
 import { ButtonOutlined } from 'components/Button'
-import { CgCheckO } from 'react-icons/cg';
-import PageContainer from 'components/PageContainer';
-import styled from 'styled-components';
 import { Title } from '../../theme'
+import { PageContainer } from 'components'
 
 const BgWrapper = styled.div`
   background: rgba(47, 53, 115, 0.32);
@@ -25,14 +25,12 @@ const HeadingRow = styled.div`
   align-items: center;
   justify-content: space-between;
 `
-const Heading = styled.h2`
-
-`
+const Heading = styled.h2``
 
 const Disclaimer = styled.div`
-  color: rgba(255,255,255,.85);
-  font-size: .9rem;
-  background: rgba(0,0,0,.25);
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.9rem;
+  background: rgba(0, 0, 0, 0.25);
   border-radius: 44px;
   padding: 2rem;
   margin-bottom: 2rem;
@@ -57,7 +55,7 @@ const Row = styled.div`
     margin-bottom: 10px;
   }
   input {
-    color: #FFFFFF;
+    color: #ffffff;
     position: relative;
     font-weight: 600;
     outline: none;
@@ -71,85 +69,90 @@ const Row = styled.div`
     overflow: hidden;
     text-overflow: ellipsis;
     -webkit-appearance: textfield;
-    background: rgba(0,0,0,.25);
+    background: rgba(0, 0, 0, 0.25);
     height: 48px;
   }
 `
 export default function ZeroGravityKyc() {
+  const [formSent, setFormSent] = useState(false)
 
-  const [formSent, setFormSent] = useState(false);
-
-  const [emailState, setEmailState] = useState('');
+  const [emailState, setEmailState] = useState('')
   const handleEmailState = (input: any) => {
-    const val = input.target.value;
-    setEmailState(val);
+    const val = input.target.value
+    setEmailState(val)
   }
 
-  const [walletState, setWalletState] = useState('');
+  const [walletState, setWalletState] = useState('')
   const handleWalletState = (input: any) => {
-    const val = input.target.value;
-    setWalletState(val);
+    const val = input.target.value
+    setWalletState(val)
   }
 
-  const emailURL = 'https://prod-44.eastus2.logic.azure.com:443/workflows/1756218e802e427aafde6c1b01ea9913/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=mhkGIWPGB6EVx4Sw-yMp0Z2b5FfCqEApXFD73J0nb7E'
+  const emailURL =
+    'https://prod-44.eastus2.logic.azure.com:443/workflows/1756218e802e427aafde6c1b01ea9913/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=mhkGIWPGB6EVx4Sw-yMp0Z2b5FfCqEApXFD73J0nb7E'
   const handleSubmit = () => {
     fetch(emailURL, {
       method: 'POST',
       headers: { 'content-type': 'application/json', accept: 'application/json' },
       body: JSON.stringify({ contactEmail: emailState, contactName: walletState })
-    }).then((res) => {
-      setFormSent(true);
-    }).catch(() => {
-      setFormSent(true);
     })
+      .then(res => {
+        setFormSent(true)
+      })
+      .catch(() => {
+        setFormSent(true)
+      })
   }
 
   return (
     <>
       <Title>KYC</Title>
       <PageContainer>
-        <div style={{ maxWidth: '500px', width: '100%', margin: 'auto'}}>
+        <div style={{ maxWidth: '500px', width: '100%', margin: 'auto' }}>
           <Disclaimer>
-            <p>Fill in the information below, and a KYC link will be sent to your email within the hour. Once KYC is completed, you can proceed with your allocation for Wasder.</p>
+            <p>
+              Fill in the information below, and a KYC link will be sent to your email within the hour. Once KYC is
+              completed, you can proceed with your allocation for Wasder.
+            </p>
           </Disclaimer>
           <BgWrapper>
-            {!formSent && <>
-              <HeadingRow>
-                <Heading>
-                  Enter your info:
-                </Heading>
-              </HeadingRow>
-              <Row>
-                <h6>Email:</h6>
-                <input
-                  className="input"
-                  type="text"
-                  placeholder="Email"
-                  onChange={handleEmailState}
-                  value={emailState}
-                />
-              </Row>
-              <Row>
-                <h6>Wallet Address:</h6>
-                <input
-                  className="input"
-                  type="text"
-                  placeholder="Wallet Address"
-                  onChange={handleWalletState}
-                  value={walletState}
-                />
-              </Row>
-              <Row style={{ marginTop: '2rem'}}>
-                <ButtonOutlined onClick={handleSubmit}>Submit</ButtonOutlined>
-              </Row>
-            </>}
+            {!formSent && (
+              <>
+                <HeadingRow>
+                  <Heading>Enter your info:</Heading>
+                </HeadingRow>
+                <Row>
+                  <h6>Email:</h6>
+                  <input
+                    className="input"
+                    type="text"
+                    placeholder="Email"
+                    onChange={handleEmailState}
+                    value={emailState}
+                  />
+                </Row>
+                <Row>
+                  <h6>Wallet Address:</h6>
+                  <input
+                    className="input"
+                    type="text"
+                    placeholder="Wallet Address"
+                    onChange={handleWalletState}
+                    value={walletState}
+                  />
+                </Row>
+                <Row style={{ marginTop: '2rem' }}>
+                  <ButtonOutlined onClick={handleSubmit}>Submit</ButtonOutlined>
+                </Row>
+              </>
+            )}
 
-            {formSent &&
+            {formSent && (
               <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
                 <CgCheckO style={{ fontSize: '4rem', marginTop: '2rem' }} />
                 <H3>Thank you for submitting, we'll be in touch.</H3>
               </div>
-            }
+            )}
           </BgWrapper>
         </div>
       </PageContainer>

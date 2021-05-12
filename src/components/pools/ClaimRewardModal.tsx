@@ -1,10 +1,9 @@
 import { CloseIcon, TYPE } from '../../theme'
 import { LoadingView, SubmittedView } from '../ModalViews'
 import React, { useState } from 'react'
-
+import { Modal } from '../index'
 import { AutoColumn } from '../Column'
 import { ButtonError } from '../Button'
-import Modal from '../Modal'
 import { RowBetween } from '../Row'
 import { StakingInfo } from '../../state/stake/hooks'
 import { TransactionResponse } from '@ethersproject/providers'

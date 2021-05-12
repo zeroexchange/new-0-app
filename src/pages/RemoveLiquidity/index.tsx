@@ -1,5 +1,11 @@
 import { AVAX, BNB, ChainId, Currency, DEV, ETHER, MATIC, Percent, WETH, currencyEquals } from '@zeroexchange/sdk'
-import { AVAX_ROUTER_ADDRESS, ETH_ROUTER_ADDRESS, MOONBASE_ROUTER_ADDRESS, MUMBAI_ROUTER_ADDRESS, SMART_CHAIN_ROUTER_ADDRESS } from '../../constants'
+import {
+  AVAX_ROUTER_ADDRESS,
+  ETH_ROUTER_ADDRESS,
+  MOONBASE_ROUTER_ADDRESS,
+  MUMBAI_ROUTER_ADDRESS,
+  SMART_CHAIN_ROUTER_ADDRESS
+} from '../../constants'
 import { ApprovalState, useApproveCallback } from '../../hooks/useApproveCallback'
 import { ArrowDown, Plus } from 'react-feather'
 import { AutoColumn, ColumnCenter } from '../../components/Column'
@@ -15,17 +21,13 @@ import styled, { keyframes } from 'styled-components'
 import { useBurnState, useDerivedBurnInfo } from '../../state/burn/hooks'
 
 import { AddRemoveTabs } from '../../components/NavigationTabs'
-import AppBody from '../AppBody'
 import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
-import CurrencyInputPanel from '../../components/CurrencyInputPanel'
-import CurrencyLogo from '../../components/CurrencyLogo'
+import { CurrencyInputPanel, CurrencyLogo, DoubleCurrencyLogo, Slider} from '../../components'
 import { Dots } from '../../components/swap/styleds'
-import DoubleCurrencyLogo from '../../components/DoubleLogo'
 import { Field } from '../../state/burn/actions'
 import { MinimalPositionCard } from '../../components/PositionCard'
 import { RouteComponentProps } from 'react-router'
-import Slider from '../../components/Slider'
 import { Text } from 'rebass'
 import { ThemeContext } from 'styled-components'
 import { TransactionResponse } from '@ethersproject/providers'
@@ -85,9 +87,9 @@ export default function RemoveLiquidity({
 
   const missingTokenRoutes = (tokenA: any, tokenB: any) => {
     if (tokenA === undefined || tokenB === undefined || tokenA === 'undefined' || tokenB === 'undefined') {
-      return true;
+      return true
     }
-    return false;
+    return false
   }
   // modal and loading
   const [showConfirm, setShowConfirm] = useState<boolean>(false)
@@ -251,8 +253,15 @@ export default function RemoveLiquidity({
     const liquidityAmount = parsedAmounts[Field.LIQUIDITY]
     if (!liquidityAmount) throw new Error('missing liquidity amount')
 
-    const currencyBIsETH = currencyB === ETHER || currencyB === AVAX || currencyB === BNB || currencyB === DEV || currencyB === MATIC
-    const oneCurrencyIsETH = currencyA === ETHER || currencyA === AVAX || currencyA === BNB || currencyA === DEV || currencyA === MATIC || currencyBIsETH
+    const currencyBIsETH =
+      currencyB === ETHER || currencyB === AVAX || currencyB === BNB || currencyB === DEV || currencyB === MATIC
+    const oneCurrencyIsETH =
+      currencyA === ETHER ||
+      currencyA === AVAX ||
+      currencyA === BNB ||
+      currencyA === DEV ||
+      currencyA === MATIC ||
+      currencyBIsETH
 
     if (!tokenA || !tokenB) throw new Error('could not wrap')
 
@@ -533,21 +542,22 @@ export default function RemoveLiquidity({
         pathname: `/manage/${currencyIdA}/${currencyIdB}`,
         state: { stakingRewardAddress }
       })
-    }
-    else {
+    } else {
       history.goBack()
     }
   }
-  
+
   return (
     <>
-      <StandardCard style={{
-        paddingTop: '1rem',
-        paddingBottom: '2rem',
-        width: '100%',
-        maxWidth: '600px',
-        marginTop: '3rem'
-      }}>
+      <StandardCard
+        style={{
+          paddingTop: '1rem',
+          paddingBottom: '2rem',
+          width: '100%',
+          maxWidth: '600px',
+          marginTop: '3rem'
+        }}
+      >
         <AddRemoveTabs creating={false} adding={false} onGoBack={handleGoBack} />
         <Wrapper>
           <TransactionConfirmationModal
@@ -639,18 +649,28 @@ export default function RemoveLiquidity({
                         {oneCurrencyIsETH ? (
                           <StyledInternalLink
                             to={`/remove/${
-                              currencyA === ETHER || currencyB === AVAX || currencyB === BNB || currencyB === DEV || currencyB === MATIC
+                              currencyA === ETHER ||
+                              currencyB === AVAX ||
+                              currencyB === BNB ||
+                              currencyB === DEV ||
+                              currencyB === MATIC
                                 ? WETH[chainId].address
                                 : currencyIdA
                             }/${
-                              currencyB === ETHER || currencyB === AVAX || currencyB === BNB || currencyB === DEV || currencyB === MATIC
+                              currencyB === ETHER ||
+                              currencyB === AVAX ||
+                              currencyB === BNB ||
+                              currencyB === DEV ||
+                              currencyB === MATIC
                                 ? WETH[chainId].address
                                 : currencyIdB
                             }`}
                           >
                             {chainId && (chainId === ChainId.MAINNET || chainId === ChainId.RINKEBY) && 'Receive WETH'}
-                            {chainId && chainId === ChainId.AVALANCHE || chainId === ChainId.FUJI && 'Receive WAVAX'}
-                            {chainId && chainId === ChainId.SMART_CHAIN || chainId === ChainId.SMART_CHAIN_TEST && 'Receive WBNB'}
+                            {(chainId && chainId === ChainId.AVALANCHE) ||
+                              (chainId === ChainId.FUJI && 'Receive WAVAX')}
+                            {(chainId && chainId === ChainId.SMART_CHAIN) ||
+                              (chainId === ChainId.SMART_CHAIN_TEST && 'Receive WBNB')}
                             {chainId && chainId === ChainId.MOONBASE_ALPHA && 'Receive WDEV'}
                             {chainId && chainId === ChainId.MUMBAI && 'Receive WMATIC'}
                           </StyledInternalLink>
@@ -661,8 +681,9 @@ export default function RemoveLiquidity({
                             }/${currencyB && currencyEquals(currencyB, WETH[chainId]) ? 'ETH' : currencyIdB}`}
                           >
                             {chainId && (chainId === ChainId.MAINNET || chainId === ChainId.RINKEBY) && 'Receive ETH'}
-                            {chainId && chainId === ChainId.AVALANCHE || chainId === ChainId.FUJI && 'Receive AVAX'}
-                            {chainId && chainId === ChainId.SMART_CHAIN || chainId === ChainId.SMART_CHAIN_TEST && 'Receive BNB'}
+                            {(chainId && chainId === ChainId.AVALANCHE) || (chainId === ChainId.FUJI && 'Receive AVAX')}
+                            {(chainId && chainId === ChainId.SMART_CHAIN) ||
+                              (chainId === ChainId.SMART_CHAIN_TEST && 'Receive BNB')}
                             {chainId && chainId === ChainId.MOONBASE_ALPHA && 'Receive DEV'}
                             {chainId && chainId === ChainId.MUMBAI && 'Receive MATIC'}
                           </StyledInternalLink>
@@ -687,11 +708,12 @@ export default function RemoveLiquidity({
                   currency={pair?.liquidityToken}
                   pair={pair}
                   id="liquidity-amount"
-                  grayedOut={ currencyIdA === undefined ||
-                              currencyIdB === undefined ||
-                              currencyIdA === 'undefined' ||
-                              currencyIdB === 'undefined'
-                            }
+                  grayedOut={
+                    currencyIdA === undefined ||
+                    currencyIdB === undefined ||
+                    currencyIdA === 'undefined' ||
+                    currencyIdB === 'undefined'
+                  }
                 />
                 <ColumnCenter>
                   <ArrowDown size="16" color={theme.text2} />
@@ -783,7 +805,9 @@ export default function RemoveLiquidity({
       </StandardCard>
 
       {pair ? (
-        <AutoColumn style={{ minWidth: '20rem', width: '100%', maxWidth: '600px', marginTop: '1rem', marginBottom: '2rem' }}>
+        <AutoColumn
+          style={{ minWidth: '20rem', width: '100%', maxWidth: '600px', marginTop: '1rem', marginBottom: '2rem' }}
+        >
           <MinimalPositionCard showUnwrapped={oneCurrencyIsWETH} pair={pair} />
         </AutoColumn>
       ) : null}

@@ -6,12 +6,12 @@ import { useHistory, useParams } from 'react-router'
 import { BiWorld } from 'react-icons/bi'
 import { ButtonOutlined } from 'components/Button'
 import { IDO_LIST } from 'constants/idos';
-import PageContainer from 'components/PageContainer';
 import WISESale from './wiseSale';
 import WSDSale from './wsdSale';
 import moment from 'moment';
 import styled from 'styled-components';
 import { Title } from '../../theme'
+import { PageContainer } from 'components'
 
 const ImageContainer = styled.div`
   margin-top: 1rem;

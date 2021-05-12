@@ -22,23 +22,25 @@ import {
 import AdvancedSwapDetailsDropdown from '../../components/swap/AdvancedSwapDetailsDropdown'
 import { AppDispatch } from '../../state'
 import { AutoColumn } from '../../components/Column'
-import BlockchainSelector from '../../components/BlockchainSelector'
+import {
+  BlockchainSelector,
+  ChainBridgeModal,
+  ConfirmTransferModal,
+  CrossChainModal,
+  CurrencyInputPanel,
+  PageContainer,
+  BubbleBase,
+  TokenWarningModal
+} from '../../components'
 import { BottomGrouping } from '../../components/swap/styleds'
-import BubbleBase from '../../components/BubbleBase'
-import ChainBridgeModal from '../../components/ChainBridgeModal'
 import Circle from '../../assets/images/circle-grey.svg'
 import Circle2 from '../../assets/images/circle.svg'
-import ConfirmTransferModal from '../../components/ConfirmTransferModal'
-import CrossChainModal from '../../components/CrossChainModal'
-import CurrencyInputPanel from '../../components/CurrencyInputPanel'
 import { CustomLightSpinner } from '../../theme/components'
 import { Field } from '../../state/swap/actions'
 import { GreyCard } from '../../components/Card'
-import PageContainer from './../../components/PageContainer'
 import { ProposalStatus } from '../../state/crosschain/actions'
 import { RowBetween } from '../../components/Row'
 import { TYPE, Title } from '../../theme'
-import TokenWarningModal from '../../components/TokenWarningModal'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
 import { useActiveWeb3React } from '../../hooks'
 import { useCurrency } from '../../hooks/Tokens'
@@ -98,7 +100,7 @@ const TransferBodyWrapper = styled.div`
   margin-left: auto;
   margin-right: auto;
   &.offline {
-    opacity: .25;
+    opacity: 0.25;
     pointer-events: none;
     * {
       pointer-events: none;
@@ -372,7 +374,7 @@ export default function Transfer() {
   }
 
   // quick enable or disable of bridge
-  const bridgeEnabled = true;
+  const bridgeEnabled = true
 
   return (
     <>
@@ -405,7 +407,9 @@ export default function Transfer() {
 
         <ChainBridgeModal isOpen={showChainBridgeModal} onDismiss={hideChainBridgeModal} />
 
-        {!bridgeEnabled && <h3 style={{ display: 'block', textAlign: 'center', marginBottom: '2rem' }}>Bridge is currently offline</h3>}
+        {!bridgeEnabled && (
+          <h3 style={{ display: 'block', textAlign: 'center', marginBottom: '2rem' }}>Bridge is currently offline</h3>
+        )}
         <TransferBodyWrapper className={!bridgeEnabled ? 'offline' : ''}>
           <BubbleBase />
           <Heading>Cross-Chain Bridge</Heading>
@@ -443,13 +447,19 @@ export default function Transfer() {
                 onShowTransferChainModal={showTransferChainModal}
               />
               <RowBetweenTransfer style={{ marginBottom: '1rem', marginTop: '-1.5rem' }}>
-                <TextBottom style={{ marginLeft: 'auto', marginRight: '10px', opacity: '.65', color: '#a7b1f4' }}>Fee: <SpanAmount>{crosschainFee} {currentChain?.symbol}</SpanAmount></TextBottom>
+                <TextBottom style={{ marginLeft: 'auto', marginRight: '10px', opacity: '.65', color: '#a7b1f4' }}>
+                  Fee:{' '}
+                  <SpanAmount>
+                    {crosschainFee} {currentChain?.symbol}
+                  </SpanAmount>
+                </TextBottom>
               </RowBetweenTransfer>
               <RowBetweenTransfer>
                 <TextBottom>
                   {transferAmount.length && transferAmount !== '0' && currentToken && currencies[Field.INPUT] ? (
                     <SpanAmount>
-                      You will receive {formattedAmounts[Field.INPUT]} {currentToken.symbol} on {targetChain.name.length > 0 ? targetChain.name : '...'}
+                      You will receive {formattedAmounts[Field.INPUT]} {currentToken.symbol} on{' '}
+                      {targetChain.name.length > 0 ? targetChain.name : '...'}
                     </SpanAmount>
                   ) : (
                     ''
@@ -461,16 +471,18 @@ export default function Transfer() {
                   transferAmount.length &&
                   transferAmount !== '0' &&
                   currentToken &&
-                  targetChain.chainID !== "" &&
+                  targetChain.chainID !== '' &&
                   targetChain.name.length > 0 &&
                   currencies[Field.INPUT] ? (
                     <>
-                      <ButtonPrimary onClick={showConfirmTransferModal} style={{ minWidth: '180px'}}>
+                      <ButtonPrimary onClick={showConfirmTransferModal} style={{ minWidth: '180px' }}>
                         <TYPE.white>Transfer</TYPE.white>
                       </ButtonPrimary>
                     </>
                   ) : !account ? (
-                    <ButtonLight onClick={toggleWalletModal} style={{ minWidth: '180px'}}>Connect Wallet</ButtonLight>
+                    <ButtonLight onClick={toggleWalletModal} style={{ minWidth: '180px' }}>
+                      Connect Wallet
+                    </ButtonLight>
                   ) : (
                     <TransferButton>
                       <TYPE.main mb="4px" style={{ lineHeight: '58px' }}>

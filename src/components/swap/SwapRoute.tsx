@@ -4,7 +4,7 @@ import { ChevronRight } from 'react-feather'
 import { Flex } from 'rebass'
 import { ThemeContext } from 'styled-components'
 import { TYPE } from '../../theme'
-import CurrencyLogo from '../CurrencyLogo'
+import { CurrencyLogo } from '../index'
 
 export default memo(function SwapRoute({ trade }: { trade: Trade }) {
   const theme = useContext(ThemeContext)

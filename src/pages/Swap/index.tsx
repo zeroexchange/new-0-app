@@ -4,12 +4,12 @@ import { AutoRow, RowBetween } from '../../components/Row'
 import { ButtonConfirmed, ButtonError, ButtonLight, ButtonPrimary } from '../../components/Button'
 import { CHAIN_LABELS, NATIVE_CURRENCY } from '../../constants'
 import Card, { GreyCard } from '../../components/Card'
-import { ChainId, CurrencyAmount, JSBI, Token, TokenAmount, Trade } from '@zeroexchange/sdk'
+import { ChainId, CurrencyAmount, JSBI, Token, Trade } from '@zeroexchange/sdk'
 import Column, { AutoColumn } from '../../components/Column'
 import { GetTokenByAddress, useCrossChain, useCrosschainHooks, useCrosschainState } from '../../state/crosschain/hooks'
 import { LinkStyledButton, TYPE, Title } from '../../theme'
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react'
-import { STAKING_REWARDS_INFO, useStakingInfo } from '../../state/stake/hooks'
+import { useStakingInfo } from '../../state/stake/hooks'
 import { computeTradePriceBreakdown, warningSeverity } from '../../utils/prices'
 import styled, { ThemeContext } from 'styled-components'
 import {
@@ -21,35 +21,23 @@ import {
 import { useExpertModeManager, useUserSlippageTolerance } from '../../state/user/hooks'
 import { useToggleSettingsMenu, useWalletModalToggle } from '../../state/application/hooks'
 import useWrapCallback, { WrapType } from '../../hooks/useWrapCallback'
-
-import AddressInputPanel from '../../components/AddressInputPanel'
 import AdvancedSwapDetailsDropdown from '../../components/swap/AdvancedSwapDetailsDropdown'
 import { AppDispatch } from '../../state'
 import { ArrowDown } from 'react-feather'
-import BalanceItem from '../../components/BalanceItem'
-import BubbleBase from '../../components/BubbleBase'
-import Circle from '../../assets/images/circle-grey.svg'
+import { AddressInputPanel, BalanceItem, BubbleBase, CurrencyInputPanel, Icon, Loader, PageContainer, ProgressCircles, TokenWarningModal} from '../../components'
 import Circle2 from '../../assets/images/circle.svg'
 import { ClickableText } from '../Legacy_Pool/styleds'
 import ConfirmSwapModal from '../../components/swap/ConfirmSwapModal'
-import CurrencyInputPanel from '../../components/CurrencyInputPanel'
 import { ArrowDown as CustomArrowDown } from '../../components/Arrows'
 import { CustomLightSpinner } from '../../theme/components'
 import { Field } from '../../state/swap/actions'
 import { INITIAL_ALLOWED_SLIPPAGE } from '../../constants'
-import Icon from '../../components/Icon'
-import Loader from '../../components/Loader'
-import PageContainer from './../../components/PageContainer'
-import ProgressSteps from '../../components/ProgressSteps'
-import { ProposalStatus } from '../../state/crosschain/actions'
 import Settings from '../../components/Settings'
 import { Text } from 'rebass'
-import TokenWarningModal from '../../components/TokenWarningModal'
 import TradePrice from '../../components/swap/TradePrice'
 import confirmPriceImpactWithoutFee from '../../components/swap/confirmPriceImpactWithoutFee'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
 import { setCurrentToken } from '../../state/crosschain/actions'
-import { setTokenBalances } from '../../state/user/actions'
 import { toCheckSumAddress } from '../../state/crosschain/hooks'
 import { useActiveWeb3React } from '../../hooks'
 import { useCurrency } from '../../hooks/Tokens'
@@ -803,7 +791,7 @@ export default function Swap() {
                       )}
                       {showApproveFlow && (
                         <Column style={{ marginTop: '1rem' }}>
-                          <ProgressSteps steps={[approval === ApprovalState.APPROVED]} />
+                          <ProgressCircles steps={[approval === ApprovalState.APPROVED]} />
                         </Column>
                       )}
                       {isExpertMode && swapErrorMessage ? <SwapCallbackError error={swapErrorMessage} /> : null}

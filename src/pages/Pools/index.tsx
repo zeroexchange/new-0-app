@@ -8,10 +8,7 @@ import { AppDispatch } from '../../state'
 import { ButtonOutlined } from '../../components/Button'
 import Circle from '../../assets/images/blue-loader.svg'
 import ClaimRewardModal from '../../components/pools/ClaimRewardModal'
-import { Countdown } from './Countdown'
 import DropdownArrow from './../../assets/svg/DropdownArrow'
-import { NoWalletConnected } from '../../components/NoWalletConnected'
-import PageContainer from './../../components/PageContainer'
 import PoolCard from '../../components/pools/PoolCard'
 import PoolControls from '../../components/pools/PoolControls'
 import PoolRow from '../../components/pools/PoolRow'
@@ -23,8 +20,7 @@ import { useActiveWeb3React } from '../../hooks'
 import { useDispatch } from 'react-redux'
 import { usePoolsState } from './../../state/pools/hooks'
 import { useWalletModalToggle } from '../../state/application/hooks'
-import { CgArrowsExpandDownLeft } from 'react-icons/cg'
-
+import { NoWalletConnected, PageContainer } from '../../components'
 const numeral = require('numeral')
 
 const PageWrapper = styled.div`
