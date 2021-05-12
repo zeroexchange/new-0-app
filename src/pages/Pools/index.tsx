@@ -1,9 +1,9 @@
 import { CustomLightSpinner, StyledInternalLink, TYPE } from '../../theme'
 import React, { useEffect, useMemo, useState } from 'react'
-import { ButtonOutlined } from '../../components/Button'
 import { STAKING_REWARDS_INFO, useStakingInfo } from '../../state/stake/hooks'
 import styled, { keyframes } from 'styled-components'
 
+import { ButtonOutlined } from '../../components/Button'
 import Circle from '../../assets/images/blue-loader.svg'
 import ClaimRewardModal from '../../components/pools/ClaimRewardModal'
 import DropdownArrow from './../../assets/svg/DropdownArrow'
@@ -413,13 +413,13 @@ export default function Pools() {
             <Stat className="weekly">
               <StatLabel>Weekly Earnings:</StatLabel>
               <StatValue>
-                {numeral(statsDisplay?.earnings).format('0,0.00')} <span>ZERO</span>
+                {numeral(statsDisplay?.earnings).format('0,0.00')} <span>Tokens</span>
               </StatValue>
             </Stat>
             <Stat className="harvest">
               <StatLabel>Ready To Harvest:</StatLabel>
               <StatValue>
-                {numeral(statsDisplay?.harvest).format('0,0.00')} <span>ZERO</span>
+                {numeral(statsDisplay?.harvest).format('0,0.00')} <span>Tokens</span>
               </StatValue>
             </Stat>
             <StyledInternalLink className="add-liquidity-link" to={{ pathname: `/add` }}>
