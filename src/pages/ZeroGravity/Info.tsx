@@ -1,16 +1,16 @@
-import { CgAddR, CgList } from 'react-icons/cg';
-import { FaDiscord, FaMedium, FaTelegramPlane, FaTwitter } from 'react-icons/fa';
-import React, { useEffect, useMemo, useState } from 'react';
-import { useHistory, useParams } from 'react-router';
+import { CgAddR, CgList } from 'react-icons/cg'
+import { FaDiscord, FaMedium, FaTelegramPlane, FaTwitter } from 'react-icons/fa'
+import React, { useEffect, useMemo, useState } from 'react'
+import { useHistory, useParams } from 'react-router'
 
-import { BiWorld } from 'react-icons/bi';
+import { BiWorld } from 'react-icons/bi'
 import { ButtonOutlined } from 'components/Button'
-import { IDO_LIST } from 'constants/idos';
-import PageContainer from 'components/PageContainer';
-import WISESale from './wiseSale';
-import WSDSale from './wsdSale';
-import moment from 'moment';
-import styled from 'styled-components';
+import { IDO_LIST } from 'constants/idos'
+import { PageContainer } from 'components'
+import WISESale from './wiseSale'
+import WSDSale from './wsdSale'
+import moment from 'moment'
+import styled from 'styled-components'
 
 const Title = styled.h1`
   width: 100%;
@@ -94,9 +94,7 @@ const HeadingRow = styled.div`
   align-items: center;
   justify-content: space-between;
 `
-const Heading = styled.h2`
-
-`
+const Heading = styled.h2``
 const Detail = styled.p`
   margin: 2rem 0;
 `
@@ -108,7 +106,7 @@ const SocialIcon = styled.div`
   font-size: 1.4rem;
   display: flex;
   position: relative;
-  padding: .4rem .6rem;
+  padding: 0.4rem 0.6rem;
   &:hover .tooltip {
     visibility: visible;
     opacity: 1;
@@ -116,7 +114,7 @@ const SocialIcon = styled.div`
 `
 const Tooltip = styled.div`
   cursor: pointer;
-  font-size: .8rem;
+  font-size: 0.8rem;
   visibility: hidden;
   width: 120px;
   background-color: #555;
@@ -132,7 +130,7 @@ const Tooltip = styled.div`
   opacity: 0;
   transition: opacity 0.3s;
   &:after {
-    content: "";
+    content: '';
     position: absolute;
     top: 100%;
     left: 50%;
@@ -160,36 +158,35 @@ const Stat = styled.div`
   align-items: center;
 `
 const StatTitle = styled.p`
-  color: rgba(255,255,255,0.5);
+  color: rgba(255, 255, 255, 0.5);
   margin-bottom: 0.4rem;
 `
 const StatText = styled.p`
   margin: 0;
 `
 const Disclaimer = styled.div`
-  color: rgba(255,255,255,.5);
-  font-size: .75rem;
-  background: rgba(0,0,0,.25);
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.75rem;
+  background: rgba(0, 0, 0, 0.25);
   border-radius: 44px;
   padding: 2rem;
   margin-top: -5rem;
 `
 
 export default function ZeroGravityInfo() {
+  const { idoURL } = useParams<{ idoURL: string }>()
+  const history = useHistory()
+  const [idoData, setIdoData] = useState<any>()
 
-  const {idoURL} = useParams<{idoURL:string}>();
-  const history = useHistory();
-  const [idoData, setIdoData] = useState<any>();
-
-  const socialMediaLinks = useMemo<Array<{type:string,url:string,icon:any}>>(() => {
+  const socialMediaLinks = useMemo<Array<{ type: string; url: string; icon: any }>>(() => {
     if (idoData?.socials) {
-      return idoData.socials.map((social:{type:string,url:string}) => {
+      return idoData.socials.map((social: { type: string; url: string }) => {
         let icon = <BiWorld />
         if (social.type === 'WEBSITE') icon = <BiWorld />
-        else if (social.type === 'TELEGRAM') icon = <FaTelegramPlane/>
-        else if (social.type === 'TWITTER') icon = <FaTwitter/>
-        else if (social.type === 'DISCORD') icon = <FaDiscord/>
-        else if (social.type === 'MEDIUM') icon = <FaMedium/>
+        else if (social.type === 'TELEGRAM') icon = <FaTelegramPlane />
+        else if (social.type === 'TWITTER') icon = <FaTwitter />
+        else if (social.type === 'DISCORD') icon = <FaDiscord />
+        else if (social.type === 'MEDIUM') icon = <FaMedium />
 
         return {
           type: social.type,
@@ -198,30 +195,30 @@ export default function ZeroGravityInfo() {
         }
       })
     }
-    return [];
-  }, [idoData]);
+    return []
+  }, [idoData])
 
   const launchingString = useMemo<string>(() => {
     if (idoData?.launchDate) {
       if (moment(idoData.launchDate).isBefore(moment.now())) {
-        return `Launched ${moment(idoData?.launchDate??'').fromNow()}`;
+        return `Launched ${moment(idoData?.launchDate ?? '').fromNow()}`
       }
-      return `Launching ${moment(idoData?.launchDate??'').fromNow()}`;
+      return `Launching ${moment(idoData?.launchDate ?? '').fromNow()}`
     }
-    return '';
-  }, [idoData]);
+    return ''
+  }, [idoData])
 
   useEffect(() => {
     // fetch data here
-    setIdoData(IDO_LIST.find(item => item.idoURL===idoURL))
+    setIdoData(IDO_LIST.find(item => item.idoURL === idoURL))
   }, [idoURL])
 
   const goToSite = (str: any) => {
-    window.open(str, "_blank");
-  };
+    window.open(str, '_blank')
+  }
 
   const goToKyc = () => {
-    history.push(`/zero-gravity/${idoURL}/kyc`);
+    history.push(`/zero-gravity/${idoURL}/kyc`)
   }
 
   return (
@@ -229,7 +226,7 @@ export default function ZeroGravityInfo() {
       <Title>Info</Title>
       <PageContainer>
         <ImageContainer>
-          <img src={idoData?.logo ?? ''} alt={idoData?.idoURL ?? ''}/>
+          <img src={idoData?.logo ?? ''} alt={idoData?.idoURL ?? ''} />
         </ImageContainer>
         <InfoSection>
           <p>Future</p>
@@ -240,70 +237,63 @@ export default function ZeroGravityInfo() {
           <VerticalLine />
           <p>{launchingString}</p>
         </InfoSection>
-        {
-          moment(idoData?.endDate??'').isAfter(moment.now()) && idoData?.buttonSectionEnabled &&
+        {moment(idoData?.endDate ?? '').isAfter(moment.now()) && idoData?.buttonSectionEnabled && (
           <ButtonsSection>
-            <ButtonOutlined onClick={() => goToSite('https://docs.google.com/spreadsheets/d/16N4S_VqEfN04hfsfz4SIqZdH-jGqyJynCfZ6bjMBhaE/edit?usp=sharing')} >
+            <ButtonOutlined
+              onClick={() =>
+                goToSite(
+                  'https://docs.google.com/spreadsheets/d/16N4S_VqEfN04hfsfz4SIqZdH-jGqyJynCfZ6bjMBhaE/edit?usp=sharing'
+                )
+              }
+            >
               <ButtonIcon>
-                <CgList/>
+                <CgList />
               </ButtonIcon>
               View Whitelist
             </ButtonOutlined>
             <ButtonsSpacer />
             <ButtonOutlined className="green" onClick={() => goToKyc()}>
               <ButtonIcon>
-                <CgAddR/>
+                <CgAddR />
               </ButtonIcon>
               KYC Here
             </ButtonOutlined>
           </ButtonsSection>
-        }
-        {
-          idoData?.idoURL == 'wise' ? <WISESale />
-          : idoData?.idoURL == 'wasder' ? <WSDSale />
-          : <></>
-        }
+        )}
+        {idoData?.idoURL == 'wise' ? <WISESale /> : idoData?.idoURL == 'wasder' ? <WSDSale /> : <></>}
         <BgWrapper>
           <HeadingRow>
-            <Heading>
-              Pool details
-            </Heading>
+            <Heading>Pool details</Heading>
             <SocialLinks>
-              {socialMediaLinks.map(iconDetails =>
-                <SocialIcon onClick={()=>window.open(iconDetails.url)}>
+              {socialMediaLinks.map(iconDetails => (
+                <SocialIcon onClick={() => window.open(iconDetails.url)}>
                   {iconDetails.icon}
                   <Tooltip className="tooltip">{iconDetails.type}</Tooltip>
                 </SocialIcon>
-              )}
+              ))}
             </SocialLinks>
           </HeadingRow>
-          <Detail>
-            {idoData?.description ?? ''}
-          </Detail>
+          <Detail>{idoData?.description ?? ''}</Detail>
           <StatsSection>
             <Stat>
               <StatTitle> Auction Start Date </StatTitle>
-              <StatText>{moment(idoData?.launchDate??"").format('MMM DD, YYYY hh:mm A')}</StatText>
+              <StatText>{moment(idoData?.launchDate ?? '').format('MMM DD, YYYY hh:mm A')}</StatText>
             </Stat>
             <Stat>
               <StatTitle> Token Distribution Date </StatTitle>
-              <StatText>{moment(idoData?.distributionDate??"").format('MMM DD, YYYY hh:mm A')}</StatText>
+              <StatText>{moment(idoData?.distributionDate ?? '').format('MMM DD, YYYY hh:mm A')}</StatText>
             </Stat>
             <Stat>
               <StatTitle> Min. Allocation </StatTitle>
-              <StatText>{idoData?.allocationMin??''}</StatText>
+              <StatText>{idoData?.allocationMin ?? ''}</StatText>
             </Stat>
             <Stat>
               <StatTitle> Allocation per Winning Ticket </StatTitle>
-              <StatText>{idoData?.allocationWinningAmount??''}</StatText>
+              <StatText>{idoData?.allocationWinningAmount ?? ''}</StatText>
             </Stat>
           </StatsSection>
         </BgWrapper>
-        { idoData?.disclaimer &&
-          <Disclaimer>
-            {idoData?.disclaimer}
-          </Disclaimer>
-        }
+        {idoData?.disclaimer && <Disclaimer>{idoData?.disclaimer}</Disclaimer>}
       </PageContainer>
     </>
   )

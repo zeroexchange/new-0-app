@@ -1,7 +1,7 @@
 import { CheckCircle, ChevronsDown, XCircle } from 'react-feather'
 
 import Circle from '../../assets/images/circle-grey.svg'
-import CurrencyLogo from '../CurrencyLogo'
+import { CurrencyLogo } from '../index'
 import { CustomLightSpinner } from '../../theme/components'
 import React from 'react'
 import { returnNumberDecimals } from '../../constants'

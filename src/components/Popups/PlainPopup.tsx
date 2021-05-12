@@ -1,14 +1,8 @@
 import React from 'react'
 
-import Modal from 'components/Modal'
+import {Modal} from 'components'
 import { PopupContent } from 'state/application/actions'
 import PopupItem from 'components/Popups/PopupItem'
-
-// const popupContent: PopupContent = {
-//   simpleAnnounce: {
-//     message: 'Please wait 5 seconds to change RPCs again.'
-//   }
-// }
 
 interface PlainPopupProps {
   isOpen: boolean

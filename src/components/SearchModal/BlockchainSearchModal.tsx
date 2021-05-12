@@ -1,7 +1,7 @@
 import { Currency } from '@zeroexchange/sdk'
 import React, { useCallback, useEffect, useState } from 'react'
 import useLast from '../../hooks/useLast'
-import Modal from '../Modal'
+import {Modal} from '../index'
 import { BlockchainSearch } from './BlockchainSearch'
 
 interface BlockchainSearchModalProps {

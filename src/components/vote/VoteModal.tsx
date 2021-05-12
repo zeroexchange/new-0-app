@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react'
 import { useActiveWeb3React } from '../../hooks'
 
-import Modal from '../Modal'
+import { Modal } from '../index'
 import { AutoColumn, ColumnCenter } from '../Column'
 import styled, { ThemeContext } from 'styled-components'
 import { RowBetween } from '../Row'

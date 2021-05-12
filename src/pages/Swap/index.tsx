@@ -4,12 +4,12 @@ import { AutoRow, RowBetween } from '../../components/Row'
 import { ButtonConfirmed, ButtonError, ButtonLight, ButtonPrimary } from '../../components/Button'
 import { CHAIN_LABELS, NATIVE_CURRENCY } from '../../constants'
 import Card, { GreyCard } from '../../components/Card'
-import { ChainId, CurrencyAmount, JSBI, Token, TokenAmount, Trade } from '@zeroexchange/sdk'
+import { ChainId, CurrencyAmount, JSBI, Token, Trade } from '@zeroexchange/sdk'
 import Column, { AutoColumn } from '../../components/Column'
 import { GetTokenByAddress, useCrossChain, useCrosschainHooks, useCrosschainState } from '../../state/crosschain/hooks'
 import { LinkStyledButton, TYPE } from '../../theme'
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react'
-import { STAKING_REWARDS_INFO, useStakingInfo } from '../../state/stake/hooks'
+import { useStakingInfo } from '../../state/stake/hooks'
 import { computeTradePriceBreakdown, warningSeverity } from '../../utils/prices'
 import styled, { ThemeContext } from 'styled-components'
 import {
@@ -21,35 +21,23 @@ import {
 import { useExpertModeManager, useUserSlippageTolerance } from '../../state/user/hooks'
 import { useToggleSettingsMenu, useWalletModalToggle } from '../../state/application/hooks'
 import useWrapCallback, { WrapType } from '../../hooks/useWrapCallback'
-
-import AddressInputPanel from '../../components/AddressInputPanel'
 import AdvancedSwapDetailsDropdown from '../../components/swap/AdvancedSwapDetailsDropdown'
 import { AppDispatch } from '../../state'
 import { ArrowDown } from 'react-feather'
-import BalanceItem from '../../components/BalanceItem'
-import BubbleBase from '../../components/BubbleBase'
-import Circle from '../../assets/images/circle-grey.svg'
+import { AddressInputPanel, BalanceItem, BubbleBase, CurrencyInputPanel, Icon, Loader, PageContainer, ProgressCircles, TokenWarningModal} from '../../components'
 import Circle2 from '../../assets/images/circle.svg'
 import { ClickableText } from '../Legacy_Pool/styleds'
 import ConfirmSwapModal from '../../components/swap/ConfirmSwapModal'
-import CurrencyInputPanel from '../../components/CurrencyInputPanel'
 import { ArrowDown as CustomArrowDown } from '../../components/Arrows'
 import { CustomLightSpinner } from '../../theme/components'
 import { Field } from '../../state/swap/actions'
 import { INITIAL_ALLOWED_SLIPPAGE } from '../../constants'
-import Icon from '../../components/Icon'
-import Loader from '../../components/Loader'
-import PageContainer from './../../components/PageContainer'
-import ProgressSteps from '../../components/ProgressSteps'
-import { ProposalStatus } from '../../state/crosschain/actions'
 import Settings from '../../components/Settings'
 import { Text } from 'rebass'
-import TokenWarningModal from '../../components/TokenWarningModal'
 import TradePrice from '../../components/swap/TradePrice'
 import confirmPriceImpactWithoutFee from '../../components/swap/confirmPriceImpactWithoutFee'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
 import { setCurrentToken } from '../../state/crosschain/actions'
-import { setTokenBalances } from '../../state/user/actions'
 import { toCheckSumAddress } from '../../state/crosschain/hooks'
 import { useActiveWeb3React } from '../../hooks'
 import { useCurrency } from '../../hooks/Tokens'
@@ -156,29 +144,28 @@ const BalanceRow = styled.div<{ isColumn?: boolean }>`
   overflow-y: scroll;
   padding-right: 1rem;
   padding-left: 1rem;
-  #style-7::-webkit-scrollbar-track
-{
-	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-	background-color: rgba(0,0,0,.5);
-	border-radius: 10px;
-}
+  #style-7::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+  }
 
-&::-webkit-scrollbar
-{
-	width: 10px;
-	background-color: rgba(0,0,0,.5);
-}
+  &::-webkit-scrollbar {
+    width: 10px;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
 
-&::-webkit-scrollbar-thumb
-{
-	border-radius: 10px;
-	background-image: -webkit-gradient(linear,
-									   left bottom,
-									   left top,
-                     color-stop(0.44, rgb(41, 32, 98)),
-									   color-stop(0.72, rgb(51, 40, 123)),
-									   color-stop(0.86, rgb(61, 49, 148)));
-}
+  &::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background-image: -webkit-gradient(
+      linear,
+      left bottom,
+      left top,
+      color-stop(0.44, rgb(41, 32, 98)),
+      color-stop(0.72, rgb(51, 40, 123)),
+      color-stop(0.86, rgb(61, 49, 148))
+    );
+  }
 `
 const ChainBridgePending = styled.div`
   display: flex;
@@ -508,12 +495,12 @@ export default function Swap() {
     )
     // use set to avoid duplicates
     // reset array to [] each time
-    const arr: any = new Set();
+    const arr: any = new Set()
     for (let st of stakedPools) {
       arr.add(st?.tokens[0])
-      arr.add(st?.tokens[1]);
+      arr.add(st?.tokens[1])
     }
-    setStakedTokens([...arr]);
+    setStakedTokens([...arr])
   }, [stakingInfos])
 
   useEffect(() => {
@@ -533,12 +520,17 @@ export default function Swap() {
       .map((x: any) => {
         const address = toCheckSumAddress(x?.address)
         const tokenData = { ...x, address }
-        return new Token(tokenData?.chainId, tokenData?.address, tokenData?.decimals, tokenData?.symbol, tokenData?.name)
+        return new Token(
+          tokenData?.chainId,
+          tokenData?.address,
+          tokenData?.decimals,
+          tokenData?.symbol,
+          tokenData?.name
+        )
       })
       .concat(userTokens)
     return [...new Set(arr)];
   }, [availableTokens, userTokens])
-
 
   return (
     <>
@@ -808,7 +800,7 @@ export default function Swap() {
                       )}
                       {showApproveFlow && (
                         <Column style={{ marginTop: '1rem' }}>
-                          <ProgressSteps steps={[approval === ApprovalState.APPROVED]} />
+                          <ProgressCircles steps={[approval === ApprovalState.APPROVED]} />
                         </Column>
                       )}
                       {isExpertMode && swapErrorMessage ? <SwapCallbackError error={swapErrorMessage} /> : null}
@@ -842,21 +834,23 @@ export default function Swap() {
                     ></BalanceItem>
                   )
                 })}
-                {stakedTokens?.filter((x: any) => x.chainId === chainId).map((token: any, index: any) => {
-                  return (
-                    <BalanceItem
-                      key={index}
-                      token={token}
-                      chainId={chainId}
-                      account={account}
-                      isStaked={true}
-                      tokenBalances={tokenBalances.map(item => item?.address)}
-                      selectBalance={() => onSelectBalance(false, token)}
-                      isLast={index === stakedTokens.length - 1}
-                      isFirst={index === 0 && tokenBalances?.length === 0}
-                    ></BalanceItem>
-                  )
-                })}
+                {stakedTokens
+                  ?.filter((x: any) => x.chainId === chainId)
+                  .map((token: any, index: any) => {
+                    return (
+                      <BalanceItem
+                        key={index}
+                        token={token}
+                        chainId={chainId}
+                        account={account}
+                        isStaked={true}
+                        tokenBalances={tokenBalances.map(item => item?.address)}
+                        selectBalance={() => onSelectBalance(false, token)}
+                        isLast={index === stakedTokens.length - 1}
+                        isFirst={index === 0 && tokenBalances?.length === 0}
+                      ></BalanceItem>
+                    )
+                  })}
               </BalanceRow>
             )}
           </SwapFlex>

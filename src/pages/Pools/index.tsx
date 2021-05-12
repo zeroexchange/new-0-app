@@ -9,8 +9,6 @@ import { ButtonOutlined } from '../../components/Button'
 import Circle from '../../assets/images/blue-loader.svg'
 import ClaimRewardModal from '../../components/pools/ClaimRewardModal'
 import DropdownArrow from './../../assets/svg/DropdownArrow'
-import { NoWalletConnected } from '../../components/NoWalletConnected'
-import PageContainer from './../../components/PageContainer'
 import PoolCard from '../../components/pools/PoolCard'
 import PoolControls from '../../components/pools/PoolControls'
 import PoolRow from '../../components/pools/PoolRow'
@@ -24,7 +22,7 @@ import { AppDispatch } from '../../state'
 import { setAprData } from './../../state/pools/actions'
 import { usePoolsState } from './../../state/pools/hooks'
 import { AprObjectProps } from './../../state/pools/actions'
-
+import { NoWalletConnected, PageContainer } from '../../components'
 const numeral = require('numeral')
 
 const PageWrapper = styled.div`

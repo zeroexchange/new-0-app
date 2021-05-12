@@ -1,4 +1,15 @@
-import { AVAX, BNB, ChainId, Currency, CurrencyAmount, DEV, ETHER, MATIC, Token, currencyEquals } from '@zeroexchange/sdk'
+import {
+  AVAX,
+  BNB,
+  ChainId,
+  Currency,
+  CurrencyAmount,
+  DEV,
+  ETHER,
+  MATIC,
+  Token,
+  currencyEquals
+} from '@zeroexchange/sdk'
 import { FadedSpan, MenuItem } from './styleds'
 import { LinkStyledButton, TYPE } from '../../theme'
 import React, { CSSProperties, MutableRefObject, useCallback, useMemo } from 'react'
@@ -6,9 +17,8 @@ import { useAddUserToken, useRemoveUserAddedToken } from '../../state/user/hooks
 
 import BigNumber from 'bignumber.js'
 import Column from '../Column'
-import CurrencyLogo from '../CurrencyLogo'
+import { CurrencyLogo, Loader } from '../index'
 import { FixedSizeList } from 'react-window'
-import Loader from '../Loader'
 import { MouseoverTooltip } from '../Tooltip'
 import { RowFixed } from '../Row'
 import { Text } from 'rebass'
@@ -133,7 +143,7 @@ function CurrencyRow({
   const addToken = useAddUserToken()
 
   const hasABalance = useMemo(() => {
-    return balance && parseFloat(balance.toSignificant(6)) > 0.0000001 ? true : false;
+    return balance && parseFloat(balance.toSignificant(6)) > 0.0000001 ? true : false
   }, [balance])
 
   // only show add or remove buttons if not on selected list

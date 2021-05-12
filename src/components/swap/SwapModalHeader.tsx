@@ -8,7 +8,7 @@ import { isAddress, shortenAddress } from '../../utils'
 
 import { AutoColumn } from '../Column'
 import { ButtonPrimary } from '../Button'
-import CurrencyLogo from '../CurrencyLogo'
+import { CurrencyLogo } from '../index'
 import { Field } from '../../state/swap/actions'
 import { TYPE } from '../../theme'
 import { Text } from 'rebass'
