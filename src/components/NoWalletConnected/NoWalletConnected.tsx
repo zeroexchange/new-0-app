@@ -1,7 +1,10 @@
 import React from 'react'
 import styled from 'styled-components'
+
 import WalletMissing from '../../assets/svg/wallet_missing.svg'
+
 import { ButtonPrimary } from '../../components'
+
 import { TYPE } from '../../theme'
 
 const EmptyData = styled.div`
@@ -21,7 +24,7 @@ interface NoWalletConnectedProps {
   handleWalletModal: () => void
 }
 
- const NoWalletConnected = ({handleWalletModal}: NoWalletConnectedProps) => {
+const NoWalletConnected = ({ handleWalletModal }: NoWalletConnectedProps) => {
   return (
     <EmptyData>
       <NoAccount src={WalletMissing} />

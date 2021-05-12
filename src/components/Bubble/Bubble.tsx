@@ -1,8 +1,8 @@
 import React, { ReactNode } from 'react'
+import styled from 'styled-components'
 
 import Background from './Background'
-import { Icon } from './../index'
-import styled from 'styled-components'
+import { Icon } from '../../components'
 
 const BubbleWrap = styled.div`
   position: relative;

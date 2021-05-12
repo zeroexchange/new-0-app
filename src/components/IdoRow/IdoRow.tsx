@@ -1,8 +1,8 @@
-import { ButtonPrimary } from '../../components'
-
 import { NavLink } from 'react-router-dom'
 import React from 'react'
 import styled from 'styled-components'
+
+import { ButtonPrimary } from '../../components'
 
 const moment = require('moment')
 const StyledNavLink = styled(NavLink)``

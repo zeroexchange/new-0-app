@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react'
+import { Currency, Trade } from '@zeroexchange/sdk'
+import styled from 'styled-components'
 
 import ApprovalComplete from './ApprovalComplete'
 import ApprovalPending from './ApprovalPending'
-import { ChainTransferState, CrosschainChain } from '../../state/crosschain/actions'
-import { CloseIcon } from '../../theme/components'
-import { Currency } from '@zeroexchange/sdk'
-import { Modal, RowBetween } from '../../components'
 import NotStarted from './NotStarted'
-import { Trade } from '@zeroexchange/sdk'
 import TransferComplete from './TransferComplete'
 import TransferPending from './TransferPending'
-import styled from 'styled-components'
+import { Modal, RowBetween } from '../../components'
+import { CloseIcon } from '../../theme/components'
+
+import { ChainTransferState, CrosschainChain } from '../../state/crosschain/actions'
 import { useCrosschainState } from '../../state/crosschain/hooks'
 
 interface ConfirmTransferProps {

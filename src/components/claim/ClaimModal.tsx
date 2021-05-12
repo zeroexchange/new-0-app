@@ -1,21 +1,25 @@
-import { Break, CardBGImage, CardBGImageSmaller, CardNoise, CardSection, DataCard } from '../Pools/styled'
-import { CloseIcon, CustomLightSpinner, ExternalLink, TYPE, UniTokenAnimated } from '../../theme'
+
+
 import { JSBI, TokenAmount } from '@zeroexchange/sdk'
 import React, { useEffect, useState } from 'react'
-import { useClaimCallback, useUserClaimData, useUserUnclaimedAmount } from '../../state/claim/hooks'
-import { useModalOpen, useToggleSelfClaimModal } from '../../state/application/hooks'
+import { Text } from 'rebass'
+import styled from 'styled-components'
 
-import { ApplicationModal } from '../../state/application/actions'
-import Circle from '../../assets/images/blue-loader.svg'
+import { Break, CardBGImage, CardBGImageSmaller, CardNoise, CardSection, DataCard } from '../Pools/styled'
 import { Confetti, Modal, ButtonPrimary, RowBetween} from '../../components'
 import {  AutoColumn, ColumnCenter } from '../../components/Column'
-import { Text } from 'rebass'
-import { getEtherscanLink } from '../../utils'
-import { isAddress } from 'ethers/lib/utils'
-import styled from 'styled-components'
-import tokenLogo from '../../assets/images/token-logo.png'
+
+import { CloseIcon, CustomLightSpinner, ExternalLink, TYPE, UniTokenAnimated } from '../../theme'
+import { useClaimCallback, useUserClaimData, useUserUnclaimedAmount } from '../../state/claim/hooks'
+import { useModalOpen, useToggleSelfClaimModal } from '../../state/application/hooks'
+import { ApplicationModal } from '../../state/application/actions'
 import { useActiveWeb3React } from '../../hooks'
 import { useUserHasSubmittedClaim } from '../../state/transactions/hooks'
+import { getEtherscanLink } from '../../utils'
+import { isAddress } from 'ethers/lib/utils'
+
+import Circle from '../../assets/images/blue-loader.svg'
+import tokenLogo from '../../assets/images/token-logo.png'
 
 const ContentWrapper = styled(AutoColumn)`
   width: 100%;

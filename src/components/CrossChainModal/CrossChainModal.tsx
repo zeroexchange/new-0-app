@@ -1,11 +1,13 @@
-import { CrosschainChain, setCrosschainLastTimeSwitched } from '../../state/crosschain/actions'
 import React, { useState } from 'react'
-
-import { AppDispatch } from 'state'
-import { BlockchainLogo, Modal } from '../index'
-import { crosschainConfig } from 'constants/CrosschainConfig'
 import styled from 'styled-components'
 import { useDispatch } from 'react-redux'
+
+import { AppDispatch } from 'state'
+import { CrosschainChain, setCrosschainLastTimeSwitched } from '../../state/crosschain/actions'
+
+import { BlockchainLogo, Modal } from '../../components'
+
+import { crosschainConfig } from 'constants/CrosschainConfig'
 
 interface CrossChainModalProps {
   isOpen: boolean

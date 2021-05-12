@@ -1,15 +1,25 @@
 import { Currency, Pair } from '@zeroexchange/sdk'
 import React, { useCallback, useContext, useState } from 'react'
 import styled, { ThemeContext } from 'styled-components'
-import { CurrencyLogo, DoubleCurrencyLogo, RowBetween, NumericalInput, BlockchainSearchModal, CurrencySearchModal } from '../../components'
+import { darken } from 'polished'
+import { useTranslation } from 'react-i18next'
+
+import {
+  CurrencyLogo,
+  DoubleCurrencyLogo,
+  RowBetween,
+  NumericalInput,
+  BlockchainSearchModal,
+  CurrencySearchModal
+} from '../../components'
+
 import { ReactComponent as DropDown } from '../../assets/images/dropdown-white-select.svg'
 import { ReactComponent as SmallDropDown } from '../../assets/images/small-dropdown-white-select.svg'
+
 import { TYPE } from '../../theme'
-import { darken } from 'polished'
 import { returnBalanceNum } from '../../constants'
 import { useActiveWeb3React } from '../../hooks'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
-import { useTranslation } from 'react-i18next'
 
 const InputRow = styled.div<{ selected: boolean }>`
   ${({ theme }) => theme.flexRowNoWrap}

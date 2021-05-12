@@ -1,8 +1,9 @@
-import { ExternalLink, TYPE } from '../../theme'
 import React, { useCallback, useContext } from 'react'
 import styled, { ThemeContext } from 'styled-components'
 
 import { AutoColumn, RowBetween } from '../../components'
+
+import { ExternalLink, TYPE } from '../../theme'
 import { getEtherscanLink } from '../../utils'
 import { useActiveWeb3React } from '../../hooks'
 import useENS from '../../hooks/useENS'

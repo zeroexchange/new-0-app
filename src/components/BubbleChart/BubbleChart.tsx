@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import BarChart from './charts/BarChart'
 import LineChart from './charts/LineChart'
 import { BubbleBase, Percentage } from './../../components'
+
 import toCurrency from './../../utils/toCurrency'
 import useResize from './../../hooks/widthComponent'
 

@@ -1,5 +1,6 @@
 import { Currency, ETHER, Token } from '@zeroexchange/sdk'
 import React, { useMemo } from 'react'
+import styled from 'styled-components'
 
 import AvaxLogo from '../../assets/images/avax-logo.png'
 import BNBLogo from '../../assets/images/binance-coin-logo.webp'
@@ -27,7 +28,7 @@ import ZUSDTLogo from '../../assets/images/crosschain/zUSDT.png'
 import ZeroLogo from '../../assets/images/0-icon.png'
 import { crosschainConfig as crosschainConfigTestnet } from '../../constants/CrosschainConfigTestnet'
 import { crosschainConfig as crosschainConfigMainnet } from '../../constants/CrosschainConfig'
-import styled from 'styled-components'
+
 import useHttpLocations from '../../hooks/useHttpLocations'
 
 const getTokenLogoURL = (address: string) => {
@@ -51,7 +52,7 @@ const StyledLogo = styled(Logo)<{ size: string }>`
   box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.075);
 `
 
- const CurrencyLogo = ({
+const CurrencyLogo = ({
   currency,
   size = '24px',
   style
@@ -127,7 +128,6 @@ const StyledLogo = styled(Logo)<{ size: string }>`
   if (['WAS'].includes(String(currency?.symbol))) {
     return <StyledEthereumLogo src={WASLogo} size={size} style={style} />
   }
-
 
   if (['GDL'].includes(String(currency?.symbol))) {
     return <StyledEthereumLogo src={GDLLogo} size={size} style={style} />

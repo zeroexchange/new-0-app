@@ -1,11 +1,13 @@
+import React from 'react'
+import styled from 'styled-components'
 import { CheckCircle, ChevronsDown, XCircle } from 'react-feather'
 
+import { CurrencyLogo } from '../../components'
+
 import Circle from '../../assets/images/circle-grey.svg'
-import { CurrencyLogo } from '../index'
+
 import { CustomLightSpinner } from '../../theme/components'
-import React from 'react'
 import { returnNumberDecimals } from '../../constants'
-import styled from 'styled-components'
 
 const ListItem = styled.div`
   display: flex;

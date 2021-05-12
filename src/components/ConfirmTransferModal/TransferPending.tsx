@@ -1,12 +1,14 @@
-import { AutoColumn, ColumnCenter } from '../../components'
 import React, { useEffect } from 'react'
-
-import { ChainTransferState } from '../../state/crosschain/actions'
-import Circle from '../../assets/images/blue-loader.svg'
-import { CustomLightSpinner } from '../../theme/components'
 import { Text } from 'rebass'
 import styled from 'styled-components'
+
+import { AutoColumn, ColumnCenter } from '../../components'
+import { CustomLightSpinner } from '../../theme/components'
+
+import { ChainTransferState } from '../../state/crosschain/actions'
 import { useCrosschainState } from '../../state/crosschain/hooks'
+
+import Circle from '../../assets/images/blue-loader.svg'
 
 const Section = styled(AutoColumn)`
   padding: 24px;

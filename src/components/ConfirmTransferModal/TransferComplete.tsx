@@ -1,7 +1,8 @@
-import { ButtonOutlined, AutoColumn, SuccessIllustation, RowFixed} from '../../components'
 import React from 'react'
 import { Text } from 'rebass'
 import styled from 'styled-components'
+
+import { ButtonOutlined, AutoColumn, SuccessIllustation, RowFixed } from '../../components'
 
 const Message = styled.p`
   font-size: 0.85rem;

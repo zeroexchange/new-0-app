@@ -1,9 +1,9 @@
+import React from 'react'
+import styled from 'styled-components'
 import { Book, BookOpen, DollarSign, Info, MessageCircle } from 'react-feather'
 
 import { ExternalLink } from '../../theme'
-import { Modal } from '../index'
-import React from 'react'
-import styled from 'styled-components'
+import { Modal } from '../../components'
 
 interface ModalMoreProps {
   isOpen: boolean
@@ -88,7 +88,7 @@ const Cross = styled.div`
     transform: rotate(-45deg);
   }
 `
- const ModalMore = ({ isOpen, onDismiss }: ModalMoreProps) => {
+const ModalMore = ({ isOpen, onDismiss }: ModalMoreProps) => {
   return (
     <Modal isOpen={isOpen} onDismiss={onDismiss}>
       <ModalContainer>

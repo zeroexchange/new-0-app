@@ -1,19 +1,21 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import { DataCard, CardSection, Break } from '../Pools/styled'
-import { TYPE, ExternalLink, CloseIcon, CustomLightSpinner, UniTokenAnimated } from '../../theme'
-import { useClaimCallback, useUserUnclaimedAmount, useUserHasAvailableClaim } from '../../state/claim/hooks'
-import tokenLogo from '../../assets/images/token-logo.png'
-import Circle from '../../assets/images/blue-loader.svg'
 import { Text } from 'rebass'
+import { isAddress } from 'ethers/lib/utils'
+import { TokenAmount } from '@zeroexchange/sdk'
+
+import { DataCard, CardSection, Break, CardNoise, CardBGImage, CardBGImageSmaller } from '../Pools/styled'
 import {AddressInputPanel, Confetti, Modal, ButtonPrimary, RowBetween } from '../../components'
 import {AutoColumn, ColumnCenter } from '../../components/Column'
+
+import tokenLogo from '../../assets/images/token-logo.png'
+import Circle from '../../assets/images/blue-loader.svg'
+
+import { TYPE, ExternalLink, CloseIcon, CustomLightSpinner, UniTokenAnimated } from '../../theme'
+import { useClaimCallback, useUserUnclaimedAmount, useUserHasAvailableClaim } from '../../state/claim/hooks'
 import useENS from '../../hooks/useENS'
 import { useActiveWeb3React } from '../../hooks'
-import { isAddress } from 'ethers/lib/utils'
-import { CardNoise, CardBGImage, CardBGImageSmaller } from '../Pools/styled'
 import { useIsTransactionPending } from '../../state/transactions/hooks'
-import { TokenAmount } from '@zeroexchange/sdk'
 import { getEtherscanLink, shortenAddress } from '../../utils'
 
 const ContentWrapper = styled(AutoColumn)`

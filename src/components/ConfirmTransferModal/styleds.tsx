@@ -3,6 +3,7 @@ import React from 'react'
 import { AlertTriangle } from 'react-feather'
 import styled, { css } from 'styled-components'
 import { Text } from 'rebass'
+
 import { AutoColumn } from '../../components'
 
 export const Wrapper = styled.div`

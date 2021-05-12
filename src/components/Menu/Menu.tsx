@@ -1,11 +1,13 @@
 import { BookOpen, Info, MessageCircle } from 'react-feather'
 import React, { useRef } from 'react'
-import { useModalOpen, useToggleModal } from '../../state/application/hooks'
+import styled from 'styled-components'
+
+import { ReactComponent as MenuIcon } from '../../assets/images/menu.svg'
 
 import { ApplicationModal } from '../../state/application/actions'
 import { ExternalLink } from '../../theme'
-import { ReactComponent as MenuIcon } from '../../assets/images/menu.svg'
-import styled from 'styled-components'
+import { useModalOpen, useToggleModal } from '../../state/application/hooks'
+
 import { useOnClickOutside } from '../../hooks/useOnClickOutside'
 
 const StyledMenuIcon = styled(MenuIcon)`

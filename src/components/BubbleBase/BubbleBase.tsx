@@ -1,8 +1,6 @@
-import { isFirefox, isIOS } from 'react-device-detect'
-
 import React from 'react'
 import styled from 'styled-components'
-
+import { isFirefox, isIOS } from 'react-device-detect'
 export interface BubbleBaseProps {
   mode?: 'normal' | 'dark'
 }

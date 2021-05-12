@@ -1,8 +1,9 @@
+import React from 'react'
+import styled from 'styled-components'
 import Highcharts from 'highcharts'
 import HighchartsReact from 'highcharts-react-official'
-import React from 'react'
+
 import getPercentageValues from './../../../utils/getPercentageValues'
-import styled from 'styled-components'
 
 type LineChartProps = {
   categoriesX: Array<string>

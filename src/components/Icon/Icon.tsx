@@ -1,7 +1,7 @@
-import Icons from './Icons'
 import React from 'react'
 import styled from 'styled-components'
 
+import Icons from './Icons'
 const StyledSpan = styled.span`
   width: 20px;
   height: 20px;
@@ -12,7 +12,7 @@ export interface IconProps {
   color?: string
 }
 
-const Icon = ({ icon, active = false, color  }: IconProps) => {
+const Icon = ({ icon, active = false, color }: IconProps) => {
   const IconPath = Icons[icon]
   return (
     <StyledSpan>

@@ -1,10 +1,11 @@
 import { CheckCircle, ChevronsRight } from 'react-feather'
-
-import { ButtonPrimary, AutoColumn, RowFixed } from '../../components'
-import { ChainTransferState } from '../../state/crosschain/actions'
 import React from 'react'
 import { Text } from 'rebass'
 import styled from 'styled-components'
+
+import { ButtonPrimary, AutoColumn, RowFixed } from '../../components'
+
+import { ChainTransferState } from '../../state/crosschain/actions'
 import { useCrosschainHooks } from '../../state/crosschain/hooks'
 
 const CancelLink = styled.a`

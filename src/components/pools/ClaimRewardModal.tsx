@@ -1,10 +1,12 @@
-import { CloseIcon, TYPE } from '../../theme'
 import React, { useState } from 'react'
-import { Modal, ButtonError, AutoColumn, SubmittedView, LoadingView, RowBetween} from '../../components'
 import styled from 'styled-components'
+import { TransactionResponse } from '@ethersproject/providers'
+
+import { CloseIcon, TYPE } from '../../theme'
+import { Modal, ButtonError, AutoColumn, SubmittedView, LoadingView, RowBetween} from '../../components'
+
 import { StakingInfo } from '../../state/stake/hooks'
 import { useStakingContract } from '../../hooks/useContract'
-import { TransactionResponse } from '@ethersproject/providers'
 import toEllipsis from './../../utils/toEllipsis'
 import { useActiveWeb3React } from '../../hooks'
 import { useTransactionAdder } from '../../state/transactions/hooks'

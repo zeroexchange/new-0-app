@@ -1,16 +1,15 @@
+import { ChainId } from '@zeroexchange/sdk'
+import styled from 'styled-components'
+import React from 'react'
+
 import { copyToClipboard, wait } from '../../utils'
+import { returnBalanceNum } from '../../constants'
+import { useCurrencyBalance } from '../../state/wallet/hooks'
 
 import AvaxLogo from '../../assets/images/avax-logo.png'
-// import BigNumber from 'bignumber.js'
 import BinanceLogo from '../../assets/images/binance-logo.png'
-// import MoonbaseLogo from '../../assets/images/moonbase-logo.png'
-import { BubbleBase, CurrencyLogo, Icon } from '../index'
-import { ChainId } from '@zeroexchange/sdk'
 import EthereumLogo from '../../assets/images/ethereum-logo.png'
-import React from 'react'
-import { returnBalanceNum } from '../../constants'
-import styled from 'styled-components'
-import { useCurrencyBalance } from '../../state/wallet/hooks'
+import { BubbleBase, CurrencyLogo, Icon } from '../../components'
 
 const BalanceCard = styled.div`
   margin-top: 20px;
@@ -125,11 +124,6 @@ const BalanceItem = ({
   isLast?: boolean
   isFirst?: boolean
 }) => {
-  // const weiToEthNum = (balance: any, decimals = 18) => {
-  //   const displayBalance = balance.dividedBy(new BigNumber(10).pow(decimals))
-  //   return displayBalance.toNumber()
-  // }
-
   const balance = useCurrencyBalance(account ?? undefined, token, chainId)
   const hasABalance = balance && parseFloat(balance.toSignificant(6)) > 0.0000001 ? true : false
   const isContained = tokenBalances.indexOf(token?.address) >= 0 ? true : false

@@ -1,16 +1,17 @@
 import { AVAX, BNB, DEV, ETHER, JSBI, MATIC, TokenAmount } from '@zeroexchange/sdk'
+import React, { useEffect, useState } from 'react'
+import { CountUp } from 'use-count-up'
+import styled from 'styled-components'
 
 import { BIG_INT_SECONDS_IN_WEEK, BIG_INT_ZERO } from '../../constants'
-import React, { useEffect, useState } from 'react'
 import { StyledInternalLink, TYPE } from '../../theme'
-
-import { CountUp } from 'use-count-up'
 import { ButtonOutlined, ButtonPrimary  } from '../../components'
 import DoubleCurrencyLogo from '../DoubleCurrencyLogo/DoubleCurrencyLogo'
+
 import SettingIcon from '../Settings/SettingIcon'
 import { StakingInfo } from '../../state/stake/hooks'
 import { currencyId } from '../../utils/currencyId'
-import styled from 'styled-components'
+
 import { unwrappedToken } from '../../utils/wrappedCurrency'
 import { useActiveWeb3React } from '../../hooks'
 import { useColor } from '../../hooks/useColor'

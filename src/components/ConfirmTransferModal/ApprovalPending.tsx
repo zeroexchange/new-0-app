@@ -1,10 +1,11 @@
-import { AutoColumn, ColumnCenter } from '../../components'
-
-import Circle from '../../assets/images/blue-loader.svg'
-import { CustomLightSpinner } from '../../theme/components'
 import React from 'react'
 import { Text } from 'rebass'
 import styled from 'styled-components'
+
+import { AutoColumn, ColumnCenter } from '../../components'
+import { CustomLightSpinner } from '../../theme/components'
+
+import Circle from '../../assets/images/blue-loader.svg'
 
 const Section = styled(AutoColumn)`
   padding: 24px;

@@ -3,23 +3,24 @@ import styled, { ThemeContext } from 'styled-components'
 import { useDispatch } from 'react-redux'
 import { ExternalLink as LinkIcon } from 'react-feather'
 
-import Transaction from './Transaction'
 import Copy from './Copy'
-import { clearAllTransactions } from '../../state/transactions/actions'
-import { AppDispatch } from '../../state'
-import { ExternalLink, LinkStyledButton, TYPE } from '../../theme'
-import { fortmatic, injected, portis, walletconnect, walletlink } from '../../connectors'
+import Transaction from './Transaction'
 import { IdentIcon, AutoRow } from '../../components'
 import { ButtonSecondary } from './../Button'
-import { CHAIN_LABELS, SUPPORTED_WALLETS } from '../../constants'
+
 import FortmaticIcon from '../../assets/images/fortmaticIcon.png'
 import PortisIcon from '../../assets/images/portisIcon.png'
 import { ReactComponent as Close } from '../../assets/images/x.svg'
 import CoinbaseWalletIcon from '../../assets/images/coinbaseWalletIcon.svg'
 import WalletConnectIcon from '../../assets/images/walletConnectIcon.svg'
+
+import { ExternalLink, LinkStyledButton, TYPE } from '../../theme'
+import { clearAllTransactions } from '../../state/transactions/actions'
+import { AppDispatch } from '../../state'
+import { CHAIN_LABELS, SUPPORTED_WALLETS } from '../../constants'
+import { fortmatic, injected, portis, walletconnect, walletlink } from '../../connectors'
 import { getEtherscanLink, shortenAddress } from '../../utils'
 import { useActiveWeb3React } from '../../hooks'
-
 
 const HeaderRow = styled.div`
   ${({ theme }) => theme.flexRowNoWrap};

@@ -1,11 +1,22 @@
-import {BlockchainLogo, CurrencyLogo, ArrowDown, ArrowRight, ButtonPrimary, AutoColumn, RowBetween, RowFixed  } from '../../components'
-import { ChainTransferState } from '../../state/crosschain/actions'
-import { Currency } from '@zeroexchange/sdk'
+import { Currency, Trade } from '@zeroexchange/sdk'
 import React from 'react'
 import { Text } from 'rebass'
-import { Trade } from '@zeroexchange/sdk'
-import { TruncatedText } from './styleds'
 import styled from 'styled-components'
+
+import { TruncatedText } from './styleds'
+
+import {
+  BlockchainLogo,
+  CurrencyLogo,
+  ArrowDown,
+  ArrowRight,
+  ButtonPrimary,
+  AutoColumn,
+  RowBetween,
+  RowFixed
+} from '../../components'
+
+import { ChainTransferState } from '../../state/crosschain/actions'
 import { useCrosschainHooks } from '../../state/crosschain/hooks'
 
 interface NotStartedProps {

@@ -2,7 +2,12 @@ import { ChainId, TokenAmount } from '@zeroexchange/sdk'
 import React, { useMemo } from 'react'
 import { X } from 'react-feather'
 import styled from 'styled-components'
+
 import tokenLogo from '../../assets/images/token-logo.png'
+
+import { AutoColumn, RowBetween } from '../../components'
+import { Break, CardBGImage, CardNoise, CardSection, DataCard } from '../Pools/styled'
+
 import { UNI } from '../../constants'
 import { useTotalSupply } from '../../data/TotalSupply'
 import { useActiveWeb3React } from '../../hooks'
@@ -13,8 +18,6 @@ import { useAggregateUniBalance, useTokenBalance } from '../../state/wallet/hook
 import { ExternalLink, StyledInternalLink, TYPE, UniTokenAnimated } from '../../theme'
 import { computeUniCirculation } from '../../utils/computeUniCirculation'
 import useUSDCPrice from '../../utils/useUSDCPrice'
-import { AutoColumn, RowBetween } from '../../components'
-import { Break, CardBGImage, CardNoise, CardSection, DataCard } from '../Pools/styled'
 
 const ContentWrapper = styled(AutoColumn)`
   width: 100%;

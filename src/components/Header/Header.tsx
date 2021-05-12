@@ -1,16 +1,23 @@
 import React, { useMemo, useState } from 'react'
 import styled from 'styled-components'
+import { ChainId } from '@zeroexchange/sdk'
+import { Text } from 'rebass'
 
 import ArrowDropdown from './../../assets/svg/dropdown_arrow.svg'
-import { BlockchainLogo, CrossChainModal } from '../index'
-import { CHAIN_LABELS } from '../../constants'
-import { ChainId } from '@zeroexchange/sdk'
-import { ClaimModal } from 'components'
-import { Loader, PlainPopup } from '../../components'
-import { PopupContent } from 'state/application/actions'
-import { Text } from 'rebass'
-import { Web3Status, YellowCard } from '../index'
 import ZeroLogo from '../../assets/images/zero-logo-text.png'
+
+import {
+  BlockchainLogo,
+  CrossChainModal,
+  ClaimModal,
+  Loader,
+  PlainPopup,
+  Web3Status,
+  YellowCard
+} from '../../components'
+
+import { CHAIN_LABELS } from '../../constants'
+import { PopupContent } from 'state/application/actions'
 import { useActiveWeb3React } from '../../hooks'
 import { useCrosschainState } from 'state/crosschain/hooks'
 import { useETHBalances } from '../../state/wallet/hooks'

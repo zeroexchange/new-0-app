@@ -1,7 +1,7 @@
 import React, { FormEvent, useState } from 'react'
-
-import { BubbleBase } from './../index'
 import styled from 'styled-components'
+
+import { BubbleBase } from '../../components'
 
 export type DropDownProps = {
   options: {
