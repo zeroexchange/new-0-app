@@ -1,9 +1,7 @@
 import { ApprovalState, useApproveCallback } from '../../hooks/useApproveCallback'
-import { AutoRow, RowBetween, RowFixed } from '../../components/Row'
 import { BackArrow, ExternalLink, TYPE } from '../../theme'
 import { Currency, CurrencyAmount, Fraction, JSBI, Percent, Token, TokenAmount, WETH } from '@zeroexchange/sdk'
 import { DEFAULT_DEADLINE_FROM_NOW, INITIAL_ALLOWED_SLIPPAGE } from '../../constants'
-import { LightCard, PinkCard, YellowCard } from '../../components/Card'
 import { NEVER_RELOAD, useSingleCallResult } from '../../state/multicall/hooks'
 import { PairState, usePair } from '../../data/Reserves'
 import React, { useCallback, useMemo, useState } from 'react'
@@ -14,14 +12,23 @@ import { useIsTransactionPending, useTransactionAdder } from '../../state/transa
 import { useV1ExchangeContract, useV2MigratorContract } from '../../hooks/useContract'
 
 import { AddressZero } from '@ethersproject/constants'
-import { AutoColumn } from '../../components/Column'
 import { BodyWrapper } from '../AppBody'
-import { ButtonConfirmed } from '../../components/Button'
-import { CurrencyLogo, FormattedCurrencyAmount } from '../../components'
+import {
+  CurrencyLogo,
+  FormattedCurrencyAmount,
+  ButtonConfirmed,
+  LightCard,
+  PinkCard,
+  YellowCard,
+  AutoColumn,
+  QuestionHelper,
+  AutoRow,
+  RowBetween,
+  RowFixed
+} from '../../components'
 import { Dots } from '../../components/swap/styleds'
 import { EmptyState } from './EmptyState'
 import { MIGRATOR_ADDRESS } from '../../constants/abis/migrator'
-import QuestionHelper from '../../components/QuestionHelper'
 import { Text } from 'rebass'
 import { TransactionResponse } from '@ethersproject/abstract-provider'
 import { useActiveWeb3React } from '../../hooks'

@@ -1,13 +1,9 @@
 import React, { useState } from 'react'
-import { Modal } from '../index'
-import { AutoColumn } from '../Column'
+import { Modal, ButtonError, AutoColumn, SubmittedView, LoadingView, RowBetween} from '../../components'
 import styled from 'styled-components'
-import { RowBetween } from '../Row'
 import { TYPE, CloseIcon } from '../../theme'
-import { ButtonError } from '../Button'
 import { StakingInfo } from '../../state/stake/hooks'
 import { useStakingContract } from '../../hooks/useContract'
-import { SubmittedView, LoadingView } from '../ModalViews'
 import { TransactionResponse } from '@ethersproject/providers'
 import { useTransactionAdder } from '../../state/transactions/hooks'
 import { useActiveWeb3React } from '../../hooks'
@@ -25,7 +21,7 @@ interface StakingModalProps {
   stakingInfo: StakingInfo
 }
 
-export default function ClaimRewardModal({ isOpen, onDismiss, stakingInfo }: StakingModalProps) {
+export function ClaimRewardModal({ isOpen, onDismiss, stakingInfo }: StakingModalProps) {
   const { account } = useActiveWeb3React()
 
   // monitor call to help UI loading state

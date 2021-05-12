@@ -1,15 +1,22 @@
 import { ApprovalState, useApproveCallback } from '../../hooks/useApproveCallback'
-import { ButtonConfirmed, ButtonError } from '../Button'
 import { ChainId, Pair, TokenAmount } from '@zeroexchange/sdk'
 import { CloseIcon, TYPE } from '../../theme'
-import { LoadingView, SubmittedView } from '../ModalViews'
 import React, { useCallback, useState } from 'react'
-import { RowBetween, RowCenter } from '../Row'
 import { StakingInfo, useDerivedStakeInfo } from '../../state/stake/hooks'
 import { usePairContract, useStakingContract } from '../../hooks/useContract'
-
-import { AutoColumn } from '../Column'
-import { CurrencyInputPanel, DoubleCurrencyLogo, Modal, ProgressCircles } from '../index'
+import {
+  CurrencyInputPanel,
+  DoubleCurrencyLogo,
+  Modal,
+  ProgressCircles,
+  ButtonConfirmed,
+  ButtonError,
+  AutoColumn,
+  LoadingView,
+  SubmittedView,
+  RowBetween,
+  RowCenter
+} from '../../components'
 import { TransactionResponse } from '@ethersproject/providers'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
 import { splitSignature } from 'ethers/lib/utils'
@@ -40,7 +47,7 @@ interface StakingModalProps {
   userLiquidityUnstaked: TokenAmount | undefined
 }
 
-export default function StakingModal({ isOpen, onDismiss, stakingInfo, userLiquidityUnstaked }: StakingModalProps) {
+export function StakingModal({ isOpen, onDismiss, stakingInfo, userLiquidityUnstaked }: StakingModalProps) {
   const { account, chainId, library } = useActiveWeb3React()
 
   // track and parse user input

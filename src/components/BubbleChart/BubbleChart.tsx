@@ -1,9 +1,9 @@
 import React, { useRef, useState } from 'react'
+import styled from 'styled-components'
 
 import BarChart from './charts/BarChart'
-import { BubbleBase, Percentage } from './../index'
 import LineChart from './charts/LineChart'
-import styled from 'styled-components'
+import { BubbleBase, Percentage } from './../../components'
 import toCurrency from './../../utils/toCurrency'
 import useResize from './../../hooks/widthComponent'
 

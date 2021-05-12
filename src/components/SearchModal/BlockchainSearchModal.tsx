@@ -1,8 +1,7 @@
 import { Currency } from '@zeroexchange/sdk'
 import React, { useCallback, useEffect, useState } from 'react'
 import useLast from '../../hooks/useLast'
-import {Modal} from '../index'
-import { BlockchainSearch } from './BlockchainSearch'
+import {Modal, BlockchainSearch} from '../../components'
 
 interface BlockchainSearchModalProps {
   isOpen: boolean
@@ -13,7 +12,7 @@ interface BlockchainSearchModalProps {
   showCommonBases?: boolean
 }
 
-export default function BlockchainSearchModal({
+export function BlockchainSearchModal({
   isOpen,
   onDismiss,
   onCurrencySelect,

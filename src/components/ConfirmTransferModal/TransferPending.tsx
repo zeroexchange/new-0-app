@@ -1,4 +1,4 @@
-import { AutoColumn, ColumnCenter } from '../Column'
+import { AutoColumn, ColumnCenter } from '../../components'
 import React, { useEffect } from 'react'
 
 import { ChainTransferState } from '../../state/crosschain/actions'

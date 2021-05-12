@@ -1,4 +1,4 @@
-import { AutoColumn } from '../Column'
+import { AutoColumn } from '../../components/Column'
 import styled from 'styled-components'
 
 export const TextBox = styled.div`

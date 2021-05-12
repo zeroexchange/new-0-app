@@ -1,9 +1,7 @@
 import { ChevronDown, Link } from 'react-feather'
 import React from 'react'
 
-import { ArrowDown } from '../Arrows'
-import { ArrowRight } from '../Arrows'
-import {BlockchainLogo} from '../index'
+import {BlockchainLogo, ArrowDown, ArrowRight } from '../index'
 import { CrosschainChain } from '../../state/crosschain/actions'
 import styled from 'styled-components'
 import { useCrosschainState } from '../../state/crosschain/hooks'

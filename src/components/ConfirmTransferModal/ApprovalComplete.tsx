@@ -1,10 +1,8 @@
 import { CheckCircle, ChevronsRight } from 'react-feather'
 
-import { AutoColumn } from '../Column'
-import { ButtonPrimary } from '../Button'
+import { ButtonPrimary, AutoColumn, RowFixed } from '../../components'
 import { ChainTransferState } from '../../state/crosschain/actions'
 import React from 'react'
-import { RowFixed } from '../Row'
 import { Text } from 'rebass'
 import styled from 'styled-components'
 import { useCrosschainHooks } from '../../state/crosschain/hooks'

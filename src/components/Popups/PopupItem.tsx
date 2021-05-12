@@ -1,9 +1,8 @@
 import React, { useCallback, useContext, useEffect } from 'react'
 import styled, { ThemeContext } from 'styled-components'
 
-import ListUpdatePopup from './ListUpdatePopup'
 import { PopupContent } from '../../state/application/actions'
-import TransactionPopup from './TransactionPopup'
+import {TransactionPopup, ListUpdatePopup} from '../../components'
 import { X } from 'react-feather'
 import { animated } from 'react-spring'
 import { useRemovePopup } from '../../state/application/hooks'
@@ -47,7 +46,7 @@ const Fader = styled.div`
 
 const AnimatedFader = animated(Fader)
 
-export default function PopupItem({
+export function PopupItem({
   removeAfterMs,
   content,
   popKey,

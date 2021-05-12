@@ -1,9 +1,8 @@
-import { ButtonOutlined } from '../../components/Button'
 import React, { useMemo, useState } from 'react'
 
 import { ExternalLink } from '../../theme'
 import { IDO_LIST } from '../../constants/idos'
-import { PageContainer, IdoRow } from '../../components'
+import { PageContainer, IdoRow, ButtonOutlined } from '../../components'
 import Toggle from '../../components/Toggle'
 import styled from 'styled-components'
 import moment from 'moment'

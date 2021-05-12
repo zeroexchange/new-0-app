@@ -1,9 +1,8 @@
 import React, { useContext } from 'react'
 import { useActiveWeb3React } from '../../hooks'
 
-import { AutoColumn, ColumnCenter } from '../Column'
+import { AutoColumn, ColumnCenter, RowBetween } from '../../components'
 import styled, { ThemeContext } from 'styled-components'
-import { RowBetween } from '../Row'
 import { TYPE, CloseIcon, CustomLightSpinner } from '../../theme'
 import { ArrowUpCircle } from 'react-feather'
 

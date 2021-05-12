@@ -8,25 +8,38 @@ import {
 } from '../../constants'
 import { ApprovalState, useApproveCallback } from '../../hooks/useApproveCallback'
 import { ArrowDown, Plus } from 'react-feather'
-import { AutoColumn, ColumnCenter } from '../../components/Column'
-import { ButtonConfirmed, ButtonError, ButtonLight, ButtonPrimary } from '../../components/Button'
 import { ClickableText, MaxButton, Wrapper } from '../Legacy_Pool/styleds'
-import { LightCard, StandardCard } from '../../components/Card'
 import React, { useCallback, useContext, useMemo, useState } from 'react'
-import Row, { RowBetween, RowFixed } from '../../components/Row'
 import { StyledInternalLink, TYPE } from '../../theme'
-import TransactionConfirmationModal, { ConfirmationModalContent } from '../../components/TransactionConfirmationModal'
 import { calculateGasMargin, calculateSlippageAmount, getRouterContract } from '../../utils'
 import styled, { keyframes } from 'styled-components'
 import { useBurnState, useDerivedBurnInfo } from '../../state/burn/hooks'
 
-import { AddRemoveTabs } from '../../components/NavigationTabs'
 import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
-import { CurrencyInputPanel, CurrencyLogo, DoubleCurrencyLogo, Slider} from '../../components'
+import {
+  CurrencyInputPanel,
+  CurrencyLogo,
+  DoubleCurrencyLogo,
+  Slider,
+  ButtonConfirmed,
+  ButtonError,
+  ButtonLight,
+  ButtonPrimary,
+  LightCard,
+  StandardCard,
+  AutoColumn,
+  ColumnCenter,
+  AddRemoveTabs,
+  MinimalPositionCard,
+  Row,
+  RowBetween,
+  RowFixed,
+  TransactionConfirmationModal,
+  ConfirmationModalContent
+} from '../../components'
 import { Dots } from '../../components/swap/styleds'
 import { Field } from '../../state/burn/actions'
-import { MinimalPositionCard } from '../../components/PositionCard'
 import { RouteComponentProps } from 'react-router'
 import { Text } from 'rebass'
 import { ThemeContext } from 'styled-components'

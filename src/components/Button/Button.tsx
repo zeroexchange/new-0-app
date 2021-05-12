@@ -3,7 +3,7 @@ import { darken, lighten } from 'polished'
 
 import { ChevronDown } from 'react-feather'
 import React from 'react'
-import { RowBetween } from '../Row'
+import { RowBetween } from '../../components'
 import styled from 'styled-components'
 
 const Base = styled(RebassButton)<{

@@ -1,4 +1,3 @@
-import { ButtonLight, ButtonPrimary } from '../../components/Button'
 import { CHAIN_LABELS, SUPPORTED_CHAINS } from '../../constants'
 import {
   ChainTransferState,
@@ -21,7 +20,6 @@ import {
 
 import AdvancedSwapDetailsDropdown from '../../components/swap/AdvancedSwapDetailsDropdown'
 import { AppDispatch } from '../../state'
-import { AutoColumn } from '../../components/Column'
 import {
   BlockchainSelector,
   ChainBridgeModal,
@@ -30,16 +28,19 @@ import {
   CurrencyInputPanel,
   PageContainer,
   BubbleBase,
-  TokenWarningModal
+  TokenWarningModal,
+  ButtonLight,
+  ButtonPrimary,
+  GreyCard,
+  AutoColumn,
+  RowBetween
 } from '../../components'
 import { BottomGrouping } from '../../components/swap/styleds'
 import Circle from '../../assets/images/circle-grey.svg'
 import Circle2 from '../../assets/images/circle.svg'
 import { CustomLightSpinner } from '../../theme/components'
 import { Field } from '../../state/swap/actions'
-import { GreyCard } from '../../components/Card'
 import { ProposalStatus } from '../../state/crosschain/actions'
-import { RowBetween } from '../../components/Row'
 import { TYPE } from '../../theme'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
 import { useActiveWeb3React } from '../../hooks'

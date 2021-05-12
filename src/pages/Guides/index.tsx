@@ -1,5 +1,5 @@
 import AppBody from '../AppBody'
-import { AutoColumn } from '../../components/Column'
+import { AutoColumn } from '../../components'
 import { Book } from 'react-feather'
 import React from 'react'
 import styled from 'styled-components'

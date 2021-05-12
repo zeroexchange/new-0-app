@@ -1,4 +1,4 @@
-import { AutoColumn, ColumnCenter } from '../Column'
+import { AutoColumn, ColumnCenter } from '../../components'
 
 import Circle from '../../assets/images/blue-loader.svg'
 import { CustomLightSpinner } from '../../theme/components'

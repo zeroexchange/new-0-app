@@ -27,7 +27,7 @@ export const StyledClose = styled(X)`
   }
 `
 
-export default function URLWarning() {
+export function URLWarning() {
   const toggleURLWarning = useURLWarningToggle()
   const showURLWarning = useURLWarningVisible()
 

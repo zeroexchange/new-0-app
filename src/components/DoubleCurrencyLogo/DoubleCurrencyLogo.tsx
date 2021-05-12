@@ -1,7 +1,7 @@
 import { Currency } from '@zeroexchange/sdk'
 import React from 'react'
 import styled from 'styled-components'
-import { CurrencyLogo } from '../index'
+import { CurrencyLogo } from '../../components'
 
 const Wrapper = styled.div<{ margin: boolean; sizeraw: number }>`
   position: relative;

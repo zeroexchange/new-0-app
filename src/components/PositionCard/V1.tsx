@@ -3,11 +3,7 @@ import { Link, RouteComponentProps, withRouter } from 'react-router-dom'
 import { Token, TokenAmount, WETH } from '@zeroexchange/sdk'
 
 import { Text } from 'rebass'
-import { AutoColumn } from '../Column'
-import { ButtonSecondary } from '../Button'
-import { RowBetween, RowFixed } from '../Row'
-import { FixedHeightRow, HoverCard } from './index'
-import { DoubleCurrencyLogo } from '../index'
+import { DoubleCurrencyLogo, ButtonSecondary, AutoColumn, FixedHeightRow, HoverCard,  RowBetween, RowFixed} from '../../components'
 import { useActiveWeb3React } from '../../hooks'
 import { ThemeContext } from 'styled-components'
 

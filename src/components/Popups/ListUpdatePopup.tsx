@@ -8,16 +8,15 @@ import { useRemovePopup } from '../../state/application/hooks'
 import { acceptListUpdate } from '../../state/lists/actions'
 import { TYPE } from '../../theme'
 import listVersionLabel from '../../utils/listVersionLabel'
-import { ButtonSecondary } from '../Button'
-import { AutoColumn } from '../Column'
-import { AutoRow } from '../Row'
+import { ButtonSecondary, AutoColumn, AutoRow} from '../../components'
 
-export const ChangesList = styled.ul`
+
+const ChangesList = styled.ul`
   max-height: 400px;
   overflow: auto;
 `
 
-export default function ListUpdatePopup({
+export function ListUpdatePopup({
   popKey,
   listUrl,
   oldList,
