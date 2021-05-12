@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import WalletMissing from '../../assets/svg/wallet_missing.svg'
-import { ButtonPrimary } from '../../components/Button'
+import { ButtonPrimary } from '../../components'
 import { TYPE } from '../../theme'
 
 const EmptyData = styled.div`

@@ -1,4 +1,3 @@
-import { AutoRow, RowBetween, RowFixed } from '../Row'
 import { ChainId, Trade, TradeType } from '@zeroexchange/sdk'
 import React, { useContext, useMemo, useState } from 'react'
 import { StyledBalanceMaxMini, SwapCallbackError } from './styleds'
@@ -9,11 +8,9 @@ import {
   warningSeverity
 } from '../../utils/prices'
 
-import { AutoColumn } from '../Column'
-import { ButtonError } from '../Button'
+import { ButtonError, AutoColumn, QuestionHelper, AutoRow, RowBetween, RowFixed } from '../../components'
 import { Field } from '../../state/swap/actions'
 import FormattedPriceImpact from './FormattedPriceImpact'
-import QuestionHelper from '../QuestionHelper'
 import { Repeat } from 'react-feather'
 import { TYPE } from '../../theme'
 import { Text } from 'rebass'

@@ -1,8 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 
 import { Currency } from '@zeroexchange/sdk'
-import { CurrencySearch } from './CurrencySearch'
-import { Modal } from '../index'
+import { Modal, CurrencySearch } from '../../components'
 import useLast from '../../hooks/useLast'
 
 interface CurrencySearchModalProps {
@@ -15,7 +14,7 @@ interface CurrencySearchModalProps {
   isCrossChain?: boolean
 }
 
-export default function CurrencySearchModal({
+export function CurrencySearchModal({
   isOpen,
   onDismiss,
   onCurrencySelect,

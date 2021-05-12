@@ -2,14 +2,17 @@ import { Currency, ETHER, JSBI, TokenAmount } from '@zeroexchange/sdk'
 import React, { useCallback, useEffect, useState } from 'react'
 import { Plus } from 'react-feather'
 import { Text } from 'rebass'
-import { ButtonDropdownLight } from '../../components/Button'
-import { LightCard } from '../../components/Card'
-import { AutoColumn, ColumnCenter } from '../../components/Column'
-import { CurrencyLogo } from '../../components'
-import { FindPoolTabs } from '../../components/NavigationTabs'
-import { MinimalPositionCard } from '../../components/PositionCard'
-import Row from '../../components/Row'
-import CurrencySearchModal from '../../components/SearchModal/CurrencySearchModal'
+import {
+  CurrencyLogo,
+  ButtonDropdownLight,
+  LightCard,
+  AutoColumn,
+  ColumnCenter,
+  FindPoolTabs,
+  MinimalPositionCard,
+  Row,
+  CurrencySearchModal
+} from '../../components'
 import { PairState, usePair } from '../../data/Reserves'
 import { useActiveWeb3React } from '../../hooks'
 import { usePairAdder } from '../../state/user/hooks'

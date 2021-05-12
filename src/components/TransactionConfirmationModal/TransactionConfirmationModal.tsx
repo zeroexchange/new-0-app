@@ -1,15 +1,18 @@
-import { AutoColumn, ColumnCenter } from '../Column'
 import { CloseIcon, CustomLightSpinner } from '../../theme/components'
 import React, { useContext } from 'react'
 import styled, { ThemeContext } from 'styled-components'
-
-import { SuccessIllustation, ErrorIllustratiton } from '../IllustationIcons'
-import { ButtonPrimary } from '../Button'
 import { ChainId } from '@zeroexchange/sdk'
 import Circle from '../../assets/images/blue-loader.svg'
 import { ExternalLink } from '../../theme'
-import { Modal } from '../index'
-import { RowBetween } from '../Row'
+import {
+  Modal,
+  ButtonPrimary,
+  AutoColumn,
+  ColumnCenter,
+  SuccessIllustation,
+  ErrorIllustratiton,
+  RowBetween
+} from '../../components'
 import { Text } from 'rebass'
 import { getEtherscanLink } from '../../utils'
 import { useActiveWeb3React } from '../../hooks'
@@ -170,7 +173,7 @@ interface ConfirmationModalProps {
   pendingText: string
 }
 
-export default function TransactionConfirmationModal({
+export function TransactionConfirmationModal({
   isOpen,
   onDismiss,
   attemptingTxn,

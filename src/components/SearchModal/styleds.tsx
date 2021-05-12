@@ -1,8 +1,7 @@
 import styled from 'styled-components'
-import { AutoColumn } from '../Column'
-import { RowBetween, RowFixed } from '../Row'
+import { AutoColumn, RowBetween, RowFixed } from '../../components'
 
-export const ModalInfo = styled.div`
+export const ModalInfoSearchModal = styled.div`
   ${({ theme }) => theme.flexRowNoWrap}
   align-items: center;
   padding: 1rem 1rem;
@@ -12,17 +11,17 @@ export const ModalInfo = styled.div`
   user-select: none;
 `
 
-export const FadedSpan = styled(RowFixed)`
+export const FadedSpanSearchModal = styled(RowFixed)`
   color: ${({ theme }) => theme.primary1};
   font-size: 14px;
 `
 
-export const PaddedColumn = styled(AutoColumn)`
+export const PaddedColumnSearchModal = styled(AutoColumn)`
   padding: 20px;
   padding-bottom: 12px;
 `
 
-export const MenuItem = styled(RowBetween)`
+export const MenuItemSearchModal = styled(RowBetween)`
   padding: 4px 20px;
   height: 56px;
   display: grid;
@@ -36,7 +35,7 @@ export const MenuItem = styled(RowBetween)`
   opacity: ${({ disabled, selected }) => (disabled || selected ? 0.5 : 1)};
 `
 
-export const SearchInput = styled.input`
+export const SearchInputSearchModal = styled.input`
   position: relative;
   display: flex;
   padding: 16px;
@@ -63,13 +62,13 @@ export const SearchInput = styled.input`
     outline: none;
   }
 `
-export const Separator = styled.div`
+export const SeparatorSearchModal = styled.div`
   width: 100%;
   height: 1px;
   background-color: ${({ theme }) => theme.bg2};
 `
 
-export const SeparatorDark = styled.div`
+export const SeparatorDarkSearchModal = styled.div`
   width: 100%;
   height: 1px;
   background-color: ${({ theme }) => theme.bg3};

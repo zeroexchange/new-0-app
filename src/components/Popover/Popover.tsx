@@ -81,7 +81,7 @@ export interface PopoverProps {
   placement?: Placement
 }
 
- const Popover = ({ content, show, children, placement = 'auto' }: PopoverProps) => {
+ export const Popover = ({ content, show, children, placement = 'auto' }: PopoverProps) => {
   const [referenceElement, setReferenceElement] = useState<HTMLDivElement | null>(null)
   const [popperElement, setPopperElement] = useState<HTMLDivElement | null>(null)
   const [arrowElement, setArrowElement] = useState<HTMLDivElement | null>(null)
@@ -115,5 +115,3 @@ export interface PopoverProps {
     </>
   )
 }
-
-export default Popover

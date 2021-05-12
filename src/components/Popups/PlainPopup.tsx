@@ -1,8 +1,7 @@
 import React from 'react'
 
-import {Modal} from 'components'
+import {Modal, PopupItem} from 'components'
 import { PopupContent } from 'state/application/actions'
-import PopupItem from 'components/Popups/PopupItem'
 
 interface PlainPopupProps {
   isOpen: boolean
@@ -11,7 +10,7 @@ interface PlainPopupProps {
   removeAfterMs: number
   hideClose?: boolean | undefined
 }
-export default function PlainPopup({ isOpen, onDismiss, content, removeAfterMs, hideClose }: PlainPopupProps) {
+export function PlainPopup({ isOpen, onDismiss, content, removeAfterMs, hideClose }: PlainPopupProps) {
   return (
     <>
       {

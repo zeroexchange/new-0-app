@@ -3,7 +3,7 @@ import React, { useEffect } from 'react'
 import { X } from 'react-feather'
 import styled, { keyframes } from 'styled-components'
 import tokenLogo from '../../assets/images/token-logo.png'
-import { ButtonPrimary } from '../../components/Button'
+import { ButtonPrimary, AutoColumn } from '../../components'
 import { useActiveWeb3React } from '../../hooks'
 import { ApplicationModal } from '../../state/application/actions'
 import {
@@ -15,7 +15,6 @@ import {
 
 import { useUserHasAvailableClaim, useUserUnclaimedAmount } from '../../state/claim/hooks'
 import { TYPE } from '../../theme'
-import { AutoColumn } from '../Column'
 import { CardBGImage, CardNoise } from '../pools/styled'
 
 const StyledClaimPopup = styled(AutoColumn)`
@@ -52,7 +51,7 @@ const UniToken = styled.img`
   animation: ${rotate} 5s cubic-bezier(0.83, 0, 0.17, 1) infinite;
 `
 
-export default function ClaimPopup() {
+export function ClaimPopup() {
   const { account } = useActiveWeb3React()
 
   // dont store these in persisted state yet

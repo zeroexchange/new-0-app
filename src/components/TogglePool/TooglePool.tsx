@@ -1,5 +1,5 @@
 import React from 'react'
-import Row from 'components/Row'
+import { Row } from 'components'
 import styled from 'styled-components'
 import { AppDispatch } from '../../state'
 import { setToggle } from './../../state/pools/actions'

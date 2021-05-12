@@ -1,13 +1,10 @@
 import React, { useState, useContext } from 'react'
 import { useActiveWeb3React } from '../../hooks'
 
-import { Modal } from '../index'
-import { AutoColumn, ColumnCenter } from '../Column'
+import { Modal, ButtonPrimary, AutoColumn, ColumnCenter, RowBetween } from '../../components'
 import styled, { ThemeContext } from 'styled-components'
-import { RowBetween } from '../Row'
 import { TYPE, CustomLightSpinner } from '../../theme'
 import { X, ArrowUpCircle } from 'react-feather'
-import { ButtonPrimary } from '../Button'
 import Circle from '../../assets/images/blue-loader.svg'
 import { useVoteCallback, useUserVotes } from '../../state/governance/hooks'
 import { getEtherscanLink } from '../../utils'
@@ -41,7 +38,7 @@ interface VoteModalProps {
   proposalId: string | undefined // id for the proposal to vote on
 }
 
-export default function VoteModal({ isOpen, onDismiss, proposalId, support }: VoteModalProps) {
+export function VoteModal({ isOpen, onDismiss, proposalId, support }: VoteModalProps) {
   const { chainId } = useActiveWeb3React()
   const {
     voteCallback

@@ -1,5 +1,5 @@
 import React from 'react'
-import { AutoColumn } from '../../components/Column'
+import { AutoColumn } from '../../components'
 import { TYPE } from '../../theme'
 
 export function EmptyState({ message }: { message: string }) {

@@ -7,24 +7,34 @@ import {
   SMART_CHAIN_ROUTER_ADDRESS
 } from '../../constants'
 import { ApprovalState, useApproveCallback } from '../../hooks/useApproveCallback'
-import { AutoColumn, ColumnCenter } from '../../components/Column'
-import { BlueCard, LightCard } from '../../components/Card'
-import { ButtonError, ButtonLight, ButtonPrimary } from '../../components/Button'
 import { Dots, Wrapper } from '../Legacy_Pool/styleds'
 import React, { useCallback, useContext, useState } from 'react'
-import Row, { RowBetween, RowFlat } from '../../components/Row'
-import TransactionConfirmationModal, { ConfirmationModalContent } from '../../components/TransactionConfirmationModal'
 import { calculateGasMargin, calculateSlippageAmount, getRouterContract } from '../../utils'
 import styled, { ThemeContext } from 'styled-components'
 import { useDerivedMintInfo, useMintActionHandlers, useMintState } from '../../state/mint/hooks'
 import { useIsExpertMode, useUserSlippageTolerance } from '../../state/user/hooks'
 
-import { AddRemoveTabs } from '../../components/NavigationTabs'
 import { BigNumber } from '@ethersproject/bignumber'
 import { ConfirmAddModalBottom } from './ConfirmAddModalBottom'
-import { CurrencyInputPanel, DoubleCurrencyLogo } from '../../components'
+import {
+  CurrencyInputPanel,
+  DoubleCurrencyLogo,
+  ButtonPrimary,
+  ButtonError,
+  ButtonLight,
+  BlueCard,
+  LightCard,
+  AutoColumn,
+  ColumnCenter,
+  AddRemoveTabs,
+  MinimalPositionCard,
+  Row,
+  RowBetween,
+  RowFlat,
+  TransactionConfirmationModal,
+  ConfirmationModalContent
+} from '../../components'
 import { Field } from '../../state/mint/actions'
-import { MinimalPositionCard } from '../../components/PositionCard'
 import { PairState } from '../../data/Reserves'
 import { Plus } from 'react-feather'
 import { PoolPriceBar } from './PoolPriceBar'

@@ -1,19 +1,16 @@
 import React, { useState } from 'react'
-import { AutoColumn, ColumnCenter } from '../Column'
 import styled from 'styled-components'
-import { DataCard, CardSection, Break } from '../pools/styled'
-import { RowBetween } from '../Row'
+import { DataCard, CardSection, Break, CardNoise, CardBGImage, CardBGImageSmaller } from '../pools/styled'
 import { TYPE, ExternalLink, CloseIcon, CustomLightSpinner, UniTokenAnimated } from '../../theme'
-import { ButtonPrimary } from '../Button'
 import { useClaimCallback, useUserUnclaimedAmount, useUserHasAvailableClaim } from '../../state/claim/hooks'
 import tokenLogo from '../../assets/images/token-logo.png'
 import Circle from '../../assets/images/blue-loader.svg'
 import { Text } from 'rebass'
-import {AddressInputPanel, Confetti, Modal} from '../index'
+import {AddressInputPanel, Confetti, Modal, ButtonPrimary, RowBetween } from '../../components'
+import {AutoColumn, ColumnCenter } from '../../components/Column'
 import useENS from '../../hooks/useENS'
 import { useActiveWeb3React } from '../../hooks'
 import { isAddress } from 'ethers/lib/utils'
-import { CardNoise, CardBGImage, CardBGImageSmaller } from '../pools/styled'
 import { useIsTransactionPending } from '../../state/transactions/hooks'
 import { TokenAmount } from '@zeroexchange/sdk'
 import { getEtherscanLink, shortenAddress } from '../../utils'
@@ -40,7 +37,7 @@ const ConfirmedIcon = styled(ColumnCenter)`
   padding: 60px 0;
 `
 
-export default function AddressClaimModal({ isOpen, onDismiss }: { isOpen: boolean; onDismiss: () => void }) {
+export function AddressClaimModal({ isOpen, onDismiss }: { isOpen: boolean; onDismiss: () => void }) {
   const { chainId } = useActiveWeb3React()
 
   // state for smart contract input

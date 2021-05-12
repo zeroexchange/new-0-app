@@ -1,9 +1,4 @@
-import { RowBetween, RowFixed } from '../Row'
-
-import { AutoColumn } from '../Column'
-import { ArrowDown, ArrowRight } from '../Arrows'
-import {BlockchainLogo, CurrencyLogo} from '../index'
-import { ButtonPrimary } from '../Button'
+import {BlockchainLogo, CurrencyLogo, ArrowDown, ArrowRight, ButtonPrimary, AutoColumn, RowBetween, RowFixed  } from '../../components'
 import { ChainTransferState } from '../../state/crosschain/actions'
 import { Currency } from '@zeroexchange/sdk'
 import React from 'react'

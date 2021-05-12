@@ -1,9 +1,6 @@
 import { ChainId, Trade, currencyEquals } from '@zeroexchange/sdk'
 import React, { useCallback, useMemo } from 'react'
-import TransactionConfirmationModal, {
-  ConfirmationModalContent,
-  TransactionErrorContent
-} from '../TransactionConfirmationModal'
+import { TransactionConfirmationModal, ConfirmationModalContent, TransactionErrorContent } from '../../components'
 
 import SwapModalFooter from './SwapModalFooter'
 import SwapModalHeader from './SwapModalHeader'

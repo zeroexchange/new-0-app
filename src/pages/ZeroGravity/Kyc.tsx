@@ -2,9 +2,8 @@ import React, { useState } from 'react'
 import styled from 'styled-components';
 import { CgCheckO } from 'react-icons/cg';
 
-import { ButtonOutlined } from 'components/Button'
 import { Title } from '../../theme'
-import { PageContainer } from 'components'
+import { PageContainer, ButtonOutlined } from 'components'
 
 const BgWrapper = styled.div`
   background: rgba(47, 53, 115, 0.32);

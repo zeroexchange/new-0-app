@@ -1,9 +1,8 @@
 import { Link as HistoryLink, NavLink } from 'react-router-dom'
 
 import { ArrowLeft } from 'react-feather'
-import QuestionHelper from '../QuestionHelper'
+import { QuestionHelper, RowBetween } from '../../components'
 import React from 'react'
-import { RowBetween } from '../Row'
 import { darken } from 'polished'
 import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
@@ -80,16 +79,14 @@ export function FindPoolTabs() {
   )
 }
 
-export function AddRemoveTabs({ adding, creating, onGoBack }: { adding: boolean; creating: boolean, onGoBack?: any }) {
-
+export function AddRemoveTabs({ adding, creating, onGoBack }: { adding: boolean; creating: boolean; onGoBack?: any }) {
   const goBack = () => {
-    onGoBack();
+    onGoBack()
   }
 
   return (
     <Tabs>
       <RowBetween style={{ padding: '1rem' }}>
-
         <StyledArrowLeft onClick={goBack} style={{ cursor: 'pointer' }} />
 
         <ActiveText>{creating ? 'Create a pair' : adding ? 'Add Liquidity' : 'Remove Liquidity'}</ActiveText>

@@ -1,13 +1,11 @@
-
 import React, { useMemo, useState } from 'react'
 import styled from 'styled-components';
 import moment from 'moment';
 
-import { ButtonOutlined } from '../../components/Button'
 import { ExternalLink, Title } from '../../theme'
 import { IDO_LIST } from '../../constants/idos';
 import Toggle from '../../components/Toggle';
-import { PageContainer, IdoRow } from '../../components'
+import { PageContainer, IdoRow, ButtonOutlined } from '../../components'
 
 const StyledExternalLink = styled(ExternalLink)`
   text-decoration: none !important;

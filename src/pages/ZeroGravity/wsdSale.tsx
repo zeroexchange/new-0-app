@@ -3,9 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { calculateGasMargin, getEtherscanLink } from '../../utils'
 import styled, { ThemeContext } from 'styled-components'
 import { useTokenContract, useWDSDepositContract } from '../../hooks/useContract'
-
-import { AutoColumn } from '../../components/Column'
-import { ButtonOutlined } from '../../components/Button'
+import { ButtonOutlined, AutoColumn} from '../../components'
 import { useActiveWeb3React } from '../../hooks'
 import useGasPrice from 'hooks/useGasPrice'
 

@@ -1,22 +1,26 @@
 import { AVAX, BNB, ChainId, DEV, ETHER, JSBI, MATIC, Pair, TokenAmount } from '@zeroexchange/sdk'
 import { BIG_INT_SECONDS_IN_WEEK, BIG_INT_ZERO } from '../../constants'
-import { ButtonOutlined, ButtonPrimary, ButtonSuccess } from '../../components/Button'
-import { CardBGImage, CardNoise, CardSection, DataCard } from '../../components/pools/styled'
 import React, { useCallback, useContext, useMemo, useState } from 'react'
-import { RowBetween, RowCenter } from '../../components/Row'
 import { StyledInternalLink, TYPE, Title } from '../../theme'
 import styled, { ThemeContext } from 'styled-components'
 import { toV2LiquidityToken, useTrackedTokenPairs } from '../../state/user/hooks'
 import { useTokenBalance, useTokenBalancesWithLoadingIndicator } from '../../state/wallet/hooks'
 
-import { AutoColumn } from '../../components/Column'
-import ClaimRewardModal from '../../components/pools/ClaimRewardModal'
 import { CountUp } from 'use-count-up'
-import { DoubleCurrencyLogo, PageContainer } from '../../components'
-import FullPositionCard from '../../components/PositionCard'
+import {
+  DoubleCurrencyLogo,
+  PageContainer,
+  ButtonOutlined,
+  ButtonPrimary,
+  AutoColumn,
+  ClaimRewardModal,
+  StakingModal,
+  UnstakingModal,
+  FullPositionCard,
+  RowBetween, 
+  RowCenter 
+} from '../../components'
 import { RouteComponentProps } from 'react-router-dom'
-import StakingModal from '../../components/pools/StakingModal'
-import UnstakingModal from '../../components/pools/UnstakingModal'
 import { currencyId } from '../../utils/currencyId'
 import { useActiveWeb3React } from '../../hooks'
 import { useColor } from '../../hooks/useColor'
@@ -286,10 +290,7 @@ const TextLink = styled.div`
   color: #6752f7;
   cursor: pointer;
   transition: all 0.2s ease-in-out;
-<<<<<<< HEAD
   text-align: center;
-=======
->>>>>>> 613b48ea (Export and import changed logic. Part 1)
   &.pink {
     color: #b368fc;
   }

@@ -1,8 +1,7 @@
-import { ButtonLight, ButtonPrimary } from 'components/Button'
 import React, { useEffect, useState } from 'react'
 import { getTVLData, getTVLHistory, getWalletHolderCount } from 'api'
 
-import { Bubble, BubbleChart, PageContainer, Transactions } from './../../components'
+import { Bubble, BubbleChart, PageContainer, Transactions, ButtonLight, ButtonPrimary} from './../../components'
 import Circle from '../../assets/images/blue-loader.svg'
 import { CustomLightSpinner } from '../../theme'
 import { TVLHistoryData } from './../../graphql/types'

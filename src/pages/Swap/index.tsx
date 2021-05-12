@@ -1,11 +1,7 @@
 import { ApprovalState, useApproveCallbackFromTrade } from '../../hooks/useApproveCallback'
 import { ArrowWrapper, BottomGrouping, SwapCallbackError, Wrapper } from '../../components/swap/styleds'
-import { AutoRow, RowBetween } from '../../components/Row'
-import { ButtonConfirmed, ButtonError, ButtonLight, ButtonPrimary } from '../../components/Button'
 import { CHAIN_LABELS, NATIVE_CURRENCY } from '../../constants'
-import Card, { GreyCard } from '../../components/Card'
 import { ChainId, CurrencyAmount, JSBI, Token, Trade } from '@zeroexchange/sdk'
-import Column, { AutoColumn } from '../../components/Column'
 import { GetTokenByAddress, useCrossChain, useCrosschainHooks, useCrosschainState } from '../../state/crosschain/hooks'
 import { LinkStyledButton, TYPE, Title } from '../../theme'
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react'
@@ -24,11 +20,33 @@ import useWrapCallback, { WrapType } from '../../hooks/useWrapCallback'
 import AdvancedSwapDetailsDropdown from '../../components/swap/AdvancedSwapDetailsDropdown'
 import { AppDispatch } from '../../state'
 import { ArrowDown } from 'react-feather'
-import { AddressInputPanel, BalanceItem, BubbleBase, CurrencyInputPanel, Icon, Loader, PageContainer, ProgressCircles, TokenWarningModal} from '../../components'
+import {
+  AddressInputPanel,
+  BalanceItem,
+  BubbleBase,
+  CurrencyInputPanel,
+  Icon,
+  Loader,
+  PageContainer,
+  ProgressCircles,
+  TokenWarningModal,
+  Column,
+  AutoColumn,
+  AutoRow,
+  RowBetween
+} from '../../components'
 import Circle2 from '../../assets/images/circle.svg'
 import { ClickableText } from '../Legacy_Pool/styleds'
 import ConfirmSwapModal from '../../components/swap/ConfirmSwapModal'
-import { ArrowDown as CustomArrowDown } from '../../components/Arrows'
+import {
+  ArrowDown as CustomArrowDown,
+  ButtonConfirmed,
+  ButtonError,
+  ButtonLight,
+  ButtonPrimary,
+  GreyCard,
+  Card
+} from '../../components'
 import { CustomLightSpinner } from '../../theme/components'
 import { Field } from '../../state/swap/actions'
 import { INITIAL_ALLOWED_SLIPPAGE } from '../../constants'

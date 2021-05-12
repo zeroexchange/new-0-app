@@ -13,8 +13,7 @@ import { useAggregateUniBalance, useTokenBalance } from '../../state/wallet/hook
 import { ExternalLink, StyledInternalLink, TYPE, UniTokenAnimated } from '../../theme'
 import { computeUniCirculation } from '../../utils/computeUniCirculation'
 import useUSDCPrice from '../../utils/useUSDCPrice'
-import { AutoColumn } from '../Column'
-import { RowBetween } from '../Row'
+import { AutoColumn, RowBetween } from '../../components'
 import { Break, CardBGImage, CardNoise, CardSection, DataCard } from '../pools/styled'
 
 const ContentWrapper = styled(AutoColumn)`
