@@ -240,6 +240,7 @@ export const STAKING_REWARDS_INFO: {
 }
 
 export interface StakingInfo {
+  APR?: number
   // the address of the reward contract
   stakingRewardAddress: string
   // the tokens involved in this pair
