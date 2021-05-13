@@ -309,21 +309,24 @@ export default function Pools() {
     setShowClaimRewardModal(true)
   }
 
+  const poolsInfoList: any[] = poolsData?.length ? poolsData : stakingInfos
+
   let arrayToShow: any[] = []
 
-  const stakingInfosWithBalance = stakingInfos.filter(item => item.active)
-  const finishedPools = stakingInfos.filter(item => !item.active)
+  const stakingInfosWithBalance = poolsInfoList.filter(item => item.active)
+  const finishedPools = poolsInfoList.filter(item => !item.active)
+
 
   // live or finished pools?
   if (!showFinished && stakingInfosWithBalance && stakingInfosWithBalance.length > 0) {
-    arrayToShow = stakingInfos.map(item => (item.active ? item : { ...item, isHidden: true }))
+    arrayToShow = poolsInfoList.map(item => (item.active ? item : { ...item, isHidden: true }))
   } else if (showFinished && finishedPools && finishedPools.length > 0) {
-    arrayToShow = stakingInfos.map(item => (!item.active ? item : { ...item, isHidden: true }))
+    arrayToShow = poolsInfoList.map(item => (!item.active ? item : { ...item, isHidden: true }))
   }
 
   // do search logic, filtering, and sorting logic here on arrayToShow
-  let timeToStakingFinish = stakingInfos?.[0]?.periodFinish
-  stakingInfos.map(item => {
+  let timeToStakingFinish = poolsInfoList?.[0]?.periodFinish
+  poolsInfoList.map(item => {
     const period = item ? item.periodFinish : timeToStakingFinish
     if (period && item.active && timeToStakingFinish && timeToStakingFinish < period) {
       timeToStakingFinish = period
@@ -371,7 +374,7 @@ export default function Pools() {
 
   useEffect(() => {
     !aprData.length && getAllAPY()
-    dispatch(setStakingInfo({ poolsData: arrayToShow }))
+    !poolsData?.length && dispatch(setStakingInfo({ poolsData: stakingInfos }))
     let earnings: any = 0
     let harvest: any = 0
     Object.keys(weeklyEarnings).forEach(key => {
@@ -382,7 +385,7 @@ export default function Pools() {
     })
     setStatsDisplay({ earnings, harvest })
     setFilteredMode(filteredMode)
-  }, [weeklyEarnings, readyForHarvest, filteredMode])
+  }, [weeklyEarnings, readyForHarvest, filteredMode, stakingInfos])
 
   const SortedTitle = ({ title }: SortedTitleProps) => (
     <HeaderCellSpan>
@@ -452,7 +455,7 @@ export default function Pools() {
             />
           )}
           {account !== null &&
-            stakingInfos?.length > 0 &&
+            poolsInfoList?.length > 0 &&
             arrayToShow?.length > 0 &&
             (displayMode === 'table' ? (
               <Wrapper>
@@ -534,7 +537,7 @@ export default function Pools() {
                 })}
               </GridContainer>
             ))}
-          {account !== null && stakingRewardsExist && stakingInfos?.length === 0 && (
+          {account !== null && stakingRewardsExist && poolsInfoList?.length === 0 && (
             <EmptyData>
               <Spinner src={ZeroIcon} />
             </EmptyData>
