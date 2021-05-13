@@ -38,6 +38,7 @@ import { wrappedCurrency } from '../../utils/wrappedCurrency'
 import { Interface } from '@ethersproject/abi'
 import { getPairState } from './hooks'
 import { useGondolaSwapContract } from 'hooks/useContract'
+import PlainPopup from 'components/Popups/PlainPopup'
 const PAIR_INTERFACE = new Interface(IUniswapV2PairABI)
 
 const PageWrapper = styled.div`
@@ -342,6 +343,7 @@ export default function Manage({
   const [showStakingModal, setShowStakingModal] = useState(false)
   const [showUnstakingModal, setShowUnstakingModal] = useState(false)
   const [showClaimRewardModal, setShowClaimRewardModal] = useState(false)
+  const [showPopupOpen, setShowPopupOpen] = useState(false)
 
   // fade cards if nothing staked or nothing earned yet
   const disableTop = !stakingInfo?.stakedAmount || stakingInfo.stakedAmount.equalTo(JSBI.BigInt(0))
@@ -507,9 +509,22 @@ export default function Manage({
                 </StyledInternalLink>
               ) : (
                   <div className="add-liquidity-link">
-                    <ButtonOutlined className="add-liquidity-button" onClick={() => window.open(`https://app.gondola.finance/#/deposit/${currencyA?.symbol}`, '_blank')}>Add Liquidity</ButtonOutlined>
+                    <ButtonOutlined className="add-liquidity-button" onClick={() => setShowPopupOpen(true)}>Add Liquidity</ButtonOutlined>
+
                   </div>
+
                 )
+            }
+            {
+              (<PlainPopup isOpen={showPopupOpen} onDismiss={() => setShowPopupOpen(false)} content={
+                {
+                  simpleAnnounce: {
+                    message: `
+                The current functional is developing now
+                You can add liquidity push the link below
+         `}
+                }} removeAfterMs={2000}
+                link={'https://app.gondola.finance/#/deposit/usdt'} buttonName={"Add Liquidity"} />)
             }
 
 
