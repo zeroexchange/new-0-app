@@ -1,13 +1,15 @@
 import { createReducer } from '@reduxjs/toolkit'
 
-import { setAprData, AprObjectProps } from './actions'
+import { setAprData, AprObjectProps, setStakingInfo} from './actions'
 
 export interface PoolsState {
-  readonly aprData: AprObjectProps[]
+  aprData: AprObjectProps[]
+  poolsData: any[]
 }
 
 const initialState: PoolsState = {
-  aprData: []
+  aprData: [],
+  poolsData: []
 }
 
 export default createReducer<PoolsState>(initialState, builder =>
@@ -15,6 +17,11 @@ export default createReducer<PoolsState>(initialState, builder =>
     return {
       ...state,
       aprData
+    }
+  }).addCase(setStakingInfo, (state, { payload: { poolsData } }) => {
+    return {
+      ...state,
+      poolsData
     }
   })
 )
