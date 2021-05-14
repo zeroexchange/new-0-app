@@ -416,16 +416,16 @@ export function useStakingInfo(pairToFilterBy?: Pair | null): StakingInfo[] {
 
         const lpToken = currentPair?.rewardInfo?.lpToken
         if (rewardRateState.result && currentPair?.rewardInfo) {
-          console.log('dummyPair :>> ', dummyPair);
-          console.log('getHypotheticalRewardRate :>> ', getHypotheticalRewardRate);
-          console.log('active :>> ', active);
-          console.log('@@@@@@@@@@@@@@@currentPair :>> ', currentPair);
-          console.log('totalRewardRate :>> ', totalRewardRate);
-          console.dir(rewardRateState);
-          console.log('earnedAmountState?.result :>> ', earnedAmountState?.result)
-          console.log('individualRewardRate :>> ', individualRewardRate);
-          console.log('totalStakedAmount :>> ', totalStakedAmount);
-          console.log('stakedAmount :>> ', stakedAmount);
+          // console.log('dummyPair :>> ', dummyPair);
+          // console.log('getHypotheticalRewardRate :>> ', getHypotheticalRewardRate);
+          // console.log('active :>> ', active);
+          // console.log('@@@@@@@@@@@@@@@currentPair :>> ', currentPair);
+          // console.log('totalRewardRate :>> ', totalRewardRate);
+          // console.dir(rewardRateState);
+          // console.log('earnedAmountState?.result :>> ', earnedAmountState?.result)
+          // console.log('individualRewardRate :>> ', individualRewardRate);
+          // console.log('totalStakedAmount :>> ', totalStakedAmount);
+          // console.log('stakedAmount :>> ', stakedAmount);
         }
         memo.push({
           stakingRewardAddress: rewardsAddress,

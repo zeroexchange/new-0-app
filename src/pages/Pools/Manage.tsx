@@ -37,7 +37,7 @@ import { useWalletModalToggle } from '../../state/application/hooks'
 import { wrappedCurrency } from '../../utils/wrappedCurrency'
 import { Interface } from '@ethersproject/abi'
 import { getPairState } from './hooks'
-import { useGondolaSwapContract } from 'hooks/useContract'
+import { useGondolaMasterChefContract, useGondolaLpTokenContract } from 'hooks/useContract'
 import PlainPopup from 'components/Popups/PlainPopup'
 const PAIR_INTERFACE = new Interface(IUniswapV2PairABI)
 
@@ -321,15 +321,26 @@ export default function Manage({
   const [, stakingTokenPair] = usePair(tokenA, tokenB)
   console.log("🚀 ~ file: Manage.tsx ~ line 314 ~ stakingTokenPair", stakingTokenPair)
   // const stPair = stakingTokenPair ?? '0x842cc3a5cDf13cFdA564b315b3F3a2E8aBF0eb0A'
-  const contract = useGondolaSwapContract('0x3CE2B891071054ee10d4b5eD5a9446f9016F90d8')
+  const contract = useGondolaMasterChefContract('0x34C8712Cc527a8E6834787Bd9e3AD4F2537B0f50')
+  const gondolaLpContract = useGondolaLpTokenContract('0xE586dB7Db75B87A3E84110a73b99960F5f106c6A')
   useEffect(() => {
-    if (contract?.getTokenBalance) {
-      contract?.getTokenBalance(0)
-        .then((res: any) => console.log('#############res :>> ', res.toString()))
+
+    if (contract?.userInfo) {
+      contract?.userInfo(8, account)
+        .then((res: any) => console.log('#############userInfo :>> ', res.toString()))
         .catch((err: any) => console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!err :>> ', err))
     }
 
   }, [contract])
+  useEffect(() => {
+
+    if (gondolaLpContract?.balanceOf) {
+      gondolaLpContract?.balanceOf(account)
+        .then((res: any) => console.log('???????????balanceOf :>> ', res.toString()))
+        .catch((err: any) => console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!err :>> ', err))
+    }
+
+  }, [gondolaLpContract])
   const statePair = getPairState(contract, tokenA, tokenB)
   const baseStakingInfo = useStakingInfo(stakingTokenPair)
   console.log("🚀 ~ file: Manage.tsx ~ line 315 ~ baseStakingInfo", baseStakingInfo)
@@ -508,12 +519,12 @@ export default function Manage({
                   <ButtonOutlined className="add-liquidity-button">Add Liquidity</ButtonOutlined>
                 </StyledInternalLink>
               ) : (
-                  <div className="add-liquidity-link">
-                    <ButtonOutlined className="add-liquidity-button" onClick={() => setShowPopupOpen(true)}>Add Liquidity</ButtonOutlined>
+                <div className="add-liquidity-link">
+                  <ButtonOutlined className="add-liquidity-button" onClick={() => setShowPopupOpen(true)}>Add Liquidity</ButtonOutlined>
 
-                  </div>
+                </div>
 
-                )
+              )
             }
             {
               (<PlainPopup isOpen={showPopupOpen} onDismiss={() => setShowPopupOpen(false)} content={

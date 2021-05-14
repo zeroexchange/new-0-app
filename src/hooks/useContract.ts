@@ -15,13 +15,13 @@ import ZERO_FREE_CLAIM from '../constants/abis/zerro-free-claim.json'
 import WDS_DEPOSIT_ABI from '../constants/abis/wds-deposit.json';
 import WISE_SALE_ABI from '../constants/abis/wise-sale.json';
 import ERC20_ABI from '../constants/abis/erc20.json'
-import { ERC20_BYTES32_ABI } from '../constants/abis/erc20'
+import { ERC20_BYTES32_ABI, ERC20_GONDOLA_INTERFACE } from '../constants/abis/erc20'
 import { abi as GOVERNANCE_ABI } from '@uniswap/governance/build/GovernorAlpha.json'
 import { abi as IUniswapV2PairABI } from '@uniswap/v2-core/build/IUniswapV2Pair.json'
 import { abi as MERKLE_DISTRIBUTOR_ABI } from '@uniswap/merkle-distributor/build/MerkleDistributor.json'
 import { abi as STAKING_REWARDS_ABI } from '@uniswap/liquidity-staker/build/StakingRewards.json'
 import UNISOCKS_ABI from '../constants/abis/unisocks.json'
-import { abi as GONDOLA_STAKING_REWARDS } from '../constants/abis/gondola-master.json'
+import { abi as GONDOLA_MASTER_CHEF } from '../constants/abis/gondola-master.json'
 import { abi as UNI_ABI } from '@uniswap/governance/build/Uni.json'
 import WETH_ABI from '../constants/abis/weth.json'
 import { getContract } from '../utils'
@@ -145,9 +145,16 @@ export function useStakingContract(stakingAddress?: string, withSignerIfPossible
 }
 
 export function useStakingGondolaContract(stakingAddress?: string, withSignerIfPossible?: boolean): Contract | null {
-  return useContract(stakingAddress, GONDOLA_STAKING_REWARDS, withSignerIfPossible)
+  return useContract(stakingAddress, GONDOLA_MASTER_CHEF, withSignerIfPossible)
 }
 
+export function useGondolaMasterChefContract(stakingAddress?: string, withSignerIfPossible?: boolean): Contract | null {
+  return useContract(stakingAddress, GONDOLA_MASTER_CHEF, withSignerIfPossible)
+}
+
+export function useGondolaLpTokenContract(lpAddress?: string, withSignerIfPossible?: boolean): Contract | null {
+  return useContract(lpAddress, ERC20_GONDOLA_INTERFACE, withSignerIfPossible)
+}
 
 export function useGondolaSwapContract(swapContractAddress?: string, withSignerIfPossible?: boolean): Contract | null {
   return useContract(swapContractAddress, GONDOLA_SWAP_INTERFACE, withSignerIfPossible)

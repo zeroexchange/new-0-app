@@ -204,6 +204,15 @@ export const crosschainConfig: ChainbridgeConfig = {
           resourceId: '0x0000000000000000000000f6F3EEa905ac1da6F6DD37d06810C6Fcb0EF518301'
         },
         {
+          address: "0xde3A24028580884448a5397872046a019649b084",
+          name: "pngUSDT",
+          symbol: "pngUSDT",
+          assetBase: 'USDT',
+          decimals: 6,
+          resourceId: "0x0000000000000000000000de3A24028580884448a5397872046a019649b08402",
+          
+        },
+        {
           address: "0x650CECaFE61f3f65Edd21eFacCa18Cc905EeF0B7",
           name: "zUSDT",
           symbol: "zUSDT",
