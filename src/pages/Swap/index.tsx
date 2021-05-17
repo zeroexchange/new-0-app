@@ -257,6 +257,9 @@ export default function Swap({
 
   const currencyA = useCurrency(currencyIdA)
   const currencyB = useCurrency(currencyIdB)
+
+  const [curA, setCurA] = useState(currencyA)
+  const [curB, setCurB] = useState(currencyB)
   const currentTargetToken = targetTokens.find(x => x.assetBase === currentToken.assetBase)
 
   const { BreakCrosschainSwap, GetAllowance } = useCrosschainHooks()
@@ -376,15 +379,22 @@ export default function Swap({
 
   // check if user has gone through approval process, used to show two step buttons, reset on token change
   const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false)
-
+  console.log(curA)
   // mark when a user has submitted an approval, reset onTokenSelection for input field
   useEffect(() => {
     if (approval === ApprovalState.PENDING) {
       setApprovalSubmitted(true)
     }
-    handleInputSelect(currencyA)
-    handleOutputSelect(currencyB)
-  }, [approval, approvalSubmitted, currencyA, currencyB])
+    if (curA) {
+      handleInputSelect(curA)
+      setCurA(null)
+    }
+
+    if (curB) {
+      handleOutputSelect(curB)
+      setCurB(null)
+    }
+  }, [approval, approvalSubmitted, curA, curB])
 
   const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(currencyBalances[Field.INPUT])
   const atMaxAmountInput = Boolean(maxAmountInput && parsedAmounts[Field.INPUT]?.equalTo(maxAmountInput))
