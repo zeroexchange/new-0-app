@@ -1,13 +1,15 @@
-import { CustomLightSpinner, StyledInternalLink, TYPE } from '../../theme'
+import { CustomLightSpinner, StyledInternalLink, TYPE, Title } from '../../theme'
 import React, { useEffect, useMemo, useState } from 'react'
 import { STAKING_REWARDS_INFO, useStakingInfo } from '../../state/stake/hooks'
 import { setOptions, sortPoolsItems } from 'utils/sortPoolsPage'
 import styled, { keyframes } from 'styled-components'
-import { useDispatch } from 'react-redux'
 
+import { AppDispatch } from '../../state'
+import { AprObjectProps } from './../../state/pools/actions'
 import { ButtonOutlined } from '../../components/Button'
 import Circle from '../../assets/images/blue-loader.svg'
 import ClaimRewardModal from '../../components/pools/ClaimRewardModal'
+import { Countdown } from './Countdown';
 import DropdownArrow from './../../assets/svg/DropdownArrow'
 import { NoWalletConnected } from '../../components/NoWalletConnected'
 import PageContainer from './../../components/PageContainer'
@@ -17,13 +19,11 @@ import PoolRow from '../../components/pools/PoolRow'
 import ZeroIcon from '../../assets/svg/zero_icon.svg'
 import { getAllPoolsAPY } from 'api'
 import { searchItems } from 'utils/searchItems'
-import { useActiveWeb3React } from '../../hooks'
-import { useWalletModalToggle } from '../../state/application/hooks'
-
-import { AppDispatch } from '../../state'
 import { setAprData } from './../../state/pools/actions'
+import { useActiveWeb3React } from '../../hooks'
+import { useDispatch } from 'react-redux'
 import { usePoolsState } from './../../state/pools/hooks'
-import { AprObjectProps } from './../../state/pools/actions'
+import { useWalletModalToggle } from '../../state/application/hooks'
 
 const numeral = require('numeral')
 
@@ -36,17 +36,7 @@ const PageWrapper = styled.div`
   padding:0px;
 `};
 `
-const Title = styled.h1`
-  width: 100%;
-  padding: 0px 64px;
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-  padding: 0;
-  text-align: center;
-  font-size: 49px;
-  margin-top: 40px;
-  margin-bottom: 0px;
-`};
-`
+
 const Wrapper = styled.div`
   background: rgba(47, 53, 115, 0.32);
   box-shadow: inset 2px 2px 5px rgba(255, 255, 255, 0.095);
@@ -286,15 +276,6 @@ export default function Pools() {
     arrayToShow = stakingInfos.map(x => (!x.active ? x : { ...x, isHidden: true }))
   }
 
-  // do search logic, filtering, and sorting logic here on arrayToShow
-  let timeToStakingFinish = stakingInfos?.[0]?.periodFinish
-  stakingInfos.map(item => {
-    const period = item ? item.periodFinish : timeToStakingFinish
-    if (period && item.active && timeToStakingFinish && timeToStakingFinish < period) {
-      timeToStakingFinish = period
-    }
-  })
-
   // toggle copy if rewards are inactive
   const stakingRewardsExist = Boolean(typeof chainId === 'number' && (STAKING_REWARDS_INFO[chainId]?.length ?? 0) > 0)
 
@@ -487,7 +468,11 @@ export default function Pools() {
                           <SortedTitle title="Earned" />
                         </TYPE.main>
                       </HeaderCell>
-                      <HeaderCell style={{ width: '45px' }}></HeaderCell>
+                      <HeaderCell style={{ width: '150px'}}>
+                        <TYPE.main fontWeight={600} fontSize={12} style={{ textAlign: 'left', paddingLeft: '20px' }}>
+                          Ending:
+                        </TYPE.main>
+                      </HeaderCell>
                     </tr>
                   </thead>
                   <tbody>

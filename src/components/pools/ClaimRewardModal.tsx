@@ -11,8 +11,9 @@ import { TransactionResponse } from '@ethersproject/providers'
 import styled from 'styled-components'
 import toEllipsis from './../../utils/toEllipsis'
 import { useActiveWeb3React } from '../../hooks'
-import { useStakingContract } from '../../hooks/useContract'
+import { useStakingContract, useStakingGondolaContract } from '../../hooks/useContract'
 import { useTransactionAdder } from '../../state/transactions/hooks'
+
 
 const ContentWrapper = styled(AutoColumn)`
   width: 100%;
@@ -40,16 +41,35 @@ export default function ClaimRewardModal({ isOpen, onDismiss, stakingInfo }: Sta
     onDismiss()
   }
 
-  const stakingContract = useStakingContract(stakingInfo.stakingRewardAddress)
+  const stakingRewardAddress = (stakingInfo.gondolaTokenId && stakingInfo.gondolaRewardAddress) ?
+    stakingInfo.gondolaRewardAddress :
+    stakingInfo.stakingRewardAddress
 
+  const stakingContract = useStakingContract(stakingRewardAddress)
+  const stakingGondolaContract = useStakingGondolaContract(stakingRewardAddress)
   async function onClaimReward() {
-    if (stakingContract && stakingInfo?.stakedAmount) {
+    if (stakingContract && stakingInfo?.stakedAmount && !stakingInfo?.gondolaTokenId) {
       setAttempting(true)
       await stakingContract
         .getReward({ gasLimit: 350000 })
         .then((response: TransactionResponse) => {
           addTransaction(response, {
-            summary: `Claim accumulated ZERO rewards`
+            summary: `Claim accumulated ${stakingInfo?.rewardsTokenSymbol || ''} rewards`
+          })
+          setHash(response.hash)
+        })
+        .catch((error: any) => {
+          setAttempting(false)
+          console.log(error)
+        })
+    } else if (stakingGondolaContract) {
+
+      setAttempting(true)
+      await stakingGondolaContract
+        .emergencyWithdraw(stakingInfo?.gondolaTokenId, { gasLimit: 300000 })
+        .then((response: TransactionResponse) => {
+          addTransaction(response, {
+            summary: `Claim accumulated ${stakingInfo?.rewardsTokenSymbol || ''} rewards`
           })
           setHash(response.hash)
         })

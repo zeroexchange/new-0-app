@@ -65,6 +65,8 @@ export const zUNI = new Token(ChainId.AVALANCHE, '0xBa9aF11661520129Af69d233E92d
 export const zSUSHI = new Token(ChainId.AVALANCHE, '0xD4feE2e3F88B9138B74a323B40bC63bcc1A1B9eC', 18, 'zSUSHI', 'zSUSHI')
 export const pngDAI = new Token(ChainId.AVALANCHE, '0xbA7dEebBFC5fA1100Fb055a87773e1E99Cd3507a', 18, 'pngDAI', 'pngDAI')
 export const pngUSDT = new Token(ChainId.AVALANCHE, '0xde3A24028580884448a5397872046a019649b084', 6, 'pngUSDT', 'pngUSDT')
+export const gondolaUSDTPool = new Token(ChainId.AVALANCHE, '0xE586dB7Db75B87A3E84110a73b99960F5f106c6A', 18, 'gndUSDT', 'Gondola pool USDT/ZUSDT')
+
 export const pngETH = new Token(ChainId.AVALANCHE, '0xf20d962a6c8f70c731bd838a3a388D7d48fA6e15', 18, 'pngETH', 'pngETH')
 export const GDL = new Token(ChainId.AVALANCHE, '0xD606199557c8Ab6F4Cc70bD03FaCc96ca576f142', 18, 'GDL', 'Gondola')
 export const zCHART = new Token(ChainId.AVALANCHE, '0xD769bDFc0CaEe933dc0a047C7dBad2Ec42CFb3E2', 18, 'CHART', 'ChartEx')
@@ -82,7 +84,8 @@ export const bscSUSHI = new Token(ChainId.SMART_CHAIN, '0x2D6d5bc58adEDa28f62B0a
 export const bscDAI = new Token(ChainId.SMART_CHAIN, '0x7e7bAFF135c42ed90C0EdAb16eAe48ecEa417018', 18, 'zDAI', 'zDAI')
 export const bscETH = new Token(ChainId.SMART_CHAIN, '0x7c815BBc21FED2B97CA163552991A5C30d6a2336', 18, 'zETH', 'zETH');
 export const bscINDA = new Token(ChainId.SMART_CHAIN, '0xc878a79b63a41a831e469ae1a830a765efd9d468', 2, 'INDA', 'INDA');
-export const bscCHART = new Token(ChainId.AVALANCHE, '0xc33A42C9D19f944FA12ff46f27B3B85e18a13778', 18, 'CHART', 'ChartEx')
+export const bscCHART = new Token(ChainId.SMART_CHAIN, '0xc33A42C9D19f944FA12ff46f27B3B85e18a13778', 18, 'CHART', 'ChartEx')
+export const bscWISB = new Token(ChainId.SMART_CHAIN, '0x4f491d389A5bF7C56bd1e4d8aF2280fD217C8543', 18, 'WISB', 'Wise Token')
 
 export const rinkebyZERO = new Token(ChainId.RINKEBY, '0x9EfCe00Be4E0c2D9aEF18aACe4e273D9ebcf574a', 18, 'ZERO', 'Zero Exchange')
 export const rinkebyUSDC = new Token(ChainId.RINKEBY, '0xeb8f08a975Ab53E34D8a0330E0D34de942C95926', 6, 'USDC', 'USDC')
@@ -169,7 +172,7 @@ export const SUGGESTED_BASES: ChainTokenList = {
   [ChainId.MAINNET]: [...WETH_ONLY[ChainId.MAINNET], DAI, USDC, USDT],
   [ChainId.RINKEBY]: [],
   [ChainId.AVALANCHE]: [zZERO, AVAX as Token, zUSDC, zUSDT, zDAI, zETH],
-  [ChainId.SMART_CHAIN]: [bscZERO, BNB as Token, bscBUSD, bscDAI,bscUSDC, bscUSDT, bscETH],
+  [ChainId.SMART_CHAIN]: [bscZERO, BNB as Token, bscBUSD, bscDAI, bscUSDC, bscUSDT, bscETH],
   [ChainId.SMART_CHAIN_TEST]: [],
   [ChainId.FUJI]: [],
   [ChainId.MOONBASE_ALPHA]: [],

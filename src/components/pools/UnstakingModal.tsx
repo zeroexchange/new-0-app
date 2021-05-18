@@ -1,17 +1,19 @@
+import { CloseIcon, TYPE } from '../../theme'
+import { LoadingView, SubmittedView } from '../ModalViews'
 import React, { useState } from 'react'
-import Modal from '../Modal'
+
 import { AutoColumn } from '../Column'
-import styled from 'styled-components'
-import { RowBetween } from '../Row'
-import { TYPE, CloseIcon } from '../../theme'
 import { ButtonError } from '../Button'
+import FormattedCurrencyAmount from '../FormattedCurrencyAmount'
+import Modal from '../Modal'
+import { RowBetween } from '../Row'
 import { StakingInfo } from '../../state/stake/hooks'
 import { useStakingContract, useStakingGondolaContract } from '../../hooks/useContract'
-import { SubmittedView, LoadingView } from '../ModalViews'
 import { TransactionResponse } from '@ethersproject/providers'
-import { useTransactionAdder } from '../../state/transactions/hooks'
-import FormattedCurrencyAmount from '../FormattedCurrencyAmount'
+import styled from 'styled-components'
 import { useActiveWeb3React } from '../../hooks'
+import { useTransactionAdder } from '../../state/transactions/hooks'
+import { BigNumber, utils } from 'ethers'
 
 const ContentWrapper = styled(AutoColumn)`
   width: 100%;
@@ -62,7 +64,8 @@ export default function UnstakingModal({ isOpen, onDismiss, stakingInfo }: Staki
 
       setAttempting(true)
       await stakingGondolaContract
-        .withdraw(stakingInfo?.gondolaTokenId, stakingInfo.stakedAmount, { gasLimit: 300000 })
+        //.withdraw(stakingInfo?.gondolaTokenId, BigNumber.from(utils.parseUnits(stakingInfo.stakedAmount.raw.toString(), 18)).toHexString(), { gasLimit: 300000 })
+        .emergencyWithdraw(stakingInfo?.gondolaTokenId, { gasLimit: 300000 })
         .then((response: TransactionResponse) => {
           addTransaction(response, {
             summary: `Withdraw deposited liquidity`
@@ -105,11 +108,11 @@ export default function UnstakingModal({ isOpen, onDismiss, stakingInfo }: Staki
               <TYPE.body fontWeight={600} fontSize={36}>
                 {<FormattedCurrencyAmount currencyAmount={stakingInfo?.earnedAmount} />}
               </TYPE.body>
-              <TYPE.body>Unclaimed ZERO</TYPE.body>
+              <TYPE.body>Unclaimed {stakingInfo?.rewardsTokenSymbol ?? 'ZERO'}</TYPE.body>
             </AutoColumn>
           )}
           <TYPE.subHeader style={{ textAlign: 'center' }}>
-            When you withdraw, your ZERO is claimed and your liquidity is removed from the mining pool.
+            When you withdraw, your {stakingInfo?.rewardsTokenSymbol ?? 'ZERO'} is claimed and your liquidity is removed from the mining pool.
           </TYPE.subHeader>
           <ButtonError disabled={!!error} error={!!error && !!stakingInfo?.stakedAmount} onClick={onWithdraw}>
             {error ?? 'Withdraw & Claim'}
@@ -128,8 +131,8 @@ export default function UnstakingModal({ isOpen, onDismiss, stakingInfo }: Staki
         <SubmittedView onDismiss={wrappedOndismiss} hash={hash}>
           <AutoColumn gap="12px" justify={'center'}>
             <TYPE.largeHeader>Transaction Submitted</TYPE.largeHeader>
-            <TYPE.body fontSize={20}>Withdrew ZERO LP!</TYPE.body>
-            <TYPE.body fontSize={20}>Claimed ZERO!</TYPE.body>
+            <TYPE.body fontSize={20}>Withdrew {stakingInfo?.rewardsTokenSymbol ?? 'ZERO'} LP!</TYPE.body>
+            <TYPE.body fontSize={20}>Claimed {stakingInfo?.rewardsTokenSymbol ?? 'ZERO'}!</TYPE.body>
           </AutoColumn>
         </SubmittedView>
       )}

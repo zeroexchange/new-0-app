@@ -87,7 +87,7 @@ export default function StakingModal({ isOpen, onDismiss, stakingInfo, userLiqui
   const stakingGondolaContract = useStakingGondolaContract(stakingRewardAddress)
   async function onStake() {
     setAttempting(true)
-    if (stakingContract && parsedAmount && deadline) {
+    if (stakingContract && parsedAmount && deadline && !isGondolaPair) {
       if (approval === ApprovalState.APPROVED) {
         await stakingContract.stake(`0x${parsedAmount.raw.toString(16)}`, { gasLimit: 350000 })
       } else if (signatureData) {
@@ -110,23 +110,23 @@ export default function StakingModal({ isOpen, onDismiss, stakingInfo, userLiqui
             setAttempting(false)
             console.log(error)
           })
-      } else if (isGondolaPair && stakingGondolaContract) {
-        await stakingGondolaContract
-          .deposit(stakingInfo.gondolaTokenId, `0x${parsedAmount.raw.toString(16)}`, { gasLimit: 350000 })
-          .then((response: TransactionResponse) => {
-            addTransaction(response, {
-              summary: `Deposit liquidity`
-            })
-            setHash(response.hash)
-          })
-          .catch((error: any) => {
-            setAttempting(false)
-            console.log(error)
-          })
-      } else {
+      }  else {
         setAttempting(false)
         throw new Error('Attempting to stake without approval or a signature. Please contact support.')
       }
+    } else if (isGondolaPair && stakingGondolaContract && parsedAmount) {
+      await stakingGondolaContract
+        .deposit(stakingInfo.gondolaTokenId, `0x${parsedAmount.raw.toString(16)}`, { gasLimit: 350000 })
+        .then((response: TransactionResponse) => {
+          addTransaction(response, {
+            summary: `Deposit liquidity`
+          })
+          setHash(response.hash)
+        })
+        .catch((error: any) => {
+          setAttempting(false)
+          console.log(error)
+        })
     }
   }
 
@@ -243,7 +243,7 @@ export default function StakingModal({ isOpen, onDismiss, stakingInfo, userLiqui
 
             <TYPE.black>
               {hypotheticalRewardRate.multiply((60 * 60 * 24 * 7).toString()).toSignificant(4, { groupSeparator: ',' })}{' '}
-              ZERO / week
+              {stakingInfo?.rewardsTokenSymbol ?? 'ZERO'} / week
             </TYPE.black>
           </HypotheticalRewardRate>
 

@@ -33,8 +33,9 @@ import {
   pngDAI,
   pngETH,
   pngUSDT,
-  GDL,
-  zCHART
+  gondolaUSDTPool,
+  zCHART,
+  bscWISB
 } from '../../constants'
 import { NEVER_RELOAD, useMultipleContractSingleData } from '../multicall/hooks'
 
@@ -118,7 +119,8 @@ export const STAKING_REWARDS_INFO: {
         poolAddress: '0x842cc3a5cDf13cFdA564b315b3F3a2E8aBF0eb0A',
         masterChefAddress: '0x34C8712Cc527a8E6834787Bd9e3AD4F2537B0f50',
         rewardsTokenSymbol: 'GDL',
-        rewardsToken: GDL
+        rewardsToken: gondolaUSDTPool,
+        poolName: 'zUSDT-USDT Pool'
       }
     },
     {
@@ -255,6 +257,16 @@ export const STAKING_REWARDS_INFO: {
       stakingRewardAddress: '0xb466598db72798Ec6118afbFcA29Bc7F1009cad6',
       rewardInfo: { rewardToken: bscINDA }
     },
+    {
+      tokens: [bscWISB, bscWBNB],
+      stakingRewardAddress: '0x065422cd8e4903A1F188cef09a3A7702769AEE71',
+      rewardInfo: { rewardToken: bscWISB }
+    },
+    {
+      tokens: [bscWISB, bscZERO],
+      stakingRewardAddress: '0x728e8E1c134fc5b22FB6EF26F392e724f5f8F413',
+      rewardInfo: { rewardToken: bscWISB }
+    },
   ]
 }
 
@@ -288,7 +300,8 @@ export interface StakingInfo {
     totalRewardRate: TokenAmount
   ) => TokenAmount
   gondolaTokenId?: number,
-  gondolaRewardAddress?: string
+  gondolaRewardAddress?: string,
+  gondolaPoolAddress?: string
 }
 
 // gets the staking info from the network for the active chain id
@@ -385,10 +398,12 @@ export function useStakingInfo(pairToFilterBy?: Pair | null): StakingInfo[] {
 
         // check for account, if no account set to 0
         const currentPair = info.find(pair => pair.stakingRewardAddress === rewardsAddress)
+        const dummyPairAddress = currentPair?.rewardInfo?.rewardsToken ? currentItem?.rewardInfo?.rewardsToken : dummyPair.liquidityToken
+        console.log("🚀 ~ file: hooks.ts ~ line 397 ~ returnuseMemo ~ dummyPairAddress", dummyPairAddress)
 
         const rewardsToken = currentPair?.rewardInfo?.rewardsToken ?? ZERO;
-        const stakedAmount = new TokenAmount(dummyPair.liquidityToken, JSBI.BigInt(balanceState?.result?.[0] ?? 0))
-        const totalStakedAmount = new TokenAmount(dummyPair.liquidityToken, JSBI.BigInt(totalSupplyState.result?.[0]))
+        const stakedAmount = new TokenAmount(dummyPairAddress, JSBI.BigInt(balanceState?.result?.[0] ?? 0))
+        const totalStakedAmount = new TokenAmount(dummyPairAddress, JSBI.BigInt(totalSupplyState.result?.[0]))
 
         const totalRewardRate = new TokenAmount(rewardsToken, JSBI.BigInt(rewardRateState.result?.[0]))
 
@@ -424,8 +439,8 @@ export function useStakingInfo(pairToFilterBy?: Pair | null): StakingInfo[] {
           // console.dir(rewardRateState);
           // console.log('earnedAmountState?.result :>> ', earnedAmountState?.result)
           // console.log('individualRewardRate :>> ', individualRewardRate);
-          // console.log('totalStakedAmount :>> ', totalStakedAmount);
-          // console.log('stakedAmount :>> ', stakedAmount);
+          console.log('totalStakedAmount :>> ', totalStakedAmount);
+          console.log('stakedAmount :>> ', stakedAmount);
         }
         memo.push({
           stakingRewardAddress: rewardsAddress,
@@ -440,7 +455,8 @@ export function useStakingInfo(pairToFilterBy?: Pair | null): StakingInfo[] {
           active,
           gondolaTokenId: currentItem?.rewardInfo?.tokenId,
           gondolaRewardAddress: currentItem?.rewardInfo?.masterChefAddress,
-          rewardsTokenSymbol: currentItem?.rewardInfo?.rewardsTokenSymbol
+          rewardsTokenSymbol: currentItem?.rewardInfo?.rewardsTokenSymbol,
+          gondolaPoolAddress: currentItem?.rewardInfo?.poolAddress
         })
       }
       return memo
