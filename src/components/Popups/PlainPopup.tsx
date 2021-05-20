@@ -26,7 +26,7 @@ export default function PlainPopup({ isOpen, onDismiss, content, removeAfterMs, 
         <>
           <Modal isOpen={isOpen} onDismiss={onDismiss}>
             <PopupItem key={''} content={content} popKey={''} removeAfterMs={removeAfterMs} hideClose={true} />
-            {link && (<a href={link}> {buttonName}</a>)}
+            {link && (<a  href={link}> {buttonName}</a>)}
         </Modal>
         </>
       }

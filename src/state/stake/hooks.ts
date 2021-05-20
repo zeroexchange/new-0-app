@@ -399,7 +399,6 @@ export function useStakingInfo(pairToFilterBy?: Pair | null): StakingInfo[] {
         // check for account, if no account set to 0
         const currentPair = info.find(pair => pair.stakingRewardAddress === rewardsAddress)
         const dummyPairAddress = currentPair?.rewardInfo?.rewardsToken ? currentItem?.rewardInfo?.rewardsToken : dummyPair.liquidityToken
-        console.log("🚀 ~ file: hooks.ts ~ line 397 ~ returnuseMemo ~ dummyPairAddress", dummyPairAddress)
 
         const rewardsToken = currentPair?.rewardInfo?.rewardsToken ?? ZERO;
         const stakedAmount = new TokenAmount(dummyPairAddress, JSBI.BigInt(balanceState?.result?.[0] ?? 0))
@@ -429,19 +428,6 @@ export function useStakingInfo(pairToFilterBy?: Pair | null): StakingInfo[] {
         const active =
           periodFinishSeconds && currentBlockTimestamp ? periodFinishSeconds > currentBlockTimestamp.toNumber() : true
 
-        const lpToken = currentPair?.rewardInfo?.lpToken
-        if (rewardRateState.result && currentPair?.rewardInfo) {
-          // console.log('dummyPair :>> ', dummyPair);
-          // console.log('getHypotheticalRewardRate :>> ', getHypotheticalRewardRate);
-          // console.log('active :>> ', active);
-          // console.log('@@@@@@@@@@@@@@@currentPair :>> ', currentPair);
-          // console.log('totalRewardRate :>> ', totalRewardRate);
-          // console.dir(rewardRateState);
-          // console.log('earnedAmountState?.result :>> ', earnedAmountState?.result)
-          // console.log('individualRewardRate :>> ', individualRewardRate);
-          console.log('totalStakedAmount :>> ', totalStakedAmount);
-          console.log('stakedAmount :>> ', stakedAmount);
-        }
         memo.push({
           stakingRewardAddress: rewardsAddress,
           tokens: tokens,

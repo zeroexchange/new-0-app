@@ -573,7 +573,8 @@ export default function Manage({
                     simpleAnnounce: {
                       message: `
                 The current functional is developing now
-                You can add liquidity push the link below
+                To add liquidity on https://app.gondola.finance/
+                 push the button
          `}
                   }} removeAfterMs={2000}
                   link={'https://app.gondola.finance/#/deposit/usdt'} buttonName={"Add Liquidity"} />)
@@ -672,14 +673,14 @@ export default function Manage({
               </Wrapper>
             </SingleColumn>
             {(stakingInfo?.stakedAmount?.greaterThan(JSBI.BigInt(0)) ||
-              (userLiquidityUnstaked && !userLiquidityUnstaked.equalTo('0'))) &&  (
+              (userLiquidityUnstaked && !userLiquidityUnstaked.equalTo('0'))) && (
                 <SingleColumn className="right">
                   <Wrapper>
                     {!userLiquidityUnstaked ? null : userLiquidityUnstaked.equalTo(
                       '0'
                     ) ? null : !stakingInfo?.active ? null : (
                       <>
-                        
+
                         <StatLabel style={{ color: '#A7B1F4' }}>LP To Deposit:</StatLabel>
                         <RowBetween className="is-mobile" style={{ marginBottom: '2rem' }}>
                           <TYPE.white fontWeight={600} fontSize={[24, 32]} style={{ textOverflow: 'ellipsis' }}>
@@ -696,9 +697,9 @@ export default function Manage({
                             {stakingInfo?.stakedAmount?.greaterThan(JSBI.BigInt(0)) ? 'Deposit' : 'Deposit'}
                           </ButtonOutlined>
                         </RowBetween>
-                         
+
                       </>
-                    )  }
+                    )}
                     {stakingPairs.map(
                       (stakingPair, i) =>
                         stakingPair[1] &&

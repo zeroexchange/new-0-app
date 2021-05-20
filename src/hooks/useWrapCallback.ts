@@ -35,12 +35,6 @@ export default function useWrapCallback(
   return useMemo(() => {
     if (!wethContract || !chainId || !inputCurrency || !outputCurrency) return NOT_APPLICABLE
     const sufficientBalance = inputAmount && balance && !balance.lessThan(inputAmount)
-    // console.log('WETH[chainId]', WETH[chainId])
-    // console.log('outputCurrency', outputCurrency)
-    // console.log('outputCurrency', inputCurrency)
-    // console.log('currencyEquals outputCurrency=', currencyEquals(WETH[chainId], outputCurrency))
-    // console.log('currencyEquals inputCurrency=', currencyEquals(WETH[chainId], inputCurrency))
-    // console.log('asdasdasd=', inputCurrency === ETHER || inputCurrency === AVAX || inputCurrency === BNB)
     if (
       (inputCurrency === ETHER || inputCurrency === AVAX || inputCurrency === BNB || inputCurrency === DEV || inputCurrency === MATIC) &&
       currencyEquals(WETH[chainId], outputCurrency)
