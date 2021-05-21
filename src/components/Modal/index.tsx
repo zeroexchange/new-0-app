@@ -36,12 +36,14 @@ const StyledDialogContent = styled(({ minHeight, maxHeight, mobile, isOpen, ...r
   overflow-y: ${({ mobile }) => (mobile ? 'auto' : 'hidden')};
 
   &[data-reach-dialog-content] {
+    margin: auto;
     background: rgba(47, 53, 115, 0.62);
     box-shadow: inset 2px 2px 5px rgba(255, 255, 255, 0.095);
     backdrop-filter: blur(28px);
     border-radius: 22px;
     padding: 10px;
     width: 50vw;
+    align-self: ${({ mobile }) => (mobile ? 'flex-end' : 'center')};
     overflow-y: ${({ mobile }) => (mobile ? 'auto' : 'hidden')};
     overflow-x: auto;
     max-width: 420px;
@@ -58,14 +60,13 @@ const StyledDialogContent = styled(({ minHeight, maxHeight, mobile, isOpen, ...r
     display: flex;
     ${({ theme }) => theme.mediaWidth.upToMedium`
     width: 65vw;
+    margin: 0;
     `}
     ${({ theme, mobile }) => theme.mediaWidth.upToSmall`
-
       width:  85vw;
       ${mobile &&
         css`
           width: 95vw;
-          margin: 5rem 0 0 0;
         `}
     `}
   }
