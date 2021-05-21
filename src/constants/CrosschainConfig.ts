@@ -150,8 +150,9 @@ export const crosschainConfig: ChainbridgeConfig = {
           decimals: 18,
           resourceId: '0x00000000000000000000000bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e01'
         },
+        // Should check info of GONDOLA TOKEN!!!
         {
-          address: '0x823cE9cca0b9eE2BC4C2d764d304691d770DbBe9',
+          address: '0x823ce9cca0b9ee2bc4c2d764d304691d770dbbe9',
           name: 'Gondola',
           symbol: 'GDL',
           assetBase: 'GDL',
