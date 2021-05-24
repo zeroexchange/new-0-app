@@ -42,6 +42,7 @@ import Loader from '../../components/Loader'
 import PageContainer from './../../components/PageContainer'
 import ProgressSteps from '../../components/ProgressSteps'
 import { ProposalStatus } from '../../state/crosschain/actions'
+import { RouteComponentProps } from 'react-router-dom'
 import Settings from '../../components/Settings'
 import { Text } from 'rebass'
 import TokenWarningModal from '../../components/TokenWarningModal'
@@ -225,7 +226,9 @@ const Header = styled.div`
   margin-bottom: 1rem;
 `
 
-export default function Swap() {
+export default function Swap({
+  ...props
+}: RouteComponentProps<{ currencyIdA: string; currencyIdB: string }>) {
   useCrossChain()
 
   const loadedUrlParams = useDefaultsFromURLSearch()
@@ -469,6 +472,27 @@ export default function Swap() {
     [onCurrencySelection]
   )
 
+  // for navigating from pools Manage page via trade button
+  const propsState: any = props?.location?.state
+  const token0: any = propsState?.token0 ? propsState?.token0 : null
+  const token1: any = propsState?.token1 ? propsState?.token1 : null
+  const curA = useCurrency(token0);
+  const curB = useCurrency(token1);
+
+  const [curAState, setCurAState] = useState(curA) // state for first token from Manage page
+  const [curBState, setCurBState] = useState(curB) // state for second token from Manage page
+
+  useEffect(() => {
+    if (curAState && curBState) {
+      // If there are tokens pair from Manage page set it on start and set null state to not force it again
+      handleInputSelect(curA)  
+      handleOutputSelect(curB)
+      setCurAState(null)
+      setCurBState(null)
+    }
+  }, [token0, token1, curA, curB])
+
+
   // swaps or cross chain
   const [isCrossChain, setIsCrossChain] = useState<boolean>(false)
 
@@ -481,6 +505,9 @@ export default function Swap() {
 
   const nativeCurrency = NATIVE_CURRENCY[chainId ? chainId : ChainId.MAINNET]
   const onSelectBalance = (isNative: boolean, token?: any) => {
+    // clear inputs before changing tokens
+    onUserInput(Field.INPUT, '')
+    onUserInput(Field.OUTPUT, '')
     if (!currencies[Field.INPUT]) {
       handleInputSelect(isNative ? nativeCurrency : token)
     } else if (!currencies[Field.OUTPUT]) {
@@ -489,6 +516,7 @@ export default function Swap() {
       handleInputSelect(isNative ? nativeCurrency : token)
     }
   }
+  
   const [stakedTokens, setStakedTokens] = useState<Token[]>([])
   const stakingInfos = useStakingInfo()
 

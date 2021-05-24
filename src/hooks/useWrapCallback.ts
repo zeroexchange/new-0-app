@@ -1,4 +1,4 @@
-import { AVAX, BNB, DEV, MATIC, Currency, ETHER, WETH, currencyEquals } from '@zeroexchange/sdk'
+import { AVAX, BNB, DEV, MATIC, Currency, ETHER, WETH, currencyEquals, ETHER_CURRENCIES } from '@zeroexchange/sdk'
 
 import { tryParseAmount } from '../state/swap/hooks'
 import { useActiveWeb3React } from './index'
@@ -36,7 +36,7 @@ export default function useWrapCallback(
     if (!wethContract || !chainId || !inputCurrency || !outputCurrency) return NOT_APPLICABLE
     const sufficientBalance = inputAmount && balance && !balance.lessThan(inputAmount)
     if (
-      (inputCurrency === ETHER || inputCurrency === AVAX || inputCurrency === BNB || inputCurrency === DEV || inputCurrency === MATIC) &&
+      ([ETHER, AVAX, BNB, DEV, MATIC].includes(inputCurrency)) &&
       currencyEquals(WETH[chainId], outputCurrency)
     ) {
       return {
@@ -56,7 +56,7 @@ export default function useWrapCallback(
       }
     } else if (
       currencyEquals(WETH[chainId], inputCurrency) &&
-      (outputCurrency === ETHER || outputCurrency === AVAX || outputCurrency === BNB || outputCurrency === DEV || outputCurrency === MATIC)
+      (ETHER_CURRENCIES.includes(outputCurrency))
     ) {
       return {
         wrapType: WrapType.UNWRAP,

@@ -1,5 +1,4 @@
-import { AVAX, BNB, ChainId, DEV, ETHER, JSBI, MATIC, Pair, TokenAmount } from '@zeroexchange/sdk'
-import { abi as IUniswapV2PairABI } from '@uniswap/v2-core/build/IUniswapV2Pair.json'
+import { AVAX, BNB, ChainId, DEV, ETHER, JSBI, MATIC, Pair, TokenAmount, ETHER_CURRENCIES } from '@zeroexchange/sdk'
 import { BIG_INT_SECONDS_IN_WEEK, BIG_INT_ZERO } from '../../constants'
 import { ButtonOutlined, ButtonPrimary, ButtonSuccess } from '../../components/Button'
 import { CardBGImage, CardNoise, CardSection, DataCard } from '../../components/pools/styled'
@@ -41,9 +40,9 @@ import { useGondolaMasterChefContract, useGondolaLpTokenContract } from 'hooks/u
 import PlainPopup from 'components/Popups/PlainPopup'
 import { BigNumber } from "@ethersproject/bignumber"
 import { parseUnits } from "@ethersproject/units"
-const PAIR_INTERFACE = new Interface(IUniswapV2PairABI)
+//const PAIR_INTERFACE = new Interface(IUniswapV2PairABI)
 
-const moment = require('moment');
+const moment = require('moment')
 
 const PageWrapper = styled.div`
   flex-direction: column;
@@ -102,7 +101,6 @@ const SingleColumn = styled.div`
   }
 `};
 `
-
 const Wrapper = styled.div`
   background: rgba(47, 53, 115, 0.32);
   box-shadow: inset 2px 2px 5px rgba(255, 255, 255, 0.095);
@@ -118,18 +116,16 @@ const Wrapper = styled.div`
   padding: 16px 16px;
 `};
 `
-
 const StatsWrapper = styled.div`
   display: flex;
-  justify-content: flex-start;
+  flex-wrap: wrap;
   align-items: center;
   padding: 2rem;
   background: rgba(0, 0, 0, 0.25);
   border-radius: 24px;
   margin-bottom: 1.5rem;
-  .add-liquidity-link {
+  .add-liquidity-link, .trade-button-link {
     width: 188px;
-    margin-left: auto;
     text-decoration: none;
   }
   .remove-liquidity-link {
@@ -139,11 +135,15 @@ const StatsWrapper = styled.div`
   ${({ theme }) => theme.mediaWidth.upToMedium`
   flex-direction: column;
   align-items: flex-start;
-  .add-liquidity-link {
+  .add-liquidity-link, .trade-button-link {
     margin-left: auto;
     margin-right: auto;
     width: 100%;
     max-width: 500px;
+  }
+  .trade-button-link {
+    margin-top: .5rem;
+    margin-bottom: 1rem;
   }
   .remove-liquidity-link {
     margin-left: auto;
@@ -168,7 +168,6 @@ const Stat = styled.div`
   }
 `};
 `
-
 const StatLabel = styled.h5`
   font-weight: bold;
   color: #fff;
@@ -181,7 +180,6 @@ const StatLabel = styled.h5`
   text-align: center
   `};
 `
-
 const StatValue = styled.h6`
   font-weight: bold;
   color: #fff;
@@ -233,85 +231,6 @@ const StyledBox = styled.div`
   }
 `};
 `
-
-// const PositionInfo = styled(AutoColumn)<{ dim: any }>`
-//   position: relative;
-//   max-width: 640px;
-//   width: 100%;
-//   opacity: ${({ dim }) => (dim ? 0.6 : 1)};
-// `
-
-// const BottomSection = styled(AutoColumn)`
-//   border-radius: 12px;
-//   width: 100%;
-//   position: relative;
-// `
-
-// const StyledBox = styled.div`
-//   border-radius: 12px;
-//   width: 100%;
-//   position: relative;
-//   display: flex;
-//   border: 2px solid ${({ theme }) => theme.green1};
-//   padding: 1rem;
-//   flex-direction: row;
-//   justify-content: space-between;
-//   align-items: center;
-//   div {
-//     color: ${({ theme }) => theme.green1};
-//     font-weight: bold;
-//   }
-// `
-
-// const StyledDataCard = styled(DataCard)<{ bgColor?: any; showBackground?: any }>`
-//   background: radial-gradient(76.02% 75.41% at 1.84% 0%, #1e1a31 0%, #6752f7 100%);
-//   z-index: 2;
-//   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-//   background: #111;
-// `
-
-// const StyledBottomCard = styled(DataCard)<{ dim: any }>`
-//   background: ${({ theme }) => theme.bg3};
-//   opacity: ${({ dim }) => (dim ? 0.4 : 1)};
-//   margin-top: -40px;
-//   padding: 0 1.25rem 1rem 1.25rem;
-//   padding-top: 32px;
-//   z-index: 1;
-// `
-
-// const PoolData = styled(DataCard)`
-//   background: none;
-//   border: 1px solid ${({ theme }) => theme.bg4};
-//   padding: 1rem;
-//   z-index: 1;
-// `
-
-// const EmptyProposals = styled.div`
-//   border: 1px solid ${({ theme }) => theme.text4};
-//   padding: 16px 12px;
-//   border-radius: 12px;
-//   display: flex;
-//   flex-direction: column;
-//   justify-content: center;
-//   align-items: center;
-// `
-
-// const VoteCard = styled(DataCard)`
-//   background: #111;
-//   overflow: hidden;
-//   border: 2px solid rgba(103, 82, 247, 0.45);
-//   border-radius: 12px;
-// `
-
-// const DataRow = styled(RowBetween)`
-//   justify-content: center;
-//   gap: 12px;
-//   ${({ theme }) => theme.mediaWidth.upToSmall`
-//     flex-direction: column;
-//     gap: 12px;
-//   `};
-// `
-
 const SymbolTitleWrapper = styled.div`
   display: flex;
   justify-content: center;
@@ -322,7 +241,6 @@ const SymbolTitleInner = styled.div`
   display: flex;
   font-size: 1.5rem;
 `
-
 const TextLink = styled.div`
   font-size: 1rem;
   font-weight: bold;
@@ -337,7 +255,25 @@ const TextLink = styled.div`
     opacity: 0.9;
   }
 `
-
+const StyledTradelLink = styled(StyledInternalLink)`
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    margin-bottom: 10px;
+`};
+  button {
+    background: rgba(30, 247, 231, 0.18);
+    border: 1px solid #1ef7e7;
+  }
+`
+const StyledButtonsWrap = styled.div`
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+  column-gap: 40px;
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+width: 100%;
+flex-direction: column;
+`};
+`
 export default function Manage({
   match: {
     params: { currencyIdA, currencyIdB }
@@ -383,15 +319,10 @@ export default function Manage({
 
   // fade cards if nothing staked or nothing earned yet
   const disableTop = !stakingInfo?.stakedAmount || stakingInfo.stakedAmount.equalTo(JSBI.BigInt(0))
-
-  const token =
-    currencyA === ETHER || currencyA === AVAX || currencyA === BNB || currencyA === DEV || currencyA === MATIC
-      ? tokenB
-      : tokenA
-  const WETH =
-    currencyA === ETHER || currencyA === AVAX || currencyA === BNB || currencyA === DEV || currencyA === MATIC
-      ? tokenA
-      : tokenB
+  
+  const [token, WETH] = currencyA && ETHER_CURRENCIES.includes(currencyA)
+      ? [tokenB, tokenA]
+      : [tokenA, tokenB];
   const backgroundColor = useColor(token)
 
   // get WETH value of staked LP tokens
@@ -518,14 +449,16 @@ export default function Manage({
                 <DoubleCurrencyLogo currency0={currencyA ?? undefined} currency1={currencyB ?? undefined} size={30} />
               </SymbolTitleInner>
             </SymbolTitleWrapper>
-            <span style={{
-              display: 'block',
-              textAlign: 'center',
-              marginTop: '-1.5rem',
-              marginBottom: '2rem',
-              color: 'rgb(167, 177, 244)',
-            }}>
-              ( Ending in {moment(stakingInfo?.periodFinish).fromNow()} )
+            <span
+              style={{
+                display: 'block',
+                textAlign: 'center',
+                marginTop: '-1.5rem',
+                marginBottom: '2rem',
+                color: 'rgb(167, 177, 244)'
+              }}
+            >
+              ( Ending: {moment(stakingInfo?.periodFinish).fromNow()} )
             </span>
             <StatsWrapper>
               <Stat className="weekly">
@@ -585,11 +518,11 @@ export default function Manage({
 
                 <StyledInternalLink className="remove-liquidity-link"
                   to={{
-                    pathname: `/remove/${currencyA && currencyId(currencyA)}/${currencyB && currencyId(currencyB)}`,
+                    pathname: `/add/${currencyA && currencyId(currencyA)}/${currencyB && currencyId(currencyB)}`,
                     state: { stakingRewardAddress }
                   }}
                 >
-                  <TextLink>Remove Liquidity</TextLink>
+                  <ButtonOutlined className="add-liquidity-button">Add Liquidity</ButtonOutlined>
                 </StyledInternalLink>
               ) :
                 (
@@ -643,11 +576,11 @@ export default function Manage({
                 <RowBetween className="is-mobile" style={{ marginBottom: '2rem' }}>
                   <TYPE.white fontWeight={600} fontSize={[24, 32]} style={{ textOverflow: 'ellipsis' }}>
                     {stakingInfo?.active
-                      ? stakingInfo?.rewardRate
-                        ?.multiply(BIG_INT_SECONDS_IN_WEEK)
-                        ?.toSignificant(Math.min(4, stakingInfo?.earnedAmount?.currency.decimals), {
-                          groupSeparator: ','
-                        }) ?? '-'
+                      ? stakingInfo?.rewardRateWeekly
+                          ?.divide(JSBI.BigInt(10**15))
+                          .toSignificant(Math.min(4, stakingInfo?.earnedAmount?.currency.decimals), {
+                            groupSeparator: ','
+                          }) ?? '-'
                       : '0'}
                     <span
                       style={{ opacity: '.8', marginLeft: '5px', fontSize: '16px' }}

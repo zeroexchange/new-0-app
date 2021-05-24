@@ -35,7 +35,9 @@ import {
   pngUSDT,
   gondolaUSDTPool,
   zCHART,
-  bscWISB
+  bscWISB,
+  WMATIC,
+  MZERO
 } from '../../constants'
 import { NEVER_RELOAD, useMultipleContractSingleData } from '../multicall/hooks'
 
@@ -69,6 +71,10 @@ export const STAKING_REWARDS_INFO: {
   }[]
 } = {
   [ChainId.MAINNET]: [
+    {
+      tokens: [WETH[ChainId.MAINNET], ZERO],
+      stakingRewardAddress: '0x90466Fa3B137b56e52eF987BD6e26aca87A32fF2'
+    },
     {
       tokens: [WETH[ChainId.MAINNET], ZERO],
       stakingRewardAddress: '0x6c32Eac6Cc240d507aC88ca73183c5CcC135b09C'
@@ -138,6 +144,11 @@ export const STAKING_REWARDS_INFO: {
     {
       tokens: [zZERO, WAVAX],
       // new one:
+      stakingRewardAddress: '0x90466Fa3B137b56e52eF987BD6e26aca87A32fF2'
+    },
+    {
+      tokens: [zZERO, WAVAX],
+      // new one:
       stakingRewardAddress: '0x45eD4A1f9D573A6bFec9B9fDCE2954aDD62D8e77'
     },
     {
@@ -156,6 +167,10 @@ export const STAKING_REWARDS_INFO: {
     {
       tokens: [zZERO, zETH],
       stakingRewardAddress: '0x869bE5d543226e0Cda93416aaC093b472c99c3A8'
+    },
+    {
+      tokens: [zZERO, zUSDT],
+      stakingRewardAddress: '0x51b53dDAd48bcCfb23f9091Ad2bC87Aa9417eb85'
     },
     {
       tokens: [zZERO, zUSDT],
@@ -226,6 +241,10 @@ export const STAKING_REWARDS_INFO: {
     },
     {
       tokens: [bscZERO, bscUSDT],
+      stakingRewardAddress: '0x2b854fAAc04f501ba8183430aA1501Aa8268F575'
+    },
+    {
+      tokens: [bscZERO, bscUSDT],
       stakingRewardAddress: '0xacE237D2cC182E8c1E3866509b800Fe35e192108'
     },
     {
@@ -267,6 +286,12 @@ export const STAKING_REWARDS_INFO: {
       stakingRewardAddress: '0x728e8E1c134fc5b22FB6EF26F392e724f5f8F413',
       rewardInfo: { rewardToken: bscWISB }
     },
+  ],
+  [ChainId.MATIC]: [
+    // {
+    //   tokens: [WMATIC, MZERO],
+    //   stakingRewardAddress: '0x7b35150abde10F98f44DEd0d02e7E942321fbbe0'
+    // },
   ]
 }
 
@@ -286,6 +311,8 @@ export interface StakingInfo {
   // the current amount of token distributed to the active account per second.
   // equivalent to percent of total supply * reward rate
   rewardRate: TokenAmount
+  
+  rewardRateWeekly: TokenAmount
   // when the period ends
   periodFinish: Date | undefined
   // if pool is active
@@ -297,7 +324,9 @@ export interface StakingInfo {
   getHypotheticalRewardRate: (
     stakedAmount: TokenAmount,
     totalStakedAmount: TokenAmount,
-    totalRewardRate: TokenAmount
+    totalRewardRate: TokenAmount,
+    seconds: number,
+    decimals:number,
   ) => TokenAmount
   gondolaTokenId?: number,
   gondolaRewardAddress?: string,
@@ -409,17 +438,27 @@ export function useStakingInfo(pairToFilterBy?: Pair | null): StakingInfo[] {
         const getHypotheticalRewardRate = (
           stakedAmount: TokenAmount,
           totalStakedAmount: TokenAmount,
-          totalRewardRate: TokenAmount
+          totalRewardRate: TokenAmount,
+          seconds: number,
+          decimals: number
+
         ): TokenAmount => {
+          let amount = JSBI.BigInt(0);
+          if (JSBI.greaterThan(totalStakedAmount.raw, JSBI.BigInt(0))) {
+            const rr = JSBI.multiply(totalRewardRate.raw, JSBI.BigInt(seconds));
+            const sa = stakedAmount.raw;
+            const tsa = totalStakedAmount.raw;
+            const urr = JSBI.multiply(JSBI.multiply(rr, sa), JSBI.BigInt(decimals));
+            amount = JSBI.divide(urr, tsa);
+          }
           return new TokenAmount(
             rewardsToken,
-            JSBI.greaterThan(totalStakedAmount.raw, JSBI.BigInt(0))
-              ? JSBI.divide(JSBI.multiply(totalRewardRate.raw, stakedAmount.raw), totalStakedAmount.raw)
-              : JSBI.BigInt(0)
+            amount
           )
         }
 
-        const individualRewardRate = getHypotheticalRewardRate(stakedAmount, totalStakedAmount, totalRewardRate)
+        const individualRewardRate = getHypotheticalRewardRate(stakedAmount, totalStakedAmount, totalRewardRate, 1, 1)
+        const individualRewardRateWeekly = getHypotheticalRewardRate(stakedAmount, totalStakedAmount, totalRewardRate, 60 * 60 * 24 * 7, 10**15)
 
         const periodFinishSeconds = periodFinishState.result?.[0]?.toNumber()
         const periodFinishMs = periodFinishSeconds * 1000
@@ -434,6 +473,7 @@ export function useStakingInfo(pairToFilterBy?: Pair | null): StakingInfo[] {
           periodFinish: periodFinishMs > 0 ? new Date(periodFinishMs) : undefined,
           earnedAmount: new TokenAmount(rewardsToken, JSBI.BigInt(earnedAmountState?.result?.[0] ?? 0)),
           rewardRate: individualRewardRate,
+          rewardRateWeekly: individualRewardRateWeekly,
           totalRewardRate: totalRewardRate,
           stakedAmount: stakedAmount,
           totalStakedAmount: totalStakedAmount,
