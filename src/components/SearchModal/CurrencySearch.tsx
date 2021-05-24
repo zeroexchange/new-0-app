@@ -2,17 +2,18 @@ import { ChainId, Currency, ETHER, Token } from '@zeroexchange/sdk'
 import { PaddedColumn, SearchInput, Separator } from './styleds'
 import React, { KeyboardEvent, RefObject, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useAllTokens, useToken } from '../../hooks/Tokens'
+import { Box } from 'rebass/styled-components'
 
 import AutoSizer from 'react-virtualized-auto-sizer'
 import Card from '../Card'
-import { CloseIcon } from '../../theme'
+import { CloseIcon, LinkStyledButton } from '../../theme'
 import Column from '../Column'
 import CommonBases from './CommonBases'
 import CurrencyList from './CurrencyList'
 import { DEFAULT_TOKEN_LIST as DEFAULT_TOKEN_LIST_MAINNET } from '../../constants/DefaultTokenList'
 import { DEFAULT_TOKEN_LIST as DEFAULT_TOKEN_LIST_TESTNET } from '../../constants/DefaultTokenListTestnet'
 import { FixedSizeList } from 'react-window'
-import ListLoader from '../ListLoader';
+import ListLoader from '../ListLoader'
 import QuestionHelper from '../QuestionHelper'
 import { RowBetween } from '../Row'
 import SortButton from './SortButton'
@@ -110,7 +111,7 @@ export function CurrencySearch({
     if (isAddressSearch) return searchToken ? [searchToken] : []
 
     // the search list should only show by default tokens that are in our pools
-    return filterTokens([...availableTokensArray], searchQuery);
+    return filterTokens([...availableTokensArray], searchQuery)
 
     // return filterTokens(
     //   chainId === ChainId.MAINNET || chainId === ChainId.RINKEBY
@@ -232,17 +233,17 @@ export function CurrencySearch({
       </div>
 
       <Separator />
-      <Card>
+      <Box>
         <RowBetween>
-          {/*<LinkStyledButton
-            style={{ fontWeight: 500, color: theme.text2, fontSize: 16 }}
+          <LinkStyledButton
+            style={{ fontWeight: 500, color: theme.text2, fontSize: 16, margin: '0 auto' }}
             onClick={onChangeList}
             id="currency-search-change-list-button"
           >
             Manage Lists
-          </LinkStyledButton>*/}
+          </LinkStyledButton>
         </RowBetween>
-      </Card>
+   </Box>
     </Column>
   )
 }
