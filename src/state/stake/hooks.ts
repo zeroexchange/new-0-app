@@ -1,6 +1,7 @@
 import { ChainId, CurrencyAmount, JSBI, Pair, Token, TokenAmount, WETH } from '@zeroexchange/sdk'
 import { Contract } from '@ethersproject/contracts'
 import {
+  WAS,
   DAI,
   MOCK1,
   SUSHI,
@@ -102,6 +103,11 @@ export const STAKING_REWARDS_INFO: {
     {
       tokens: [DAI, ZERO],
       stakingRewardAddress: '0x8995fcD45B13BF75f9FA65BbBC6A75066E4E9Cbf'
+    },
+    {
+      tokens: [WETH[ChainId.MAINNET], WAS],
+      stakingRewardAddress: '0x2b854fAAc04f501ba8183430aA1501Aa8268F575',
+      rewardInfo: { rewardToken: WAS },
     }
   ],
   [ChainId.AVALANCHE]: [
@@ -288,10 +294,10 @@ export const STAKING_REWARDS_INFO: {
     },
   ],
   [ChainId.MATIC]: [
-    // {
-    //   tokens: [WMATIC, MZERO],
-    //   stakingRewardAddress: '0x7b35150abde10F98f44DEd0d02e7E942321fbbe0'
-    // },
+    {
+      tokens: [WETH[ChainId.MATIC], MZERO],
+      stakingRewardAddress: '0x90466Fa3B137b56e52eF987BD6e26aca87A32fF2'
+    },
   ]
 }
 
