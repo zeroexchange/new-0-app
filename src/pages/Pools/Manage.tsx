@@ -13,10 +13,8 @@ import { AutoColumn } from '../../components/Column'
 import Card from '../../components/Card'
 import ClaimRewardModal from '../../components/pools/ClaimRewardModal'
 import { CountUp } from 'use-count-up'
-import { Dots } from '../../components/swap/styleds'
 import DoubleCurrencyLogo from '../../components/DoubleLogo'
 import FullPositionCard from '../../components/PositionCard'
-import { Link } from 'react-router-dom'
 import PageContainer from './../../components/PageContainer'
 import { RouteComponentProps } from 'react-router-dom'
 import StakingModal from '../../components/pools/StakingModal'
@@ -34,13 +32,7 @@ import { useTotalSupply } from '../../data/TotalSupply'
 import useUSDCPrice from '../../utils/useUSDCPrice'
 import { useWalletModalToggle } from '../../state/application/hooks'
 import { wrappedCurrency } from '../../utils/wrappedCurrency'
-import { Interface } from '@ethersproject/abi'
-import { getPairState } from './hooks'
-import { useGondolaMasterChefContract, useGondolaLpTokenContract } from 'hooks/useContract'
 import PlainPopup from 'components/Popups/PlainPopup'
-import { BigNumber } from "@ethersproject/bignumber"
-import { parseUnits } from "@ethersproject/units"
-//const PAIR_INTERFACE = new Interface(IUniswapV2PairABI)
 
 const moment = require('moment')
 
@@ -305,10 +297,15 @@ export default function Manage({
 
   const baseStakingInfo = useStakingInfo(stakingTokenPair)
   const stakingInfo = baseStakingInfo.find(x => x.stakingRewardAddress === stakingRewardAddress);
+  console.log("🚀 ~ file: Manage.tsx ~ line 300 ~ stakingInfo", stakingInfo)
 
   // detect existing unstaked LP position to show add button if none found
   const userLiquidityUnstaked = useTokenBalance(account ?? undefined, stakingInfo?.stakedAmount?.token)
+  console.log("🚀 ~ file: Manage.tsx ~ line 303 ~ userLiquidityUnstaked", userLiquidityUnstaked)
+
+  
   const showAddLiquidityButton = Boolean(stakingInfo?.stakedAmount?.equalTo('0') && userLiquidityUnstaked?.equalTo('0'))
+  console.log("🚀 ~ file: Manage.tsx ~ line 308 ~ showAddLiquidityButton", showAddLiquidityButton)
 
   // toggle for staking modal and unstaking modal
   const [showStakingModal, setShowStakingModal] = useState(false)
@@ -319,10 +316,10 @@ export default function Manage({
 
   // fade cards if nothing staked or nothing earned yet
   const disableTop = !stakingInfo?.stakedAmount || stakingInfo.stakedAmount.equalTo(JSBI.BigInt(0))
-  
+
   const [token, WETH] = currencyA && ETHER_CURRENCIES.includes(currencyA)
-      ? [tokenB, tokenA]
-      : [tokenA, tokenB];
+    ? [tokenB, tokenA]
+    : [tokenA, tokenB];
   const backgroundColor = useColor(token)
 
   // get WETH value of staked LP tokens
@@ -482,7 +479,7 @@ export default function Manage({
                 </StatValue>
               </Stat>
               {
-                (!isGongolaRewards) ? (
+                showAddLiquidityButton ? (!isGongolaRewards ) ? (
                   <StyledInternalLink className="add-liquidity-link"
                     to={{
                       pathname: `/add/${currencyA && currencyId(currencyA)}/${currencyB && currencyId(currencyB)}`,
@@ -498,7 +495,7 @@ export default function Manage({
 
                   </div>
 
-                )
+                ) : null
               }
               {
                 (<PlainPopup isOpen={showPopupOpen} onDismiss={() => setShowPopupOpen(false)} content={
@@ -514,7 +511,7 @@ export default function Manage({
               }
 
 
-              {!userLiquidityUnstaked ? null : userLiquidityUnstaked.equalTo('0') ? null : !stakingInfo?.active ? null : (!isGongolaRewards) ? (
+              {showAddLiquidityButton ? null : (!isGongolaRewards) ? (
 
                 <StyledInternalLink className="remove-liquidity-link"
                   to={{
@@ -577,10 +574,10 @@ export default function Manage({
                   <TYPE.white fontWeight={600} fontSize={[24, 32]} style={{ textOverflow: 'ellipsis' }}>
                     {stakingInfo?.active
                       ? stakingInfo?.rewardRateWeekly
-                          ?.divide(JSBI.BigInt(10**15))
-                          .toSignificant(Math.min(4, stakingInfo?.earnedAmount?.currency.decimals), {
-                            groupSeparator: ','
-                          }) ?? '-'
+                        ?.divide(JSBI.BigInt(10 ** 15))
+                        .toSignificant(Math.min(4, stakingInfo?.earnedAmount?.currency.decimals), {
+                          groupSeparator: ','
+                        }) ?? '-'
                       : '0'}
                     <span
                       style={{ opacity: '.8', marginLeft: '5px', fontSize: '16px' }}
