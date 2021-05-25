@@ -143,6 +143,7 @@ function GetAvailableChains(currentChainName: string): Array<CrosschainChain> {
 }
 
 function GetAvailableTokens(chainName: string): Array<CrosschainToken> {
+  console.log(chainName)
   const result: Array<CrosschainToken> = []
   for (const chain of crosschainConfig.chains) {
     if (chain.name === chainName) {

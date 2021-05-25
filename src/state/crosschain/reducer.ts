@@ -20,7 +20,8 @@ import {
   setPendingTransfer,
   setTargetChain,
   setTargetTokens,
-  setTransferAmount
+  setTransferAmount,
+  setCoinGeckoList
 } from './actions'
 
 import { createReducer } from '@reduxjs/toolkit'
@@ -42,6 +43,7 @@ export interface CrosschainState {
   readonly depositConfirmed: boolean
   readonly pendingTransfer: PendingTransfer
   readonly lastTimeSwitched: number
+  readonly coingeckoList: any
 }
 
 export const initialState: CrosschainState = {
@@ -75,6 +77,7 @@ export const initialState: CrosschainState = {
   },
   depositConfirmed: false,
   pendingTransfer: {},
+  coingeckoList: [],
   lastTimeSwitched: ~~(Date.now() / 1000)
 }
 
@@ -191,6 +194,12 @@ export default createReducer<CrosschainState>(initialState, builder =>
       return {
         ...currentState,
         lastTimeSwitched: ~~(Date.now() / 1000) + 5
+      }
+    }) .addCase(setCoinGeckoList, (state,  { payload: { coingeckoList } }) => {
+      const currentState = { ...initialState, ...state };
+      return {
+        ...currentState,
+        coingeckoList
       }
     })
 )

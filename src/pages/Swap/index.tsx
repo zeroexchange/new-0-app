@@ -11,6 +11,7 @@ import { LinkStyledButton, TYPE, Title } from '../../theme'
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { STAKING_REWARDS_INFO, useStakingInfo } from '../../state/stake/hooks'
 import { computeTradePriceBreakdown, warningSeverity } from '../../utils/prices'
+import Web3 from 'web3'
 import styled, { ThemeContext } from 'styled-components'
 import {
   useDefaultsFromURLSearch,
@@ -41,7 +42,6 @@ import Icon from '../../components/Icon'
 import Loader from '../../components/Loader'
 import PageContainer from './../../components/PageContainer'
 import ProgressSteps from '../../components/ProgressSteps'
-import { ProposalStatus } from '../../state/crosschain/actions'
 import { RouteComponentProps } from 'react-router-dom'
 import Settings from '../../components/Settings'
 import { Text } from 'rebass'
@@ -49,7 +49,7 @@ import TokenWarningModal from '../../components/TokenWarningModal'
 import TradePrice from '../../components/swap/TradePrice'
 import confirmPriceImpactWithoutFee from '../../components/swap/confirmPriceImpactWithoutFee'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
-import { setCurrentToken } from '../../state/crosschain/actions'
+import { setCurrentToken, setCoinGeckoList } from '../../state/crosschain/actions'
 import { setTokenBalances } from '../../state/user/actions'
 import { toCheckSumAddress } from '../../state/crosschain/hooks'
 import { useActiveWeb3React } from '../../hooks'
@@ -60,7 +60,7 @@ import { useETHBalances } from '../../state/wallet/hooks'
 import { useSwapCallback } from '../../hooks/useSwapCallback'
 import { useUserAddedTokens } from '../../state/user/hooks'
 import useWindowDimensions from './../../hooks/useWindowDimensions'
-
+import {listOfTokens} from '../../constants/coingnecko'
 const CrossChainLabels = styled.div`
   p {
     display: flex;
@@ -226,25 +226,26 @@ const Header = styled.div`
   margin-bottom: 1rem;
 `
 
-export default function Swap({
-  ...props
-}: RouteComponentProps<{ currencyIdA: string; currencyIdB: string }>) {
+export default function Swap({ ...props }: RouteComponentProps<{ currencyIdA: string; currencyIdB: string }>) {
   useCrossChain()
 
   const loadedUrlParams = useDefaultsFromURLSearch()
 
+const web3 = new Web3;
+const serializedListOfTokens = listOfTokens.map( item => {
+  return {...item, address: web3.utils.toChecksumAddress(item.address)}
+})
+
   const {
-    currentTxID,
     availableChains: allChains,
     availableTokens,
     currentChain,
     currentToken,
     crosschainFee,
     targetTokens,
-    crosschainTransferStatus,
-    swapDetails
+    coingeckoList
   } = useCrosschainState()
-
+ 
   const { width } = useWindowDimensions()
 
   let isColumn = false
@@ -257,6 +258,10 @@ export default function Swap({
   const { BreakCrosschainSwap, GetAllowance } = useCrosschainHooks()
 
   const dispatch = useDispatch<AppDispatch>()
+  if (!coingeckoList.length) {
+    dispatch(setCoinGeckoList({coingeckoList: serializedListOfTokens}))
+  }
+
 
   // token warning stuff
   const [loadedInputCurrency, loadedOutputCurrency] = [
@@ -476,8 +481,8 @@ export default function Swap({
   const propsState: any = props?.location?.state
   const token0: any = propsState?.token0 ? propsState?.token0 : null
   const token1: any = propsState?.token1 ? propsState?.token1 : null
-  const curA = useCurrency(token0);
-  const curB = useCurrency(token1);
+  const curA = useCurrency(token0)
+  const curB = useCurrency(token1)
 
   const [curAState, setCurAState] = useState(curA) // state for first token from Manage page
   const [curBState, setCurBState] = useState(curB) // state for second token from Manage page
@@ -485,13 +490,12 @@ export default function Swap({
   useEffect(() => {
     if (curAState && curBState) {
       // If there are tokens pair from Manage page set it on start and set null state to not force it again
-      handleInputSelect(curA)  
+      handleInputSelect(curA)
       handleOutputSelect(curB)
       setCurAState(null)
       setCurBState(null)
     }
   }, [token0, token1, curA, curB])
-
 
   // swaps or cross chain
   const [isCrossChain, setIsCrossChain] = useState<boolean>(false)
@@ -516,7 +520,7 @@ export default function Swap({
       handleInputSelect(isNative ? nativeCurrency : token)
     }
   }
-  
+
   const [stakedTokens, setStakedTokens] = useState<Token[]>([])
   const stakingInfos = useStakingInfo()
 
