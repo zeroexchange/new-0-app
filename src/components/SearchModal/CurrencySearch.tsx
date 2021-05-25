@@ -92,7 +92,7 @@ export function CurrencySearch({
   const allTokens = useAllTokens()
 
   // cross chain
-  const { availableTokens, coingeckoList, isCoingeckoListOn } = useCrosschainState()
+  const { availableTokens, coingeckoList, isCoingeckoListOn, partOfList } = useCrosschainState()
   const userTokens = useUserAddedTokens()
     ?.filter((x: any) => x.chainId === chainId)
     ?.map((x: any) => {
@@ -107,7 +107,7 @@ export function CurrencySearch({
           return new Token(x.chainId, x.address, x.decimals, x.symbol, x.name)
         })
         .concat(userTokens)
-    : isCoingeckoListOn ? [...availableTokens, ...coingeckoList]
+    : isCoingeckoListOn ? [...availableTokens, ...coingeckoList.slice(0, partOfList)]
         .map((x: any) => {
           return new Token(x.chainId, x.address, x.decimals, x.symbol, x.name)
         })

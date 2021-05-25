@@ -1,7 +1,7 @@
 import { AVAX, BNB, ChainId, Currency, CurrencyAmount, DEV, ETHER, MATIC, Token, currencyEquals } from '@zeroexchange/sdk'
 import { FadedSpan, MenuItem } from './styleds'
 import { LinkStyledButton, TYPE } from '../../theme'
-import React, { CSSProperties, MutableRefObject, useCallback, useMemo } from 'react'
+import React, { CSSProperties, MutableRefObject, useCallback, useMemo, useState } from 'react'
 import { useAddUserToken, useRemoveUserAddedToken } from '../../state/user/hooks'
 
 import BigNumber from 'bignumber.js'
@@ -20,6 +20,10 @@ import { useActiveWeb3React } from '../../hooks'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
 import { useIsUserAddedToken } from '../../hooks/Tokens'
 import { useTokenBalances } from '../../state/user/hooks'
+import { setPartOfList } from '../../state/crosschain/actions'
+import {useCrosschainState} from '../../state/crosschain/hooks'
+import { useDispatch } from 'react-redux'
+import { AppDispatch } from '../../state'
 
 function currencyKey(currency: Currency): string {
   if (currency instanceof Token) {
@@ -255,6 +259,7 @@ export default function CurrencyList({
       const handleSelect = () => onCurrencySelect(currency)
       return (
         <CurrencyRow
+          key={String(Math.random())}
           style={style}
           currency={currency}
           isSelected={isSelected}
@@ -271,9 +276,21 @@ export default function CurrencyList({
   )
 
   const itemKey = useCallback((index: number, data: any) => currencyKey(data[index]), [])
-
+  const [heightPoint, setHeightPoint] = useState<number>(676)
+  const dispatch = useDispatch<AppDispatch>()
+  const {
+    partOfList
+  } = useCrosschainState()
   return (
     <FixedSizeList
+      key={String(Math.random())}
+      onScroll={(e) => {
+        const scrollHeight = e.scrollOffset;
+        if (scrollHeight > heightPoint) {
+          dispatch(setPartOfList({partOfList: partOfList + 20}))
+          setHeightPoint(heightPoint + 676)
+        }
+      }}
       height={height}
       ref={fixedListRef as any}
       width="100%"

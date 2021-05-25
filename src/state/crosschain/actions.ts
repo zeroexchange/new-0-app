@@ -72,3 +72,4 @@ export const setPendingTransfer = createAction<{ pendingTransfer: PendingTransfe
 export const setCrosschainLastTimeSwitched = createAction<{ }>('crosschain/last-time-switched')
 export const setCoinGeckoList = createAction<{coingeckoList: any[] }>('crosschain/setCoinGeckoList')
 export const showCoinGeckoList = createAction<{isCoingeckoListOn: boolean }>('crosschain/showCoinGeckoList')
+export const setPartOfList = createAction<{partOfList: number }>('crosschain/setPartOfList')
