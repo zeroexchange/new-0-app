@@ -19,7 +19,7 @@ import { DEFAULT_TOKEN_LIST as DEFAULT_TOKEN_LIST_TESTNET } from '../../constant
 import { FixedSizeList } from 'react-window'
 import ListLoader from '../ListLoader'
 import QuestionHelper from '../QuestionHelper'
-import { RowBetween } from '../Row'
+import Row, { RowBetween } from '../Row'
 import SortButton from './SortButton'
 import { Text } from 'rebass'
 import { ThemeContext } from 'styled-components'
@@ -29,7 +29,7 @@ import { useActiveWeb3React } from '../../hooks'
 import { useCrosschainState } from '../../state/crosschain/hooks'
 import { useTokenComparator } from './sorting'
 import { useTranslation } from 'react-i18next'
-import { useUserAddedTokens } from '../../state/user/hooks'
+import { useUserAddedTokens, useRemoveUserAddedToken } from '../../state/user/hooks'
 import {showCoinGeckoList} from '../../state/crosschain/actions'
 interface CurrencySearchProps {
   isOpen: boolean
@@ -80,13 +80,13 @@ export function CurrencySearch({
 }: CurrencySearchProps) {
   const { t } = useTranslation()
   const { chainId } = useActiveWeb3React()
+  console.log(typeof chainId)
   const isEthChain = chainId === 1
   const theme = useContext(ThemeContext)
   const [isManageTokenList, setIsManageTokenList] = useState<boolean>(false)
   const fixedList = useRef<FixedSizeList>()
   const [searchQuery, setSearchQuery] = useState<string>('')
   const [invertSearchOrder, setInvertSearchOrder] = useState<boolean>(false)
-  const userAddedTokens = useUserAddedTokens()
   // if they input an address, use it
   const isAddressSearch = isAddress(searchQuery)
   const searchToken = useToken(searchQuery)
@@ -218,7 +218,12 @@ export function CurrencySearch({
     const value = false
     const [isTokenList, setIsTokenList] = useState<boolean>(true)
     const dispatch = useDispatch<AppDispatch>()
-    
+    const removeToken = useRemoveUserAddedToken()
+    const removeAllTokens = () => {
+      userTokens.forEach(item => {
+        if (chainId && item instanceof Token) removeToken(chainId, item.address)
+      })
+    }
     return (
       <Column style={{ width: '100%', flex: '1 1' }}>
         <RowBetween>
@@ -240,6 +245,7 @@ export function CurrencySearch({
         </MarginWrap>
         <MarginWrap>
           {isTokenList && (
+            <>
             <TokenListCard>
               <RowBetween>
                 <div>
@@ -257,7 +263,45 @@ export function CurrencySearch({
                 />
               </RowBetween>
             </TokenListCard>
-          )}
+          </>
+           )}
+           {!isTokenList && userTokens.length > 0 && (
+             <MarginWrap>
+               <RowBetween>
+                 <h3>
+                   {userTokens.length ? userTokens.length + ' Custom tokens' : ''}
+                 </h3>
+                 <h3 onClick={removeAllTokens}>
+                   Clear all
+                 </h3>
+               </RowBetween>
+                <div style={{ flex: '1', marginTop: '20px' }}>
+                <AutoSizer disableWidth>
+                  {({ height }) => (
+                    <CurrencyList
+                      height={height}
+                      showETH={false}
+                      currencies={userTokens}
+                      onCurrencySelect={handleCurrencySelect}
+                      otherCurrency={otherSelectedCurrency}
+                      selectedCurrency={selectedCurrency}
+                      fixedListRef={fixedList}
+                      searchQuery={searchQuery}
+                      unseenCustomToken={transferPage}
+                    />
+                  )}
+                </AutoSizer>
+                <ListLoader />
+              </div>
+              </MarginWrap>
+           )}
+           {!isTokenList && !userTokens.length && (
+              <MarginWrap>
+                <h2>
+                  There are not added tokens by user
+                </h2>
+              </MarginWrap>
+           )}
         </MarginWrap>
       </Column>
     )
