@@ -5,6 +5,7 @@ import { ArrowRight as Arrow } from './../Arrows'
 import React, { KeyboardEvent, RefObject, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useAllTokens, useToken } from '../../hooks/Tokens'
 import { LinkStyledButton } from '../../theme'
+import Toggle from './../Toggle'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import Card from '../Card'
 import { CloseIcon } from '../../theme'
@@ -53,6 +54,15 @@ const ArrowLeft = styled.div`
   cursor: pointer;
 `
 
+const MarginWrap = styled.div`
+  margin-top: 15px;
+`
+
+const TokenListCard = styled.div`
+  padding: 10px;
+  background-color: grey;
+`
+
 const DEFAULT_TOKEN_LIST = process.env.REACT_APP_TESTNET ? DEFAULT_TOKEN_LIST_TESTNET : DEFAULT_TOKEN_LIST_MAINNET
 
 export function CurrencySearch({
@@ -81,7 +91,7 @@ export function CurrencySearch({
   const allTokens = useAllTokens()
 
   // cross chain
-  const { availableTokens } = useCrosschainState()
+  const { availableTokens, coingeckoList } = useCrosschainState()
   const userTokens = useUserAddedTokens()
     ?.filter((x: any) => x.chainId === chainId)
     ?.map((x: any) => {
@@ -194,18 +204,52 @@ export function CurrencySearch({
   )
   interface ManageListProps {
     setIsManageTokenList: (value: boolean) => void
+    tokenLength: number
   }
-  
-  const ManageList = ({ setIsManageTokenList }: ManageListProps) => {
-    const value = false;
+
+  const ManageList = ({ setIsManageTokenList, tokenLength }: ManageListProps) => {
+    const value = false
+    const [isTokenList, setIsTokenList] = useState<boolean>(true)
+    const [isCoinGeckoOn, setIsCoinGeckoOn] = useState<boolean>(true)
+
     return (
       <Column style={{ width: '100%', flex: '1 1' }}>
         <RowBetween>
           <ArrowLeft onClick={() => setIsManageTokenList(value)}>
             <Arrow />
           </ArrowLeft>
+          <h3>Manage</h3>
           <CloseIcon onClick={onDismiss} />
         </RowBetween>
+        <Separator />
+        <MarginWrap>
+          <Toggle
+            isActive={isTokenList}
+            toggle={() => setIsTokenList(!isTokenList)}
+            activeText="Lists"
+            inActiveText="Tokens"
+            width="100%"
+          />
+        </MarginWrap>
+        <MarginWrap>
+          {isTokenList && (
+            <TokenListCard>
+              <RowBetween>
+                <div>
+                  <h3>CoinGecko</h3>
+                  <p>{tokenLength} tokens</p>
+                </div>
+                <Toggle
+                  isActive={isCoinGeckoOn}
+                  toggle={() => setIsCoinGeckoOn(!isCoinGeckoOn)}
+                  activeText="On"
+                  inActiveText="Off"
+                  width="100px"
+                />
+              </RowBetween>
+            </TokenListCard>
+          )}
+        </MarginWrap>
       </Column>
     )
   }
@@ -277,7 +321,9 @@ export function CurrencySearch({
           </RowCenter>
         </Card>
       )}
-      {isManageTokenList && <ManageList setIsManageTokenList={setIsManageTokenList} />}
+      {isManageTokenList && (
+        <ManageList tokenLength={coingeckoList.length} setIsManageTokenList={setIsManageTokenList} />
+      )}
     </Column>
   )
 }
