@@ -80,7 +80,6 @@ export function CurrencySearch({
 }: CurrencySearchProps) {
   const { t } = useTranslation()
   const { chainId } = useActiveWeb3React()
-  console.log(typeof chainId)
   const isEthChain = chainId === 1
   const theme = useContext(ThemeContext)
   const [isManageTokenList, setIsManageTokenList] = useState<boolean>(false)
@@ -108,13 +107,14 @@ export function CurrencySearch({
           return new Token(x.chainId, x.address, x.decimals, x.symbol, x.name)
         })
         .concat(userTokens)
-    : availableTokens
+    : isCoingeckoListOn ? [...availableTokens, ...coingeckoList]
         .map((x: any) => {
           return new Token(x.chainId, x.address, x.decimals, x.symbol, x.name)
         })
+        .concat(userTokens) : availableTokens.map((x: any) => {
+          return new Token(x.chainId, x.address, x.decimals, x.symbol, x.name)
+        })
         .concat(userTokens)
-
-        availableTokensArray = isCoingeckoListOn ? [...availableTokensArray, ...coingeckoList.slice(0,10)] : availableTokensArray
 
   const defaultTokenList = DEFAULT_TOKEN_LIST.filter((x: any) => x.chainId === chainId)
     .map((x: any) => {
@@ -133,7 +133,6 @@ export function CurrencySearch({
   // }, [searchQuery])
 
   const showETH = true
-
   const tokenComparator = useTokenComparator(invertSearchOrder)
 
   const filteredTokens: Token[] = useMemo(() => {
@@ -188,6 +187,15 @@ export function CurrencySearch({
     const input = event.target.value
     const checksummedInput = isAddress(input)
     setSearchQuery(checksummedInput || input)
+
+    if (!checksummedInput) {
+      const findToken = coingeckoList.find((item: any) => item.name === input)
+      if (findToken) {
+        const findTokenAddress = findToken.address
+        setSearchQuery(findTokenAddress)
+      }
+    }
+   
     fixedList.current?.scrollTo(0)
   }, [])
 
