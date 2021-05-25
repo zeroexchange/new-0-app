@@ -307,7 +307,7 @@ export function CurrencySearch({
               <AutoSizer disableWidth>
                 {({ height }) => (
                   <CurrencyList
-                  userTokens={true}
+                    isUserTokens={true}
                     height={height}
                     showETH={false}
                     currencies={userTokens}

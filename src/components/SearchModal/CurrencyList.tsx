@@ -1,4 +1,15 @@
-import { AVAX, BNB, ChainId, Currency, CurrencyAmount, DEV, ETHER, MATIC, Token, currencyEquals } from '@zeroexchange/sdk'
+import {
+  AVAX,
+  BNB,
+  ChainId,
+  Currency,
+  CurrencyAmount,
+  DEV,
+  ETHER,
+  MATIC,
+  Token,
+  currencyEquals
+} from '@zeroexchange/sdk'
 import { FadedSpan, MenuItem } from './styleds'
 import { ExternalLink, LinkStyledButton, TYPE } from '../../theme'
 import React, { CSSProperties, MutableRefObject, useCallback, useMemo, useState } from 'react'
@@ -21,10 +32,10 @@ import { useCurrencyBalance } from '../../state/wallet/hooks'
 import { useIsUserAddedToken } from '../../hooks/Tokens'
 import { useTokenBalances } from '../../state/user/hooks'
 import { setPartOfList } from '../../state/crosschain/actions'
-import {useCrosschainState} from '../../state/crosschain/hooks'
+import { useCrosschainState } from '../../state/crosschain/hooks'
 import { useDispatch } from 'react-redux'
 import { AppDispatch } from '../../state'
-import { ExternalLink as ExternalLinkIcon}  from 'react-feather'
+import { ExternalLink as ExternalLinkIcon } from 'react-feather'
 
 function currencyKey(currency: Currency): string {
   if (currency instanceof Token) {
@@ -39,7 +50,7 @@ function currencyKey(currency: Currency): string {
     return 'DEV'
   } else if (currency === MATIC) {
     return 'MATIC'
-  }else {
+  } else {
     return ''
   }
 }
@@ -113,7 +124,7 @@ const weiToEthNum = (balance: any, decimals = 18) => {
 }
 
 function CurrencyRow({
-  userTokens,
+  isUserTokens,
   currency,
   onSelect,
   isSelected,
@@ -124,7 +135,7 @@ function CurrencyRow({
   tokenBalances,
   unseenCustomToken = false
 }: {
-  userTokens? :boolean
+  isUserTokens?: boolean
   currency: any
   onSelect: () => void
   isSelected: boolean
@@ -144,7 +155,7 @@ function CurrencyRow({
   const addToken = useAddUserToken()
 
   const hasABalance = useMemo(() => {
-    return balance && parseFloat(balance.toSignificant(6)) > 0.0000001 ? true : false;
+    return balance && parseFloat(balance.toSignificant(6)) > 0.0000001 ? true : false
   }, [balance])
 
   // only show add or remove buttons if not on selected list
@@ -208,8 +219,15 @@ function CurrencyRow({
       <TokenTags currency={currency} />
       <RowFixed style={{ justifySelf: 'flex-end' }}>
         {balance && hasABalance ? <Balance balance={balance} /> : account && !balance ? <Loader /> : 0}
-        {chainId && userTokens && (
-        <ExternalLink style={{ marginLeft: '0.5rem' }} href={getEtherscanLink(chainId, currency.address, 'address')}><ExternalLinkIcon size={20}/></ExternalLink>
+        {chainId && isUserTokens && (
+          <div onClick={e => e.stopPropagation()}>
+            <ExternalLink
+              style={{ marginLeft: '0.5rem' }}
+              href={getEtherscanLink(chainId, currency.address, 'address')}
+            >
+              <ExternalLinkIcon size={20} />
+            </ExternalLink>
+          </div>
         )}
       </RowFixed>
     </MenuItem>
@@ -217,7 +235,7 @@ function CurrencyRow({
 }
 
 export default function CurrencyList({
-  userTokens,
+  isUserTokens,
   height,
   currencies,
   selectedCurrency,
@@ -228,7 +246,7 @@ export default function CurrencyList({
   searchQuery,
   unseenCustomToken = false
 }: {
-  userTokens?: boolean
+  isUserTokens?: boolean
   height: number
   currencies: Currency[]
   selectedCurrency?: Currency | null
@@ -257,17 +275,16 @@ export default function CurrencyList({
     showETH,
     nativeToken
   ])
-  
+
   const Row = useCallback(
     ({ data, index, style }) => {
-     
       const currency: Currency = data[index]
       const isSelected = Boolean(selectedCurrency && currencyEquals(selectedCurrency, currency))
       const otherSelected = Boolean(otherCurrency && currencyEquals(otherCurrency, currency))
       const handleSelect = () => onCurrencySelect(currency)
       return (
         <CurrencyRow
-          userTokens={userTokens}
+          isUserTokens={isUserTokens}
           key={String(Math.random())}
           style={style}
           currency={currency}
@@ -287,16 +304,14 @@ export default function CurrencyList({
   const itemKey = useCallback((index: number, data: any) => currencyKey(data[index]), [])
   const [heightPoint, setHeightPoint] = useState<number>(676)
   const dispatch = useDispatch<AppDispatch>()
-  const {
-    partOfList
-  } = useCrosschainState()
+  const { partOfList } = useCrosschainState()
   return (
     <FixedSizeList
       key={String(Math.random())}
-      onScroll={(e) => {
-        const scrollHeight = e.scrollOffset;
+      onScroll={e => {
+        const scrollHeight = e.scrollOffset
         if (scrollHeight > heightPoint) {
-          dispatch(setPartOfList({partOfList: partOfList + 20}))
+          dispatch(setPartOfList({ partOfList: partOfList + 20 }))
           setHeightPoint(heightPoint + 676)
         }
       }}
