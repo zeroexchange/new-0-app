@@ -1,8 +1,10 @@
 import { ChainId, Currency, ETHER, Token } from '@zeroexchange/sdk'
 import { PaddedColumn, SearchInput, Separator } from './styleds'
+import styled from 'styled-components'
+import { ArrowRight as Arrow } from './../Arrows'
 import React, { KeyboardEvent, RefObject, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useAllTokens, useToken } from '../../hooks/Tokens'
-
+import { LinkStyledButton } from '../../theme'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import Card from '../Card'
 import { CloseIcon } from '../../theme'
@@ -12,7 +14,7 @@ import CurrencyList from './CurrencyList'
 import { DEFAULT_TOKEN_LIST as DEFAULT_TOKEN_LIST_MAINNET } from '../../constants/DefaultTokenList'
 import { DEFAULT_TOKEN_LIST as DEFAULT_TOKEN_LIST_TESTNET } from '../../constants/DefaultTokenListTestnet'
 import { FixedSizeList } from 'react-window'
-import ListLoader from '../ListLoader';
+import ListLoader from '../ListLoader'
 import QuestionHelper from '../QuestionHelper'
 import { RowBetween } from '../Row'
 import SortButton from './SortButton'
@@ -38,6 +40,19 @@ interface CurrencySearchProps {
   transferPage?: boolean
 }
 
+const ManageButton = styled(LinkStyledButton)`
+  font-size: 19px;
+`
+
+const RowCenter = styled(RowBetween)`
+  justify-content: center;
+`
+
+const ArrowLeft = styled.div`
+  transform: rotate(180deg);
+  cursor: pointer;
+`
+
 const DEFAULT_TOKEN_LIST = process.env.REACT_APP_TESTNET ? DEFAULT_TOKEN_LIST_TESTNET : DEFAULT_TOKEN_LIST_MAINNET
 
 export function CurrencySearch({
@@ -53,8 +68,9 @@ export function CurrencySearch({
 }: CurrencySearchProps) {
   const { t } = useTranslation()
   const { chainId } = useActiveWeb3React()
+  const isEthChain = chainId === 1
   const theme = useContext(ThemeContext)
-
+  const [isManageTokenList, setIsManageTokenList] = useState<boolean>(false)
   const fixedList = useRef<FixedSizeList>()
   const [searchQuery, setSearchQuery] = useState<string>('')
   const [invertSearchOrder, setInvertSearchOrder] = useState<boolean>(false)
@@ -110,7 +126,7 @@ export function CurrencySearch({
     if (isAddressSearch) return searchToken ? [searchToken] : []
 
     // the search list should only show by default tokens that are in our pools
-    return filterTokens([...availableTokensArray], searchQuery);
+    return filterTokens([...availableTokensArray], searchQuery)
 
     // return filterTokens(
     //   chainId === ChainId.MAINNET || chainId === ChainId.RINKEBY
@@ -176,73 +192,92 @@ export function CurrencySearch({
     },
     [filteredSortedTokens, handleCurrencySelect, searchQuery]
   )
+  interface ManageListProps {
+    setIsManageTokenList: (value: boolean) => void
+  }
+  
+  const ManageList = ({ setIsManageTokenList }: ManageListProps) => {
+    const value = false;
+    return (
+      <Column style={{ width: '100%', flex: '1 1' }}>
+        <RowBetween>
+          <ArrowLeft onClick={() => setIsManageTokenList(value)}>
+            <Arrow />
+          </ArrowLeft>
+          <CloseIcon onClick={onDismiss} />
+        </RowBetween>
+      </Column>
+    )
+  }
 
   return (
     <Column style={{ width: '100%', flex: '1 1' }}>
-      <PaddedColumn gap="14px">
-        <RowBetween>
-          <Text fontWeight={500} fontSize={16}>
-            Select a token
+      {!isManageTokenList && (
+        <>
+          <PaddedColumn gap="14px">
+            <RowBetween>
+              <Text fontWeight={500} fontSize={16}>
+                Select a token
+                {!isCrossChain && (
+                  <QuestionHelper text="Find a token by searching for its name or symbol or by pasting its address below." />
+                )}
+              </Text>
+              <CloseIcon onClick={onDismiss} />
+            </RowBetween>
             {!isCrossChain && (
-              <QuestionHelper text="Find a token by searching for its name or symbol or by pasting its address below." />
+              <SearchInput
+                type="text"
+                id="token-search-input"
+                placeholder={t('tokenSearchPlaceholder')}
+                value={searchQuery}
+                ref={inputRef as RefObject<HTMLInputElement>}
+                onChange={handleInput}
+                onKeyDown={handleEnter}
+              />
             )}
-          </Text>
-          <CloseIcon onClick={onDismiss} />
-        </RowBetween>
-        {!isCrossChain && (
-          <SearchInput
-            type="text"
-            id="token-search-input"
-            placeholder={t('tokenSearchPlaceholder')}
-            value={searchQuery}
-            ref={inputRef as RefObject<HTMLInputElement>}
-            onChange={handleInput}
-            onKeyDown={handleEnter}
-          />
-        )}
-        {showCommonBases && (
-          <CommonBases chainId={chainId} onSelect={handleCurrencySelect} selectedCurrency={selectedCurrency} />
-        )}
-        <RowBetween>
-          <Text fontSize={14} fontWeight={500}>
-            {!isCrossChain ? 'Token Name' : 'Available Cross-Chain Tokens'}
-          </Text>
-          <SortButton ascending={invertSearchOrder} toggleSortOrder={() => setInvertSearchOrder(iso => !iso)} />
-        </RowBetween>
-      </PaddedColumn>
+            {showCommonBases && (
+              <CommonBases chainId={chainId} onSelect={handleCurrencySelect} selectedCurrency={selectedCurrency} />
+            )}
+            <RowBetween>
+              <Text fontSize={14} fontWeight={500}>
+                {!isCrossChain ? 'Token Name' : 'Available Cross-Chain Tokens'}
+              </Text>
+              <SortButton ascending={invertSearchOrder} toggleSortOrder={() => setInvertSearchOrder(iso => !iso)} />
+            </RowBetween>
+          </PaddedColumn>
 
-      <Separator />
-      <div style={{ flex: '1' }}>
-        <AutoSizer disableWidth>
-          {({ height }) => (
-            <CurrencyList
-              height={height}
-              showETH={isCrossChain ? false : showETH}
-              currencies={!isCrossChain ? filteredSortedTokens : availableTokensArray}
-              onCurrencySelect={handleCurrencySelect}
-              otherCurrency={otherSelectedCurrency}
-              selectedCurrency={selectedCurrency}
-              fixedListRef={fixedList}
-              searchQuery={searchQuery}
-              unseenCustomToken={transferPage}
-            />
-          )}
-        </AutoSizer>
-        <ListLoader />
-      </div>
+          <Separator />
+          <div style={{ flex: '1' }}>
+            <AutoSizer disableWidth>
+              {({ height }) => (
+                <CurrencyList
+                  height={height}
+                  showETH={isCrossChain ? false : showETH}
+                  currencies={!isCrossChain ? filteredSortedTokens : availableTokensArray}
+                  onCurrencySelect={handleCurrencySelect}
+                  otherCurrency={otherSelectedCurrency}
+                  selectedCurrency={selectedCurrency}
+                  fixedListRef={fixedList}
+                  searchQuery={searchQuery}
+                  unseenCustomToken={transferPage}
+                />
+              )}
+            </AutoSizer>
+            <ListLoader />
+          </div>
 
-      <Separator />
-      <Card>
-        <RowBetween>
-          {/*<LinkStyledButton
-            style={{ fontWeight: 500, color: theme.text2, fontSize: 16 }}
-            onClick={onChangeList}
-            id="currency-search-change-list-button"
-          >
-            Manage Lists
-          </LinkStyledButton>*/}
-        </RowBetween>
-      </Card>
+          <Separator />
+        </>
+      )}
+
+      {isEthChain && !isManageTokenList && (
+        <Card>
+          <RowCenter>
+            <ManageButton onClick={() => setIsManageTokenList(true)}>Manage Token Lists</ManageButton>
+          </RowCenter>
+        </Card>
+      )}
+      {isManageTokenList && <ManageList setIsManageTokenList={setIsManageTokenList} />}
     </Column>
   )
 }
