@@ -1,5 +1,7 @@
 import { ChainId, Currency, ETHER, Token } from '@zeroexchange/sdk'
 import { PaddedColumn, SearchInput, Separator } from './styleds'
+import { useDispatch } from 'react-redux'
+import { AppDispatch } from '../../state'
 import styled from 'styled-components'
 import { ArrowRight as Arrow } from './../Arrows'
 import React, { KeyboardEvent, RefObject, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
@@ -28,7 +30,7 @@ import { useCrosschainState } from '../../state/crosschain/hooks'
 import { useTokenComparator } from './sorting'
 import { useTranslation } from 'react-i18next'
 import { useUserAddedTokens } from '../../state/user/hooks'
-
+import {showCoinGeckoList} from '../../state/crosschain/actions'
 interface CurrencySearchProps {
   isOpen: boolean
   onDismiss: () => void
@@ -91,14 +93,14 @@ export function CurrencySearch({
   const allTokens = useAllTokens()
 
   // cross chain
-  const { availableTokens, coingeckoList } = useCrosschainState()
+  const { availableTokens, coingeckoList, isCoingeckoListOn } = useCrosschainState()
   const userTokens = useUserAddedTokens()
     ?.filter((x: any) => x.chainId === chainId)
     ?.map((x: any) => {
       return new Token(x.chainId, x.address, x.decimals, x.symbol, x.name)
     })
   // ChainId.RINKEBY BUSD
-  const availableTokensArray = isCrossChain
+  let availableTokensArray = isCrossChain
     ? availableTokens
         .filter(a => a.name !== 'BUSD')
         .filter(y => !y.disableTransfer)
@@ -111,6 +113,8 @@ export function CurrencySearch({
           return new Token(x.chainId, x.address, x.decimals, x.symbol, x.name)
         })
         .concat(userTokens)
+
+        availableTokensArray = isCoingeckoListOn ? [...availableTokensArray, ...coingeckoList.slice(0,10)] : availableTokensArray
 
   const defaultTokenList = DEFAULT_TOKEN_LIST.filter((x: any) => x.chainId === chainId)
     .map((x: any) => {
@@ -175,6 +179,9 @@ export function CurrencySearch({
     if (isOpen) setSearchQuery('')
   }, [isOpen])
 
+  const dispatch = useDispatch<AppDispatch>()
+
+
   // manage focus on modal show
   const inputRef = useRef<HTMLInputElement>()
   const handleInput = useCallback(event => {
@@ -210,8 +217,8 @@ export function CurrencySearch({
   const ManageList = ({ setIsManageTokenList, tokenLength }: ManageListProps) => {
     const value = false
     const [isTokenList, setIsTokenList] = useState<boolean>(true)
-    const [isCoinGeckoOn, setIsCoinGeckoOn] = useState<boolean>(true)
-
+    const dispatch = useDispatch<AppDispatch>()
+    
     return (
       <Column style={{ width: '100%', flex: '1 1' }}>
         <RowBetween>
@@ -240,8 +247,10 @@ export function CurrencySearch({
                   <p>{tokenLength} tokens</p>
                 </div>
                 <Toggle
-                  isActive={isCoinGeckoOn}
-                  toggle={() => setIsCoinGeckoOn(!isCoinGeckoOn)}
+                  isActive={isCoingeckoListOn}
+                  toggle={() => {
+                    dispatch(showCoinGeckoList({isCoingeckoListOn: !isCoingeckoListOn}))
+                  }}
                   activeText="On"
                   inActiveText="Off"
                   width="100px"

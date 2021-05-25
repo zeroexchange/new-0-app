@@ -49,7 +49,7 @@ import TokenWarningModal from '../../components/TokenWarningModal'
 import TradePrice from '../../components/swap/TradePrice'
 import confirmPriceImpactWithoutFee from '../../components/swap/confirmPriceImpactWithoutFee'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
-import { setCurrentToken, setCoinGeckoList } from '../../state/crosschain/actions'
+import { setCurrentToken, setCoinGeckoList, showCoinGeckoList } from '../../state/crosschain/actions'
 import { setTokenBalances } from '../../state/user/actions'
 import { toCheckSumAddress } from '../../state/crosschain/hooks'
 import { useActiveWeb3React } from '../../hooks'
@@ -384,6 +384,9 @@ const serializedListOfTokens = listOfTokens.map( item => {
     }
   }, [approval, approvalSubmitted])
 
+  useEffect(() => {
+    dispatch(showCoinGeckoList({isCoingeckoListOn: false}))
+  }, [])
   const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(currencyBalances[Field.INPUT])
   const atMaxAmountInput = Boolean(maxAmountInput && parsedAmounts[Field.INPUT]?.equalTo(maxAmountInput))
 
