@@ -1,6 +1,6 @@
 import { AVAX, BNB, ChainId, Currency, CurrencyAmount, DEV, ETHER, MATIC, Token, currencyEquals } from '@zeroexchange/sdk'
 import { FadedSpan, MenuItem } from './styleds'
-import { LinkStyledButton, TYPE } from '../../theme'
+import { ExternalLink, LinkStyledButton, TYPE } from '../../theme'
 import React, { CSSProperties, MutableRefObject, useCallback, useMemo, useState } from 'react'
 import { useAddUserToken, useRemoveUserAddedToken } from '../../state/user/hooks'
 
@@ -13,7 +13,7 @@ import { MouseoverTooltip } from '../Tooltip'
 import { RowFixed } from '../Row'
 import { Text } from 'rebass'
 import { WrappedTokenInfo } from '../../state/lists/hooks'
-import { isTokenOnList } from '../../utils'
+import { getEtherscanLink, isTokenOnList } from '../../utils'
 import { returnBalanceNum } from '../../constants'
 import styled from 'styled-components'
 import { useActiveWeb3React } from '../../hooks'
@@ -24,6 +24,7 @@ import { setPartOfList } from '../../state/crosschain/actions'
 import {useCrosschainState} from '../../state/crosschain/hooks'
 import { useDispatch } from 'react-redux'
 import { AppDispatch } from '../../state'
+import { ExternalLink as ExternalLinkIcon}  from 'react-feather'
 
 function currencyKey(currency: Currency): string {
   if (currency instanceof Token) {
@@ -112,6 +113,7 @@ const weiToEthNum = (balance: any, decimals = 18) => {
 }
 
 function CurrencyRow({
+  userTokens,
   currency,
   onSelect,
   isSelected,
@@ -122,6 +124,7 @@ function CurrencyRow({
   tokenBalances,
   unseenCustomToken = false
 }: {
+  userTokens? :boolean
   currency: any
   onSelect: () => void
   isSelected: boolean
@@ -205,12 +208,16 @@ function CurrencyRow({
       <TokenTags currency={currency} />
       <RowFixed style={{ justifySelf: 'flex-end' }}>
         {balance && hasABalance ? <Balance balance={balance} /> : account && !balance ? <Loader /> : 0}
+        {chainId && userTokens && (
+        <ExternalLink style={{ marginLeft: '0.5rem' }} href={getEtherscanLink(chainId, currency.address, 'address')}><ExternalLinkIcon size={20}/></ExternalLink>
+        )}
       </RowFixed>
     </MenuItem>
   )
 }
 
 export default function CurrencyList({
+  userTokens,
   height,
   currencies,
   selectedCurrency,
@@ -221,6 +228,7 @@ export default function CurrencyList({
   searchQuery,
   unseenCustomToken = false
 }: {
+  userTokens?: boolean
   height: number
   currencies: Currency[]
   selectedCurrency?: Currency | null
@@ -259,6 +267,7 @@ export default function CurrencyList({
       const handleSelect = () => onCurrencySelect(currency)
       return (
         <CurrencyRow
+          userTokens={userTokens}
           key={String(Math.random())}
           style={style}
           currency={currency}

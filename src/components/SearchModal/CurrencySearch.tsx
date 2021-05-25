@@ -6,10 +6,9 @@ import styled from 'styled-components'
 import { ArrowRight as Arrow } from './../Arrows'
 import React, { KeyboardEvent, RefObject, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useAllTokens, useToken } from '../../hooks/Tokens'
-import { LinkStyledButton } from '../../theme'
+import { ExternalLink, LinkStyledButton, TYPE } from '../../theme'
 import Toggle from './../Toggle'
 import AutoSizer from 'react-virtualized-auto-sizer'
-import Card from '../Card'
 import { CloseIcon } from '../../theme'
 import Column from '../Column'
 import CommonBases from './CommonBases'
@@ -21,7 +20,7 @@ import ListLoader from '../ListLoader'
 import QuestionHelper from '../QuestionHelper'
 import Row, { RowBetween } from '../Row'
 import SortButton from './SortButton'
-import { Text } from 'rebass'
+import { Box, Flex, Text } from 'rebass'
 import { ThemeContext } from 'styled-components'
 import { filterTokens } from './filtering'
 import { isAddress } from '../../utils'
@@ -30,7 +29,8 @@ import { useCrosschainState } from '../../state/crosschain/hooks'
 import { useTokenComparator } from './sorting'
 import { useTranslation } from 'react-i18next'
 import { useUserAddedTokens, useRemoveUserAddedToken } from '../../state/user/hooks'
-import {showCoinGeckoList} from '../../state/crosschain/actions'
+import { showCoinGeckoList, setManageListsToggle } from '../../state/crosschain/actions'
+import { Info } from 'react-feather'
 interface CurrencySearchProps {
   isOpen: boolean
   onDismiss: () => void
@@ -44,7 +44,7 @@ interface CurrencySearchProps {
 }
 
 const ManageButton = styled(LinkStyledButton)`
-  font-size: 19px;
+  font-size: 17px;
 `
 
 const RowCenter = styled(RowBetween)`
@@ -57,12 +57,13 @@ const ArrowLeft = styled.div`
 `
 
 const MarginWrap = styled.div`
-  margin-top: 15px;
+  margin-top: 20px;
 `
 
-const TokenListCard = styled.div`
-  padding: 10px;
-  background-color: grey;
+const TokenListRow = styled.div`
+  padding: 20px;
+  background: rgba(18, 21, 56, 0.54);
+  border-radius: 22px;
 `
 
 const DEFAULT_TOKEN_LIST = process.env.REACT_APP_TESTNET ? DEFAULT_TOKEN_LIST_TESTNET : DEFAULT_TOKEN_LIST_MAINNET
@@ -92,12 +93,13 @@ export function CurrencySearch({
   const allTokens = useAllTokens()
 
   // cross chain
-  const { availableTokens, coingeckoList, isCoingeckoListOn, partOfList } = useCrosschainState()
+  const { availableTokens, coingeckoList, isCoingeckoListOn, partOfList, isManageLists } = useCrosschainState()
   const userTokens = useUserAddedTokens()
     ?.filter((x: any) => x.chainId === chainId)
     ?.map((x: any) => {
       return new Token(x.chainId, x.address, x.decimals, x.symbol, x.name)
     })
+  console.log(userTokens)
   // ChainId.RINKEBY BUSD
   let availableTokensArray = isCrossChain
     ? availableTokens
@@ -107,11 +109,14 @@ export function CurrencySearch({
           return new Token(x.chainId, x.address, x.decimals, x.symbol, x.name)
         })
         .concat(userTokens)
-    : isCoingeckoListOn ? [...availableTokens, ...coingeckoList.slice(0, partOfList)]
+    : isCoingeckoListOn
+    ? [...availableTokens, ...coingeckoList.slice(0, partOfList)]
         .map((x: any) => {
           return new Token(x.chainId, x.address, x.decimals, x.symbol, x.name)
         })
-        .concat(userTokens) : availableTokens.map((x: any) => {
+        .concat(userTokens)
+    : availableTokens
+        .map((x: any) => {
           return new Token(x.chainId, x.address, x.decimals, x.symbol, x.name)
         })
         .concat(userTokens)
@@ -180,7 +185,6 @@ export function CurrencySearch({
 
   const dispatch = useDispatch<AppDispatch>()
 
-
   // manage focus on modal show
   const inputRef = useRef<HTMLInputElement>()
   const handleInput = useCallback(event => {
@@ -195,7 +199,7 @@ export function CurrencySearch({
         setSearchQuery(findTokenAddress)
       }
     }
-   
+
     fixedList.current?.scrollTo(0)
   }, [])
 
@@ -223,8 +227,6 @@ export function CurrencySearch({
   }
 
   const ManageList = ({ setIsManageTokenList, tokenLength }: ManageListProps) => {
-    const value = false
-    const [isTokenList, setIsTokenList] = useState<boolean>(true)
     const dispatch = useDispatch<AppDispatch>()
     const removeToken = useRemoveUserAddedToken()
     const removeAllTokens = () => {
@@ -235,7 +237,7 @@ export function CurrencySearch({
     return (
       <Column style={{ width: '100%', flex: '1 1' }}>
         <RowBetween>
-          <ArrowLeft onClick={() => setIsManageTokenList(value)}>
+          <ArrowLeft onClick={() => setIsManageTokenList(!isManageTokenList)}>
             <Arrow />
           </ArrowLeft>
           <h3>Manage</h3>
@@ -244,73 +246,89 @@ export function CurrencySearch({
         <Separator />
         <MarginWrap>
           <Toggle
-            isActive={isTokenList}
-            toggle={() => setIsTokenList(!isTokenList)}
+            isActive={isManageLists}
+            toggle={() => dispatch(setManageListsToggle({ isManageLists: !isManageLists }))}
             activeText="Lists"
             inActiveText="Tokens"
             width="100%"
           />
         </MarginWrap>
-        <MarginWrap>
-          {isTokenList && (
-            <>
-            <TokenListCard>
+        {isManageLists && (
+          <MarginWrap>
+            <TokenListRow>
               <RowBetween>
-                <div>
-                  <h3>CoinGecko</h3>
-                  <p>{tokenLength} tokens</p>
-                </div>
+                <Flex>
+                  <Box>
+                    <img
+                      alt="coingecko"
+                      style={{ float: 'left', width: '50px', height: '50px', marginRight: '1rem' }}
+                      src="/images/coingecko.png"
+                    />
+                  </Box>
+                  <Box>
+                    <TYPE.mediumHeader>CoinGecko</TYPE.mediumHeader>
+                    <TYPE.main fontWeight={600} fontSize={[10, 12, 14]} style={{}}>
+                      {tokenLength} tokens
+                      <ExternalLink
+                        style={{ marginLeft: '0.3rem' }}
+                        id="coingecko-link"
+                        href="https://www.coingecko.com/en/coins/zero-exchange"
+                      >
+                        <Info size={14} />
+                      </ExternalLink>
+                    </TYPE.main>
+                  </Box>
+                </Flex>
+
                 <Toggle
                   isActive={isCoingeckoListOn}
                   toggle={() => {
-                    dispatch(showCoinGeckoList({isCoingeckoListOn: !isCoingeckoListOn}))
+                    dispatch(showCoinGeckoList({ isCoingeckoListOn: !isCoingeckoListOn }))
                   }}
                   activeText="On"
                   inActiveText="Off"
                   width="100px"
                 />
               </RowBetween>
-            </TokenListCard>
-          </>
-           )}
-           {!isTokenList && userTokens.length > 0 && (
-             <MarginWrap>
-               <RowBetween>
-                 <h3>
-                   {userTokens.length ? userTokens.length + ' Custom tokens' : ''}
-                 </h3>
-                 <h3 onClick={removeAllTokens}>
-                   Clear all
-                 </h3>
-               </RowBetween>
-                <div style={{ flex: '1', marginTop: '20px' }}>
-                <AutoSizer disableWidth>
-                  {({ height }) => (
-                    <CurrencyList
-                      height={height}
-                      showETH={false}
-                      currencies={userTokens}
-                      onCurrencySelect={handleCurrencySelect}
-                      otherCurrency={otherSelectedCurrency}
-                      selectedCurrency={selectedCurrency}
-                      fixedListRef={fixedList}
-                      searchQuery={searchQuery}
-                      unseenCustomToken={transferPage}
-                    />
-                  )}
-                </AutoSizer>
-                <ListLoader />
-              </div>
-              </MarginWrap>
-           )}
-           {!isTokenList && !userTokens.length && (
-              <MarginWrap>
-                <h2>
-                  There are not added tokens by user
-                </h2>
-              </MarginWrap>
-           )}
-        </MarginWrap>
+            </TokenListRow>
+          </MarginWrap>
+        )}
+        {!isManageLists && userTokens.length > 0 && (
+          <MarginWrap>
+            <RowBetween style={{ padding: '0 15px' }}>
+              <TYPE.main fontWeight={600} fontSize={[10, 12, 14]}>
+                {userTokens.length
+                  ? userTokens.length + ' ' + 'Custom token' + (userTokens.length === 1 ? '' : 's')
+                  : ''}
+              </TYPE.main>
+              <LinkStyledButton onClick={removeAllTokens}>Clear all</LinkStyledButton>
+            </RowBetween>
+            <div style={{ flex: '1', marginTop: '20px' }}>
+              <AutoSizer disableWidth>
+                {({ height }) => (
+                  <CurrencyList
+                  userTokens={true}
+                    height={height}
+                    showETH={false}
+                    currencies={userTokens}
+                    onCurrencySelect={handleCurrencySelect}
+                    otherCurrency={otherSelectedCurrency}
+                    selectedCurrency={selectedCurrency}
+                    fixedListRef={fixedList}
+                    searchQuery={searchQuery}
+                    unseenCustomToken={transferPage}
+                  />
+                )}
+              </AutoSizer>
+              <ListLoader />
+            </div>
+          </MarginWrap>
+        )}
+        {!isManageLists && !userTokens.length && (
+          <MarginWrap>
+            <TYPE.main style={{ textAlign: 'center' }}>There are no added tokens by user</TYPE.main>
+          </MarginWrap>
+        )}
       </Column>
     )
   }
@@ -376,11 +394,11 @@ export function CurrencySearch({
       )}
 
       {isEthChain && !isManageTokenList && (
-        <Card>
+        <Box>
           <RowCenter>
-            <ManageButton onClick={() => setIsManageTokenList(true)}>Manage Token Lists</ManageButton>
+            <ManageButton onClick={() => setIsManageTokenList(!isManageTokenList)}>Manage Token Lists</ManageButton>
           </RowCenter>
-        </Card>
+        </Box>
       )}
       {isManageTokenList && (
         <ManageList tokenLength={coingeckoList.length} setIsManageTokenList={setIsManageTokenList} />

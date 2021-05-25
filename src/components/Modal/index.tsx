@@ -13,14 +13,12 @@ const AnimatedDialogOverlay = animated(DialogOverlay)
 const StyledDialogOverlay = styled(AnimatedDialogOverlay)`
   &[data-reach-dialog-overlay] {
     z-index: 2;
-    background-color: rgba(0,0,0,.5);
+    background-color: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(8px);
     overflow: hidden;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     background-color: ${({ theme }) => theme.modalBG};
   }
 `
@@ -33,43 +31,39 @@ const StyledDialogContent = styled(({ minHeight, maxHeight, mobile, isOpen, ...r
 )).attrs({
   'aria-label': 'dialog'
 })`
-  overflow-y: ${({ mobile }) => (mobile ? 'scroll' : 'hidden')};
-
+  overflow-y: ${({ mobile }) => (mobile ? 'auto' : 'hidden')};
   &[data-reach-dialog-content] {
-    margin: 0 0 2rem 0;
+    margin: auto;
     background: rgba(47, 53, 115, 0.62);
     box-shadow: inset 2px 2px 5px rgba(255, 255, 255, 0.095);
     backdrop-filter: blur(28px);
-    border-radius: 44px;
+    border-radius: 22px;
     padding: 10px;
     width: 50vw;
-    overflow-y: ${({ mobile }) => (mobile ? 'scroll' : 'hidden')};
+    overflow-y: auto;
     overflow-x: auto;
     align-self: ${({ mobile }) => (mobile ? 'flex-end' : 'center')};
     max-width: 420px;
     ${({ maxHeight }) =>
-    maxHeight &&
-    css`
+      maxHeight &&
+      css`
         max-height: ${maxHeight}vh;
       `}
     ${({ minHeight }) =>
-    minHeight &&
-    css`
+      minHeight &&
+      css`
         min-height: ${minHeight}vh;
       `}
     display: flex;
     ${({ theme }) => theme.mediaWidth.upToMedium`
-      width: 65vw;
-      margin: 0;
+    width: 65vw;
+    margin: 80px 0 0 0;
     `}
     ${({ theme, mobile }) => theme.mediaWidth.upToSmall`
       width:  85vw;
       ${mobile &&
-    css`
-          width: 100vw;
-          border-radius: 20px;
-          border-bottom-left-radius: 0;
-          border-bottom-right-radius: 0;
+        css`
+          width: 95vw;
         `}
     `}
   }
@@ -120,9 +114,9 @@ export default function Modal({
               <StyledDialogContent
                 {...(isMobile
                   ? {
-                    ...bind(),
-                    style: { transform: y.interpolate(y => `translateY(${y > 0 ? y : 0}px)`) }
-                  }
+                      ...bind(),
+                      style: { transform: y.interpolate(y => `translateY(${y > 0 ? y : 0}px)`) }
+                    }
                   : {})}
                 aria-label="dialog content"
                 minHeight={minHeight}

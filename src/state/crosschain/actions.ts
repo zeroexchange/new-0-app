@@ -73,3 +73,4 @@ export const setCrosschainLastTimeSwitched = createAction<{ }>('crosschain/last-
 export const setCoinGeckoList = createAction<{coingeckoList: any[] }>('crosschain/setCoinGeckoList')
 export const showCoinGeckoList = createAction<{isCoingeckoListOn: boolean }>('crosschain/showCoinGeckoList')
 export const setPartOfList = createAction<{partOfList: number }>('crosschain/setPartOfList')
+export const setManageListsToggle = createAction<{isManageLists: boolean }>('crosschain/setManageListsToggle')
