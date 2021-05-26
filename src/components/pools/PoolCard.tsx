@@ -102,8 +102,6 @@ export default function PoolCard({ stakingInfoTop, onHarvest }: { stakingInfoTop
     countUpAmountPrevious,
     symbol
   } = useStakingInfoTop(stakingInfoTop)
-    console.log("🚀 ~ file: PoolCard.tsx ~ line 105 ~ PoolCard ~ stakingInfo", stakingInfo)
-console.log('stakingInfoTop :>> ', stakingInfoTop);
   if (stakingInfoTop.isHidden) {
     return <></>
   }

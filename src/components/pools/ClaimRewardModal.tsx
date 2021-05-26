@@ -1,6 +1,7 @@
 import { CloseIcon, TYPE } from '../../theme'
 import { LoadingView, SubmittedView } from '../ModalViews'
 import React, { useState } from 'react'
+import { BigNumber } from 'ethers'
 
 import { AutoColumn } from '../Column'
 import { ButtonError } from '../Button'
@@ -11,7 +12,7 @@ import { TransactionResponse } from '@ethersproject/providers'
 import styled from 'styled-components'
 import toEllipsis from './../../utils/toEllipsis'
 import { useActiveWeb3React } from '../../hooks'
-import { useStakingContract, useStakingGondolaContract } from '../../hooks/useContract'
+import { useGondolaLpTokenContract, useStakingContract, useStakingGondolaContract, useGondolaProxyMasterChefContract } from '../../hooks/useContract'
 import { useTransactionAdder } from '../../state/transactions/hooks'
 
 
@@ -44,7 +45,7 @@ export default function ClaimRewardModal({ isOpen, onDismiss, stakingInfo }: Sta
   const stakingRewardAddress = (stakingInfo.gondolaTokenId && stakingInfo.gondolaRewardAddress) ?
     stakingInfo.gondolaRewardAddress :
     stakingInfo.stakingRewardAddress
-
+  const lpContract = useGondolaProxyMasterChefContract(stakingInfo.stakingRewardAddress)
   const stakingContract = useStakingContract(stakingRewardAddress)
   const stakingGondolaContract = useStakingGondolaContract(stakingRewardAddress)
   async function onClaimReward() {
@@ -62,11 +63,14 @@ export default function ClaimRewardModal({ isOpen, onDismiss, stakingInfo }: Sta
           setAttempting(false)
           console.log(error)
         })
-    } else if (stakingGondolaContract) {
-
+    } else if (stakingGondolaContract && lpContract) {
+      console.log('account :>> ', account);
+      const lpBalance = await lpContract.earned(account)
+      console.log("🚀 ~ file: ClaimRewardModal.tsx ~ line 69 ~ onClaimReward ~ lpBalance", lpBalance)
       setAttempting(true)
+      // const claimAmount = BigNumber.from( stakingInfo?.earnedAmount.toExact())
       await stakingGondolaContract
-        .emergencyWithdraw(stakingInfo?.gondolaTokenId, { gasLimit: 300000 })
+        .withdraw(stakingInfo?.gondolaTokenId, lpBalance, { gasLimit: 300000 })
         .then((response: TransactionResponse) => {
           addTransaction(response, {
             summary: `Claim accumulated ${stakingInfo?.rewardsTokenSymbol || ''} rewards`
@@ -76,7 +80,8 @@ export default function ClaimRewardModal({ isOpen, onDismiss, stakingInfo }: Sta
         .catch((error: any) => {
           setAttempting(false)
           console.log(error)
-        })
+        }) 
+
     }
   }
 

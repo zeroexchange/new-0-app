@@ -9,6 +9,7 @@ import { MULTICALL_ABI, MULTICALL_NETWORKS } from '../constants/multicall'
 import { V1_EXCHANGE_ABI, V1_FACTORY_ABI, V1_FACTORY_ADDRESSES } from '../constants/v1'
 
 import { Contract } from '@ethersproject/contracts'
+import {GONDOLA_PROXY_MASTER} from '../constants/abis/staking-rewards';
 import ENS_ABI from '../constants/abis/ens-registrar.json'
 import ENS_PUBLIC_RESOLVER_ABI from '../constants/abis/ens-public-resolver.json'
 import ZERO_FREE_CLAIM from '../constants/abis/zerro-free-claim.json'
@@ -154,6 +155,11 @@ export function useStakingGondolaContract(stakingAddress?: string, withSignerIfP
 export function useGondolaMasterChefContract(stakingAddress?: string, withSignerIfPossible?: boolean): Contract | null {
   return useContract(stakingAddress, GONDOLA_MASTER_CHEF, withSignerIfPossible)
 }
+
+export function useGondolaProxyMasterChefContract(stakingAddress?: string, withSignerIfPossible?: boolean): Contract | null {
+  return useContract(stakingAddress, GONDOLA_PROXY_MASTER, withSignerIfPossible)
+}
+
 
 export function useGondolaLpTokenContract(lpAddress?: string, withSignerIfPossible?: boolean): Contract | null {
   return useContract(lpAddress, ERC20_GONDOLA_INTERFACE, withSignerIfPossible)

@@ -72,6 +72,8 @@ export const zSUSHI = new Token(ChainId.AVALANCHE, '0xD4feE2e3F88B9138B74a323B40
 export const pngDAI = new Token(ChainId.AVALANCHE, '0xbA7dEebBFC5fA1100Fb055a87773e1E99Cd3507a', 18, 'pngDAI', 'pngDAI')
 export const pngUSDT = new Token(ChainId.AVALANCHE, '0xde3A24028580884448a5397872046a019649b084', 6, 'pngUSDT', 'pngUSDT')
 export const gondolaUSDTPool = new Token(ChainId.AVALANCHE, '0xE586dB7Db75B87A3E84110a73b99960F5f106c6A', 18, 'gndUSDT', 'Gondola pool USDT/ZUSDT')
+export const gondolaETHPool = new Token(ChainId.AVALANCHE, '0xc37ECFA7Bbf1dF92Da7C4A3d92d8CF8657D1FF7f', 18, 'gndETH', 'Gondola pool USDT/ZUSDT')
+export const gondolaDAIPool = new Token(ChainId.AVALANCHE, '0x2036C0EB5C42eF7f1ca06dF57D07F79eb3a2e0C8', 18, 'gndETH', 'Gondola pool DAI/ZDAI')
 
 export const pngETH = new Token(ChainId.AVALANCHE, '0xf20d962a6c8f70c731bd838a3a388D7d48fA6e15', 18, 'pngETH', 'pngETH')
 export const GDL = new Token(ChainId.AVALANCHE, '0xD606199557c8Ab6F4Cc70bD03FaCc96ca576f142', 18, 'GDL', 'Gondola')

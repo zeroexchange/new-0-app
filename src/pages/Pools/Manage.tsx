@@ -284,9 +284,14 @@ export default function Manage({
   const flatRewards = Object.values(STAKING_REWARDS_INFO).flat(1)
   const currentPairInfo = flatRewards.find(token => token && token['stakingRewardAddress'] === stakingRewardAddress)
   const [isGongolaRewards, setGongolaRewards] = useState(false)
-
-  useMemo(() => setGongolaRewards(currentPairInfo &&
-    currentPairInfo['rewardInfo'] && currentPairInfo['rewardInfo']['chain'] === 'Gondola'), [setGongolaRewards])
+  const [gongolaPathName, setGongolaPathName] = useState('usdt') 
+  useMemo(() => {
+    if(currentPairInfo &&
+      currentPairInfo?.rewardInfo && currentPairInfo?.rewardInfo?.chain === 'Gondola') {
+    }
+     
+    setGongolaPathName(currentPairInfo?.rewardInfo?.pathName)
+    setGongolaRewards(true)}, [setGongolaRewards ])
   const theme = useContext(ThemeContext)
   // get currencies and pair
   const [currencyA, currencyB] = [useCurrency(currencyIdA), useCurrency(currencyIdB)]
@@ -297,15 +302,12 @@ export default function Manage({
 
   const baseStakingInfo = useStakingInfo(stakingTokenPair)
   const stakingInfo = baseStakingInfo.find(x => x.stakingRewardAddress === stakingRewardAddress);
-  console.log("🚀 ~ file: Manage.tsx ~ line 300 ~ stakingInfo", stakingInfo)
 
   // detect existing unstaked LP position to show add button if none found
   const userLiquidityUnstaked = useTokenBalance(account ?? undefined, stakingInfo?.stakedAmount?.token)
-  console.log("🚀 ~ file: Manage.tsx ~ line 303 ~ userLiquidityUnstaked", userLiquidityUnstaked)
 
   
   const showAddLiquidityButton = Boolean(stakingInfo?.stakedAmount?.equalTo('0') && userLiquidityUnstaked?.equalTo('0'))
-  console.log("🚀 ~ file: Manage.tsx ~ line 308 ~ showAddLiquidityButton", showAddLiquidityButton)
 
   // toggle for staking modal and unstaking modal
   const [showStakingModal, setShowStakingModal] = useState(false)
@@ -498,7 +500,7 @@ export default function Manage({
                 ) : null
               }
               {
-                (<PlainPopup isOpen={showPopupOpen} onDismiss={() => setShowPopupOpen(false)} content={
+                true ? (<PlainPopup isOpen={showPopupOpen} onDismiss={() => setShowPopupOpen(false)} content={
                   {
                     simpleAnnounce: {
                       message: `
@@ -507,7 +509,7 @@ export default function Manage({
                  push the button
          `}
                   }} removeAfterMs={2000}
-                  link={'https://app.gondola.finance/#/deposit/usdt'} buttonName={"Add Liquidity"} />)
+                  link={`https://app.gondola.finance/#/deposit/${gongolaPathName}`} buttonName={"Add Liquidity"} />) : <></>
               }
 
 
@@ -531,7 +533,7 @@ export default function Manage({
                 )
               }
               {
-                (<PlainPopup isOpen={showRemLiquidity} onDismiss={() => setShowRemLiquidity(false)} content={
+                true ? (<PlainPopup isOpen={showRemLiquidity} onDismiss={() => setShowRemLiquidity(false)} content={
                   {
                     simpleAnnounce: {
                       message: `
@@ -539,7 +541,7 @@ export default function Manage({
                 You can remove liquidity push the link below
          `}
                   }} removeAfterMs={2000}
-                  link={'https://app.gondola.finance/#/deposit/usdt'} buttonName={"Remove Liquidity"} />)
+                  link={`https://app.gondola.finance/#/deposit/${gongolaPathName}`} buttonName={"Remove Liquidity"} />) : <></>
               }
 
 

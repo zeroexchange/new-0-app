@@ -64,7 +64,6 @@ export default function UnstakingModal({ isOpen, onDismiss, stakingInfo }: Staki
 
       setAttempting(true)
       await stakingGondolaContract
-        //.withdraw(stakingInfo?.gondolaTokenId, BigNumber.from(utils.parseUnits(stakingInfo.stakedAmount.raw.toString(), 18)).toHexString(), { gasLimit: 300000 })
         .emergencyWithdraw(stakingInfo?.gondolaTokenId, { gasLimit: 300000 })
         .then((response: TransactionResponse) => {
           addTransaction(response, {

@@ -35,6 +35,8 @@ import {
   pngETH,
   pngUSDT,
   gondolaUSDTPool,
+  gondolaETHPool,
+  gondolaDAIPool,
   zCHART,
   bscWISB,
   WMATIC,
@@ -111,17 +113,20 @@ export const STAKING_REWARDS_INFO: {
     }
   ],
   [ChainId.AVALANCHE]: [
-    // {
-    //   tokens: [pngETH, zETH],
-    //   stakingRewardAddress: '0x7c815BBc21FED2B97CA163552991A5C30d6a2336', //this case it is the address of the proxy contract for pool
-    //   // to see https://cchain.explorer.avax.network/address/0x7c815BBc21FED2B97CA163552991A5C30d6a2336
-    //   rewardInfo: {
-    //     chain: 'Gondola', tokenId: 7,
-    //     poolAddress: '0xc37ECFA7Bbf1dF92Da7C4A3d92d8CF8657D1FF7f',
-    //     masterChefAddress: '0x34C8712Cc527a8E6834787Bd9e3AD4F2537B0f50',
-    //     rewardsTokenSymbol: 'GND'
-    //   }
-    // },
+    {
+      tokens: [zETH, pngETH],
+      stakingRewardAddress: '0x97AbEe33Cd075c58BFdd174e0885e08E8f03556F', //this case it is the address of the proxy contract for pool
+      // to see https://cchain.explorer.avax.network/address/0x7c815BBc21FED2B97CA163552991A5C30d6a2336
+      rewardInfo: {
+        chain: 'Gondola', tokenId: 7,
+        poolAddress: '0x359059Bdbf2B9DCc534D20912D3e82Df2111B620',
+        masterChefAddress: '0x34C8712Cc527a8E6834787Bd9e3AD4F2537B0f50',
+        rewardsTokenSymbol: 'GDL',
+        rewardsToken: gondolaETHPool,
+        poolName: 'zETH-ETH Pool',
+        pathName: 'eth'
+      }
+    },
     {
       tokens: [zUSDT, pngUSDT,],
       stakingRewardAddress: '0x7e7bAFF135c42ed90C0EdAb16eAe48ecEa417018', //this case it is the address of the proxy contract for pool
@@ -132,7 +137,21 @@ export const STAKING_REWARDS_INFO: {
         masterChefAddress: '0x34C8712Cc527a8E6834787Bd9e3AD4F2537B0f50',
         rewardsTokenSymbol: 'GDL',
         rewardsToken: gondolaUSDTPool,
-        poolName: 'zUSDT-USDT Pool'
+        poolName: 'zUSDT-USDT Pool',
+        pathName: 'usdt'
+      }
+    },
+    {
+      tokens: [zDAI, pngDAI,],
+      stakingRewardAddress: '0xe0210653A62688187fcF229A3ac9e73863B2DEae', //this case it is the address of the proxy contract for pool    
+      rewardInfo: {
+        chain: 'Gondola', tokenId: 9,
+        poolAddress: '0x4a9A0AB152150505f54961916426BAF4E01b57d5',
+        masterChefAddress: '0x34C8712Cc527a8E6834787Bd9e3AD4F2537B0f50',
+        rewardsTokenSymbol: 'GDL',
+        rewardsToken: gondolaDAIPool,
+        poolName: 'zDAI-DAI Pool',
+        pathName: 'dai'
       }
     },
     {
@@ -317,7 +336,7 @@ export interface StakingInfo {
   // the current amount of token distributed to the active account per second.
   // equivalent to percent of total supply * reward rate
   rewardRate: TokenAmount
-  
+
   rewardRateWeekly: TokenAmount
   // when the period ends
   periodFinish: Date | undefined
@@ -332,13 +351,14 @@ export interface StakingInfo {
     totalStakedAmount: TokenAmount,
     totalRewardRate: TokenAmount,
     seconds: number,
-    decimals:number,
+    decimals: number,
   ) => TokenAmount
   gondolaTokenId?: number,
   gondolaRewardAddress?: string,
   gondolaPoolAddress?: string
 }
 
+ 
 // gets the staking info from the network for the active chain id
 export function useStakingInfo(pairToFilterBy?: Pair | null): StakingInfo[] {
   const { chainId, account } = useActiveWeb3React()
@@ -403,6 +423,7 @@ export function useStakingInfo(pairToFilterBy?: Pair | null): StakingInfo[] {
       const rewardRateState = rewardRates[index]
       const periodFinishState = periodFinishes[index]
       const currentItem = info.find(item => item.stakingRewardAddress === rewardsAddress)
+      const isGondolaPair = currentItem?.rewardInfo?.rewardsTokenSymbol === 'GDL'
       if (
         // these may be undefined if not logged in
         !balanceState?.loading &&
@@ -426,7 +447,7 @@ export function useStakingInfo(pairToFilterBy?: Pair | null): StakingInfo[] {
           console.error('Failed to load staking rewards info')
           return memo
         }
-
+        
         // get the LP token
         const tokens = currentItem.tokens
         const dummyPair = new Pair(new TokenAmount(tokens[0], '0'), new TokenAmount(tokens[1], '0'))
@@ -462,9 +483,9 @@ export function useStakingInfo(pairToFilterBy?: Pair | null): StakingInfo[] {
             amount
           )
         }
-
+      
         const individualRewardRate = getHypotheticalRewardRate(stakedAmount, totalStakedAmount, totalRewardRate, 1, 1)
-        const individualRewardRateWeekly = getHypotheticalRewardRate(stakedAmount, totalStakedAmount, totalRewardRate, 60 * 60 * 24 * 7, 10**15)
+        const individualRewardRateWeekly = getHypotheticalRewardRate(stakedAmount, totalStakedAmount, totalRewardRate, 60 * 60 * 24 * 7, 10 ** 15)
 
         const periodFinishSeconds = periodFinishState.result?.[0]?.toNumber()
         const periodFinishMs = periodFinishSeconds * 1000
