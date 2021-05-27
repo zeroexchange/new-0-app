@@ -125,6 +125,11 @@ export function CurrencySearch({
     [isCrossChain, availableTokens, isCoingeckoListOn]
   )
 
+  for (let i = availableTokens.length, j = 0; i < availableTokensArray.length; i++) {
+    availableTokensArray[i]['logoURI'] = coingeckoList[j]['logoURI'];
+    j++;
+  }
+
   let uniqueAvailableTokensArray = availableTokensArray.filter(
     (elem, index) => availableTokensArray.findIndex(obj => obj.address === elem.address) === index
   )
