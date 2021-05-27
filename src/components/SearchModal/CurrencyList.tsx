@@ -31,11 +31,8 @@ import { useActiveWeb3React } from '../../hooks'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
 import { useIsUserAddedToken } from '../../hooks/Tokens'
 import { useTokenBalances } from '../../state/user/hooks'
-import { setPartOfList } from '../../state/crosschain/actions'
-import { useCrosschainState } from '../../state/crosschain/hooks'
-import { useDispatch } from 'react-redux'
-import { AppDispatch } from '../../state'
 import { ExternalLink as ExternalLinkIcon } from 'react-feather'
+import InfiniteLoader from 'react-window-infinite-loader'
 
 function currencyKey(currency: Currency): string {
   if (currency instanceof Token) {
@@ -149,7 +146,7 @@ function CurrencyRow({
   const { account, chainId } = useActiveWeb3React()
   const key = currencyKey(currency)
   const customAdded = useIsUserAddedToken(currency)
-
+  
   const balance = useCurrencyBalance(account ?? undefined, currency, chainId)
   const removeToken = useRemoveUserAddedToken()
   const addToken = useAddUserToken()
@@ -236,6 +233,7 @@ function CurrencyRow({
 
 export default function CurrencyList({
   isUserTokens,
+  loadMore,
   height,
   currencies,
   selectedCurrency,
@@ -247,6 +245,7 @@ export default function CurrencyList({
   unseenCustomToken = false
 }: {
   isUserTokens?: boolean
+  loadMore?: any
   height: number
   currencies: Currency[]
   selectedCurrency?: Currency | null
@@ -285,7 +284,6 @@ export default function CurrencyList({
       return (
         <CurrencyRow
           isUserTokens={isUserTokens}
-          key={String(Math.random())}
           style={style}
           currency={currency}
           isSelected={isSelected}
@@ -300,31 +298,26 @@ export default function CurrencyList({
     },
     [onCurrencySelect, otherCurrency, selectedCurrency, searchQuery]
   )
-
+  // console.log(currencies)
+  const isItemLoaded = (index: any) => index < itemData.length - 5 && itemData[index] !== null
   const itemKey = useCallback((index: number, data: any) => currencyKey(data[index]), [])
-  const [heightPoint, setHeightPoint] = useState<number>(676)
-  const dispatch = useDispatch<AppDispatch>()
-  const { partOfList } = useCrosschainState()
   return (
-    <FixedSizeList
-      key={String(Math.random())}
-      onScroll={e => {
-        const scrollHeight = e.scrollOffset
-        if (scrollHeight > heightPoint) {
-          dispatch(setPartOfList({ partOfList: partOfList + 20 }))
-          setHeightPoint(heightPoint + 676)
-        }
-      }}
-      height={height}
-      ref={fixedListRef as any}
-      width="100%"
-      itemData={itemData}
-      itemCount={itemData.length}
-      itemSize={56}
-      itemKey={itemKey}
-      overscanCount={30}
-    >
-      {Row}
-    </FixedSizeList>
+    <InfiniteLoader isItemLoaded={isItemLoaded} itemCount={itemData.length} loadMoreItems={loadMore}>
+      {({ onItemsRendered, ref }) => (
+        <FixedSizeList
+          height={height}
+          ref={ref}
+          width="100%"
+          itemData={itemData}
+          itemCount={itemData.length}
+          itemSize={56}
+          // itemKey={itemKey}
+          overscanCount={30}
+          onItemsRendered={onItemsRendered}
+        >
+          {Row}
+        </FixedSizeList>
+      )}
+    </InfiniteLoader>
   )
 }

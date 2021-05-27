@@ -99,27 +99,35 @@ export function CurrencySearch({
     ?.map((x: any) => {
       return new Token(x.chainId, x.address, x.decimals, x.symbol, x.name)
     })
-  console.log(userTokens)
   // ChainId.RINKEBY BUSD
-  let availableTokensArray = isCrossChain
-    ? availableTokens
-        .filter(a => a.name !== 'BUSD')
-        .filter(y => !y.disableTransfer)
-        .map((x: any) => {
-          return new Token(x.chainId, x.address, x.decimals, x.symbol, x.name)
-        })
-        .concat(userTokens)
-    : isCoingeckoListOn
-    ? [...availableTokens, ...coingeckoList.slice(0, partOfList)]
-        .map((x: any) => {
-          return new Token(x.chainId, x.address, x.decimals, x.symbol, x.name)
-        })
-        .concat(userTokens)
-    : availableTokens
-        .map((x: any) => {
-          return new Token(x.chainId, x.address, x.decimals, x.symbol, x.name)
-        })
-        .concat(userTokens)
+
+  let availableTokensArray = useMemo(
+    () =>
+      isCrossChain
+        ? availableTokens
+            .filter(a => a.name !== 'BUSD')
+            .filter(y => !y.disableTransfer)
+            .map((x: any) => {
+              return new Token(x.chainId, x.address, x.decimals, x.symbol, x.name)
+            })
+            .concat(userTokens)
+        : isCoingeckoListOn && isEthChain
+        ? [...availableTokens, ...coingeckoList]
+            .map((x: any) => {
+              return new Token(x.chainId, x.address, x.decimals, x.symbol, x.name)
+            })
+            .concat(userTokens)
+        : availableTokens
+            .map((x: any) => {
+              return new Token(x.chainId, x.address, x.decimals, x.symbol, x.name)
+            })
+            .concat(userTokens),
+    [isCrossChain, availableTokens, isCoingeckoListOn]
+  )
+
+  let uniqueAvailableTokensArray = availableTokensArray.filter(
+    (elem, index) => availableTokensArray.findIndex(obj => obj.address === elem.address) === index
+  )
 
   const defaultTokenList = DEFAULT_TOKEN_LIST.filter((x: any) => x.chainId === chainId)
     .map((x: any) => {
@@ -144,15 +152,15 @@ export function CurrencySearch({
     if (isAddressSearch) return searchToken ? [searchToken] : []
 
     // the search list should only show by default tokens that are in our pools
-    return filterTokens([...availableTokensArray], searchQuery)
+    return filterTokens([...uniqueAvailableTokensArray], searchQuery)
 
     // return filterTokens(
     //   chainId === ChainId.MAINNET || chainId === ChainId.RINKEBY
     //     ? [...Object.values(allTokens)]
-    //     : [...availableTokensArray, ...Object.values(allTokens)],
+    //     : [...uniqueAvailableTokensArray, ...Object.values(allTokens)],
     //   searchQuery
     // )
-  }, [isAddressSearch, searchToken, searchQuery, chainId, availableTokensArray])
+  }, [isAddressSearch, searchToken, searchQuery, chainId, uniqueAvailableTokensArray])
 
   const filteredSortedTokens: Token[] = useMemo(() => {
     if (searchToken) return [searchToken]
@@ -170,6 +178,27 @@ export function CurrencySearch({
       ...sorted.filter(token => token.symbol?.toLowerCase() !== symbolMatch[0])
     ]
   }, [filteredTokens, searchQuery, searchToken, tokenComparator])
+
+  const [arrayToShow, setArrayToShow] = useState(filteredSortedTokens.slice(0, 20))
+  // console.log(filteredSortedTokens)
+
+  // console.log(arrayToShow)
+
+  const loadMore = (startIndex: any, stopIndex: any) => {
+    console.log(startIndex, stopIndex)
+    return new Promise(resolve => {
+      setTimeout(() => {
+        let arr = []
+        for (let index = startIndex; index <= stopIndex; index++) {
+          if (filteredSortedTokens[index]) {
+            arr.push(filteredSortedTokens[index])
+          } else return
+        }
+        setArrayToShow([...arrayToShow, ...arr])
+        resolve('')
+      }, 0)
+    })
+  }
 
   const handleCurrencySelect = useCallback(
     (currency: Currency) => {
@@ -374,9 +403,10 @@ export function CurrencySearch({
             <AutoSizer disableWidth>
               {({ height }) => (
                 <CurrencyList
+                  loadMore={loadMore}
                   height={height}
                   showETH={isCrossChain ? false : showETH}
-                  currencies={!isCrossChain ? filteredSortedTokens : availableTokensArray}
+                  currencies={arrayToShow}
                   onCurrencySelect={handleCurrencySelect}
                   otherCurrency={otherSelectedCurrency}
                   selectedCurrency={selectedCurrency}
