@@ -406,7 +406,7 @@ export function CurrencySearch({
                   loadMore={loadMore}
                   height={height}
                   showETH={isCrossChain ? false : showETH}
-                  currencies={arrayToShow}
+                  currencies={!isCrossChain ? filteredSortedTokens : arrayToShow}
                   onCurrencySelect={handleCurrencySelect}
                   otherCurrency={otherSelectedCurrency}
                   selectedCurrency={selectedCurrency}
