@@ -146,7 +146,7 @@ function CurrencyRow({
   const { account, chainId } = useActiveWeb3React()
   const key = currencyKey(currency)
   const customAdded = useIsUserAddedToken(currency)
-  
+
   const balance = useCurrencyBalance(account ?? undefined, currency, chainId)
   const removeToken = useRemoveUserAddedToken()
   const addToken = useAddUserToken()
@@ -299,10 +299,10 @@ export default function CurrencyList({
     [onCurrencySelect, otherCurrency, selectedCurrency, searchQuery]
   )
   // console.log(currencies)
-  const isItemLoaded = (index: any) => index < itemData.length - 5 && itemData[index] !== null
+  const isItemLoaded = (index: any) => (itemData.length - index) > 10
   const itemKey = useCallback((index: number, data: any) => currencyKey(data[index]), [])
   return (
-    <InfiniteLoader isItemLoaded={isItemLoaded} itemCount={itemData.length} loadMoreItems={loadMore}>
+    <InfiniteLoader isItemLoaded={isItemLoaded} itemCount={itemData.length} loadMoreItems={loadMore ? loadMore : null}>
       {({ onItemsRendered, ref }) => (
         <FixedSizeList
           height={height}

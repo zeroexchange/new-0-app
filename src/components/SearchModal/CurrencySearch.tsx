@@ -101,33 +101,31 @@ export function CurrencySearch({
     })
   // ChainId.RINKEBY BUSD
 
-  let availableTokensArray = useMemo(
-    () =>
-      isCrossChain
-        ? availableTokens
-            .filter(a => a.name !== 'BUSD')
-            .filter(y => !y.disableTransfer)
-            .map((x: any) => {
-              return new Token(x.chainId, x.address, x.decimals, x.symbol, x.name)
-            })
-            .concat(userTokens)
-        : isCoingeckoListOn && isEthChain
-        ? [...availableTokens, ...coingeckoList]
-            .map((x: any) => {
-              return new Token(x.chainId, x.address, x.decimals, x.symbol, x.name)
-            })
-            .concat(userTokens)
-        : availableTokens
-            .map((x: any) => {
-              return new Token(x.chainId, x.address, x.decimals, x.symbol, x.name)
-            })
-            .concat(userTokens),
-    [isCrossChain, availableTokens, isCoingeckoListOn]
-  )
+  let availableTokensArray = useMemo(() => {
+    return isCrossChain
+      ? availableTokens
+          .filter(a => a.name !== 'BUSD')
+          .filter(y => !y.disableTransfer)
+          .map((x: any) => {
+            return new Token(x.chainId, x.address, x.decimals, x.symbol, x.name)
+          })
+          .concat(userTokens)
+      : isCoingeckoListOn && isEthChain
+      ? [...availableTokens, ...coingeckoList]
+          .map((x: any) => {
+            return new Token(x.chainId, x.address, x.decimals, x.symbol, x.name)
+          })
+          .concat(userTokens)
+      : availableTokens
+          .map((x: any) => {
+            return new Token(x.chainId, x.address, x.decimals, x.symbol, x.name)
+          })
+          .concat(userTokens)
+  }, [isCrossChain, availableTokens, isCoingeckoListOn])
 
   for (let i = availableTokens.length, j = 0; i < availableTokensArray.length; i++) {
-    availableTokensArray[i]['logoURI'] = coingeckoList[j]['logoURI'];
-    j++;
+    availableTokensArray[i]['logoURI'] = coingeckoList[j]['logoURI']
+    j++
   }
 
   let uniqueAvailableTokensArray = availableTokensArray.filter(
@@ -184,21 +182,17 @@ export function CurrencySearch({
     ]
   }, [filteredTokens, searchQuery, searchToken, tokenComparator])
 
-  const [arrayToShow, setArrayToShow] = useState(filteredSortedTokens.slice(0, 20))
-  // console.log(filteredSortedTokens)
+  const [arrayToShow, setArrayToShow] = useState<Token[]>(filteredSortedTokens.slice(0, partOfList))
 
-  // console.log(arrayToShow)
+  useEffect(() => {
+    setArrayToShow(filteredSortedTokens.slice(0, partOfList))
+  }, [isCoingeckoListOn,searchQuery])
 
   const loadMore = (startIndex: any, stopIndex: any) => {
     console.log(startIndex, stopIndex)
     return new Promise(resolve => {
       setTimeout(() => {
-        let arr = []
-        for (let index = startIndex; index <= stopIndex; index++) {
-          if (filteredSortedTokens[index]) {
-            arr.push(filteredSortedTokens[index])
-          } else return
-        }
+        let arr = filteredSortedTokens.slice(arrayToShow.length, stopIndex + 10)
         setArrayToShow([...arrayToShow, ...arr])
         resolve('')
       }, 0)
@@ -411,7 +405,9 @@ export function CurrencySearch({
                   loadMore={loadMore}
                   height={height}
                   showETH={isCrossChain ? false : showETH}
-                  currencies={!isCrossChain ? filteredSortedTokens : arrayToShow}
+                  currencies={
+                    !isCrossChain ? (searchQuery ? filteredSortedTokens : arrayToShow) : uniqueAvailableTokensArray
+                  }
                   onCurrencySelect={handleCurrencySelect}
                   otherCurrency={otherSelectedCurrency}
                   selectedCurrency={selectedCurrency}
