@@ -162,7 +162,6 @@ export function CurrencySearch({
 
   const showETH = true
   const tokenComparator = useTokenComparator(invertSearchOrder)
-
   const filteredTokens: Token[] = useMemo(() => {
     if (isAddressSearch) return searchToken ? [searchToken] : []
 
@@ -199,8 +198,8 @@ export function CurrencySearch({
   )
 
   useEffect(() => {
-    setArrayToShow(filteredSortedTokens.slice(0, 20))
-  }, [isCoingeckoListOn, searchQuery])
+    setArrayToShow(filteredSortedTokens.length > 20 ? filteredSortedTokens.slice(0, 20) : filteredSortedTokens)
+  }, [isCoingeckoListOn, searchQuery, tokenComparator])
 
   const loadMore = (startIndex: any, stopIndex: any) => {
     return new Promise(resolve => {
@@ -399,7 +398,10 @@ export function CurrencySearch({
               <Text fontSize={14} fontWeight={500}>
                 {!isCrossChain ? 'Token Name' : 'Available Cross-Chain Tokens'}
               </Text>
-              <SortButton ascending={invertSearchOrder} toggleSortOrder={() => setInvertSearchOrder(iso => !iso)} />
+              <SortButton
+                ascending={invertSearchOrder}
+                toggleSortOrder={() => setInvertSearchOrder(!invertSearchOrder)}
+              />
             </RowBetween>
           </PaddedColumn>
 
