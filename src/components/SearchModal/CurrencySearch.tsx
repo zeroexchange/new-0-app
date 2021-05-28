@@ -31,6 +31,7 @@ import { useTranslation } from 'react-i18next'
 import { useUserAddedTokens, useRemoveUserAddedToken } from '../../state/user/hooks'
 import { Info } from 'react-feather'
 import { checksumedCoingeckoList } from 'constants/coingnecko'
+import { useIsMountedRef } from 'state/swap/hooks'
 
 interface CurrencySearchProps {
   isOpen: boolean
@@ -93,7 +94,7 @@ export function CurrencySearch({
   const isAddressSearch = isAddress(searchQuery)
   const searchToken = useToken(searchQuery)
   const allTokens = useAllTokens()
-
+  const isMountedRef = useIsMountedRef()
   // manage focus on modal show
   const inputRef = useRef<HTMLInputElement>()
   // cross chain
@@ -194,11 +195,13 @@ export function CurrencySearch({
   }, [filteredTokens, searchQuery, searchToken, tokenComparator])
 
   const [arrayToShow, setArrayToShow] = useState<Token[]>(
-    filteredSortedTokens.length > 20 ? filteredSortedTokens.slice(0, 20) : filteredSortedTokens
+    filteredSortedTokens.length > 40 ? filteredSortedTokens.slice(0, 40) : filteredSortedTokens
   )
 
   useEffect(() => {
-    setArrayToShow(filteredSortedTokens.length > 20 ? filteredSortedTokens.slice(0, 20) : filteredSortedTokens)
+    if (isMountedRef && isCoingeckoListOn) {
+      setArrayToShow(filteredSortedTokens.length > 40 ? filteredSortedTokens.slice(0, 40) : filteredSortedTokens)
+    }
   }, [isCoingeckoListOn, searchQuery, invertSearchOrder])
 
   const loadMore = (startIndex: any, stopIndex: any) => {
@@ -227,15 +230,14 @@ export function CurrencySearch({
     const input = event.target.value
     const checksummedInput = isAddress(input)
     setSearchQuery(checksummedInput || input)
-
-    if (!checksummedInput) {
-      const findToken = checksumedCoingeckoList.find((item: any) => item.name === input)
-      if (findToken) {
-        const findTokenAddress = findToken.address
-        setSearchQuery(findTokenAddress)
-      }
-    }
-
+    //tranform input to address
+    // if (!checksummedInput) {
+    //   const findToken = checksumedCoingeckoList.find((item: any) => item.name === input)
+    //   if (findToken) {
+    //     const findTokenAddress = findToken.address
+    //     setSearchQuery(findTokenAddress)
+    //   }
+    // }
     fixedList.current?.scrollTo(0)
   }, [])
 
@@ -257,6 +259,7 @@ export function CurrencySearch({
     },
     [filteredSortedTokens, handleCurrencySelect, searchQuery]
   )
+
   interface ManageListProps {
     setIsManageTokenList: (value: boolean) => void
     tokenLength: number
@@ -365,7 +368,7 @@ export function CurrencySearch({
       </Column>
     )
   }
-
+  console.log(!isCoingeckoListOn)
   return (
     <Column style={{ width: '100%', flex: '1 1' }}>
       {!isManageTokenList && (
@@ -413,13 +416,7 @@ export function CurrencySearch({
                   loadMore={loadMore}
                   height={height}
                   showETH={isCrossChain ? false : showETH}
-                  currencies={
-                    isCrossChain
-                      ? uniqueAvailableTokensArray
-                      : searchQuery || !isCoingeckoListOn
-                      ? filteredSortedTokens
-                      : arrayToShow
-                  }
+                  currencies={isCrossChain || searchQuery || !isCoingeckoListOn ? filteredSortedTokens : arrayToShow}
                   onCurrencySelect={handleCurrencySelect}
                   otherCurrency={otherSelectedCurrency}
                   selectedCurrency={selectedCurrency}
