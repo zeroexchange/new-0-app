@@ -299,25 +299,41 @@ export default function CurrencyList({
     [onCurrencySelect, otherCurrency, selectedCurrency, searchQuery]
   )
   // console.log(currencies)
-  const isItemLoaded = (index: any) => (itemData.length - index) > 10
+  const isItemLoaded = (index: any) => itemData.length - index > 10
   const itemKey = useCallback((index: number, data: any) => currencyKey(data[index]), [])
+  if (loadMore) {
+    return (
+      <InfiniteLoader isItemLoaded={isItemLoaded} itemCount={itemData.length} loadMoreItems={loadMore}>
+        {({ onItemsRendered, ref }) => (
+          <FixedSizeList
+            height={height}
+            ref={ref}
+            width="100%"
+            itemData={itemData}
+            itemCount={itemData.length}
+            itemSize={56}
+            // itemKey={itemKey}
+            overscanCount={30}
+            onItemsRendered={onItemsRendered}
+          >
+            {Row}
+          </FixedSizeList>
+        )}
+      </InfiniteLoader>
+    )
+  }
   return (
-    <InfiniteLoader isItemLoaded={isItemLoaded} itemCount={itemData.length} loadMoreItems={loadMore ? loadMore : null}>
-      {({ onItemsRendered, ref }) => (
-        <FixedSizeList
-          height={height}
-          ref={ref}
-          width="100%"
-          itemData={itemData}
-          itemCount={itemData.length}
-          itemSize={56}
-          // itemKey={itemKey}
-          overscanCount={30}
-          onItemsRendered={onItemsRendered}
-        >
-          {Row}
-        </FixedSizeList>
-      )}
-    </InfiniteLoader>
+    <FixedSizeList
+      height={height}
+      ref={fixedListRef as any}
+      width="100%"
+      itemData={itemData}
+      itemCount={itemData.length}
+      itemSize={56}
+      itemKey={itemKey}
+      overscanCount={30}
+    >
+      {Row}
+    </FixedSizeList>
   )
 }

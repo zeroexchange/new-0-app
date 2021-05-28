@@ -1,4 +1,6 @@
-export const listOfTokens = [
+import Web3 from 'web3'
+
+export const coinGeckoListOfTokens = [
   {
     chainId: 1,
     address: '0x34950ff2b487d9e5282c5ab342d08a2f712eb79f',
@@ -34586,3 +34588,8 @@ export const listOfTokens = [
     logoURI: 'https://assets.coingecko.com/coins/images/15622/thumb/tbc.png?1621345335'
   }
 ]
+
+const web3 = new Web3()
+export const checksumedCoingeckoList = coinGeckoListOfTokens.map(item => {
+  return { ...item, address: web3.utils.toChecksumAddress(item.address) }
+})

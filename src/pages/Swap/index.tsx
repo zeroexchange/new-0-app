@@ -49,7 +49,7 @@ import TokenWarningModal from '../../components/TokenWarningModal'
 import TradePrice from '../../components/swap/TradePrice'
 import confirmPriceImpactWithoutFee from '../../components/swap/confirmPriceImpactWithoutFee'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
-import { setCurrentToken, setCoinGeckoList, showCoinGeckoList, setPartOfList } from '../../state/crosschain/actions'
+import { setCurrentToken } from '../../state/crosschain/actions'
 import { setTokenBalances } from '../../state/user/actions'
 import { toCheckSumAddress } from '../../state/crosschain/hooks'
 import { useActiveWeb3React } from '../../hooks'
@@ -60,7 +60,7 @@ import { useETHBalances } from '../../state/wallet/hooks'
 import { useSwapCallback } from '../../hooks/useSwapCallback'
 import { useUserAddedTokens } from '../../state/user/hooks'
 import useWindowDimensions from './../../hooks/useWindowDimensions'
-import {listOfTokens} from '../../constants/coingnecko'
+
 const CrossChainLabels = styled.div`
   p {
     display: flex;
@@ -231,21 +231,15 @@ export default function Swap({ ...props }: RouteComponentProps<{ currencyIdA: st
 
   const loadedUrlParams = useDefaultsFromURLSearch()
 
-const web3 = new Web3;
-const serializedListOfTokens = listOfTokens.map( item => {
-  return {...item, address: web3.utils.toChecksumAddress(item.address)}
-})
-
   const {
     availableChains: allChains,
     availableTokens,
     currentChain,
     currentToken,
     crosschainFee,
-    targetTokens,
-    coingeckoList
+    targetTokens
   } = useCrosschainState()
- 
+
   const { width } = useWindowDimensions()
 
   let isColumn = false
@@ -258,10 +252,6 @@ const serializedListOfTokens = listOfTokens.map( item => {
   const { BreakCrosschainSwap, GetAllowance } = useCrosschainHooks()
 
   const dispatch = useDispatch<AppDispatch>()
-  if (!coingeckoList.length) {
-    dispatch(setCoinGeckoList({coingeckoList: serializedListOfTokens}))
-  }
-
 
   // token warning stuff
   const [loadedInputCurrency, loadedOutputCurrency] = [
@@ -384,10 +374,6 @@ const serializedListOfTokens = listOfTokens.map( item => {
     }
   }, [approval, approvalSubmitted])
 
-  useEffect(() => {
-    dispatch(showCoinGeckoList({isCoingeckoListOn: false}))
-    dispatch(setPartOfList({partOfList: 20}))
-  }, [])
   const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(currencyBalances[Field.INPUT])
   const atMaxAmountInput = Boolean(maxAmountInput && parsedAmounts[Field.INPUT]?.equalTo(maxAmountInput))
 

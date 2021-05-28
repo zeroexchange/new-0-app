@@ -29,8 +29,9 @@ import { useCrosschainState } from '../../state/crosschain/hooks'
 import { useTokenComparator } from './sorting'
 import { useTranslation } from 'react-i18next'
 import { useUserAddedTokens, useRemoveUserAddedToken } from '../../state/user/hooks'
-import { showCoinGeckoList, setManageListsToggle } from '../../state/crosschain/actions'
 import { Info } from 'react-feather'
+import { checksumedCoingeckoList } from 'constants/coingnecko'
+
 interface CurrencySearchProps {
   isOpen: boolean
   onDismiss: () => void
@@ -86,20 +87,31 @@ export function CurrencySearch({
   const [isManageTokenList, setIsManageTokenList] = useState<boolean>(false)
   const fixedList = useRef<FixedSizeList>()
   const [searchQuery, setSearchQuery] = useState<string>('')
+  const [isManageLists, setManageListsToggle] = useState<boolean>(true)
+  const [isCoingeckoListOn, showCoinGeckoList] = useState<boolean>(false)
   const [invertSearchOrder, setInvertSearchOrder] = useState<boolean>(false)
+
   // if they input an address, use it
   const isAddressSearch = isAddress(searchQuery)
   const searchToken = useToken(searchQuery)
   const allTokens = useAllTokens()
 
+  // manage focus on modal show
+  const inputRef = useRef<HTMLInputElement>()
   // cross chain
-  const { availableTokens, coingeckoList, isCoingeckoListOn, partOfList, isManageLists } = useCrosschainState()
+  const { availableTokens } = useCrosschainState()
+
   const userTokens = useUserAddedTokens()
     ?.filter((x: any) => x.chainId === chainId)
     ?.map((x: any) => {
       return new Token(x.chainId, x.address, x.decimals, x.symbol, x.name)
     })
-  // ChainId.RINKEBY BUSD
+
+  const defaultTokenList = DEFAULT_TOKEN_LIST.filter((x: any) => x.chainId === chainId)
+    .map((x: any) => {
+      return new Token(x.chainId, x.address, x.decimals, x.symbol, x.name)
+    })
+    .concat(userTokens)
 
   let availableTokensArray = useMemo(() => {
     return isCrossChain
@@ -111,7 +123,7 @@ export function CurrencySearch({
           })
           .concat(userTokens)
       : isCoingeckoListOn && isEthChain
-      ? [...availableTokens, ...coingeckoList]
+      ? [...availableTokens, ...checksumedCoingeckoList]
           .map((x: any) => {
             return new Token(x.chainId, x.address, x.decimals, x.symbol, x.name)
           })
@@ -121,22 +133,20 @@ export function CurrencySearch({
             return new Token(x.chainId, x.address, x.decimals, x.symbol, x.name)
           })
           .concat(userTokens)
-  }, [isCrossChain, availableTokens, isCoingeckoListOn])
+  }, [isCrossChain, availableTokens, isCoingeckoListOn, checksumedCoingeckoList])
 
-  for (let i = availableTokens.length, j = 0; i < availableTokensArray.length; i++) {
-    availableTokensArray[i]['logoURI'] = coingeckoList[j]['logoURI']
-    j++
+  if (isCoingeckoListOn && checksumedCoingeckoList && availableTokens && availableTokensArray) {
+    for (let i = availableTokens.length, j = 0; i < availableTokensArray.length - userTokens.length; i++) {
+      if (!availableTokensArray[i]['logoURI'] && checksumedCoingeckoList[j]['logoURI']) {
+        availableTokensArray[i]['logoURI'] = checksumedCoingeckoList[j]['logoURI']
+      }
+      j++
+    }
   }
 
   let uniqueAvailableTokensArray = availableTokensArray.filter(
     (elem, index) => availableTokensArray.findIndex(obj => obj.address === elem.address) === index
   )
-
-  const defaultTokenList = DEFAULT_TOKEN_LIST.filter((x: any) => x.chainId === chainId)
-    .map((x: any) => {
-      return new Token(x.chainId, x.address, x.decimals, x.symbol, x.name)
-    })
-    .concat(userTokens)
 
   useEffect(() => {
     if (isAddressSearch) {
@@ -182,11 +192,11 @@ export function CurrencySearch({
     ]
   }, [filteredTokens, searchQuery, searchToken, tokenComparator])
 
-  const [arrayToShow, setArrayToShow] = useState<Token[]>(filteredSortedTokens.slice(0, partOfList))
+  const [arrayToShow, setArrayToShow] = useState<Token[]>(filteredSortedTokens.slice(0, 20))
 
   useEffect(() => {
-    setArrayToShow(filteredSortedTokens.slice(0, partOfList))
-  }, [isCoingeckoListOn,searchQuery])
+    setArrayToShow(filteredSortedTokens.slice(0, 20))
+  }, [isCoingeckoListOn, searchQuery])
 
   const loadMore = (startIndex: any, stopIndex: any) => {
     console.log(startIndex, stopIndex)
@@ -211,17 +221,13 @@ export function CurrencySearch({
     if (isOpen) setSearchQuery('')
   }, [isOpen])
 
-  const dispatch = useDispatch<AppDispatch>()
-
-  // manage focus on modal show
-  const inputRef = useRef<HTMLInputElement>()
   const handleInput = useCallback(event => {
     const input = event.target.value
     const checksummedInput = isAddress(input)
     setSearchQuery(checksummedInput || input)
 
     if (!checksummedInput) {
-      const findToken = coingeckoList.find((item: any) => item.name === input)
+      const findToken = checksumedCoingeckoList.find((item: any) => item.name === input)
       if (findToken) {
         const findTokenAddress = findToken.address
         setSearchQuery(findTokenAddress)
@@ -275,7 +281,7 @@ export function CurrencySearch({
         <MarginWrap>
           <Toggle
             isActive={isManageLists}
-            toggle={() => dispatch(setManageListsToggle({ isManageLists: !isManageLists }))}
+            toggle={() => setManageListsToggle(!isManageLists)}
             activeText="Lists"
             inActiveText="Tokens"
             width="100%"
@@ -310,9 +316,7 @@ export function CurrencySearch({
 
                 <Toggle
                   isActive={isCoingeckoListOn}
-                  toggle={() => {
-                    dispatch(showCoinGeckoList({ isCoingeckoListOn: !isCoingeckoListOn }))
-                  }}
+                  toggle={() => showCoinGeckoList(!isCoingeckoListOn)}
                   activeText="On"
                   inActiveText="Off"
                   width="100px"
@@ -432,7 +436,7 @@ export function CurrencySearch({
         </Box>
       )}
       {isManageTokenList && (
-        <ManageList tokenLength={coingeckoList.length} setIsManageTokenList={setIsManageTokenList} />
+        <ManageList tokenLength={checksumedCoingeckoList.length} setIsManageTokenList={setIsManageTokenList} />
       )}
     </Column>
   )

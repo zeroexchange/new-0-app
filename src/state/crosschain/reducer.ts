@@ -20,11 +20,7 @@ import {
   setPendingTransfer,
   setTargetChain,
   setTargetTokens,
-  setTransferAmount,
-  setCoinGeckoList,
-  showCoinGeckoList,
-  setPartOfList,
-  setManageListsToggle
+  setTransferAmount
 } from './actions'
 
 import { createReducer } from '@reduxjs/toolkit'
@@ -46,10 +42,6 @@ export interface CrosschainState {
   readonly depositConfirmed: boolean
   readonly pendingTransfer: PendingTransfer
   readonly lastTimeSwitched: number
-  readonly coingeckoList: any
-  readonly partOfList: number
-  readonly isCoingeckoListOn: boolean
-  readonly isManageLists: boolean
 }
 
 export const initialState: CrosschainState = {
@@ -60,11 +52,11 @@ export const initialState: CrosschainState = {
   targetTokens: new Array<CrosschainToken>(),
   currentChain: {
     name: '',
-    chainID: '',
+    chainID: ''
   },
   targetChain: {
     name: '',
-    chainID: '',
+    chainID: ''
   },
   currentToken: {
     name: '',
@@ -83,150 +75,122 @@ export const initialState: CrosschainState = {
   },
   depositConfirmed: false,
   pendingTransfer: {},
-  coingeckoList: [],
-  isCoingeckoListOn: false,
-  lastTimeSwitched: ~~(Date.now() / 1000),
-  partOfList: 20,
-  isManageLists: true
+  lastTimeSwitched: ~~(Date.now() / 1000)
 }
 
 export default createReducer<CrosschainState>(initialState, builder =>
   builder
     .addCase(setCrosschainRecipient, (state, { payload: { address } }) => {
-      const currentState = { ...initialState, ...state };
+      const currentState = { ...initialState, ...state }
       return {
         ...currentState,
         currentRecipient: address
       }
     })
     .addCase(setPendingTransfer, (state, { payload: { pendingTransfer } }) => {
-      const currentState = { ...initialState, ...state };
+      const currentState = { ...initialState, ...state }
       return {
         ...currentState,
-        pendingTransfer,
+        pendingTransfer
       }
     })
     .addCase(setCurrentTxID, (state, { payload: { txID } }) => {
-      const currentState = { ...initialState, ...state };
+      const currentState = { ...initialState, ...state }
       return {
         ...currentState,
         currentTxID: txID
       }
     })
     .addCase(setAvailableChains, (state, { payload: { chains } }) => {
-      const currentState = { ...initialState, ...state };
+      const currentState = { ...initialState, ...state }
       return {
         ...currentState,
         availableChains: chains
       }
     })
     .addCase(setAvailableTokens, (state, { payload: { tokens } }) => {
-      const currentState = { ...initialState, ...state };
+      const currentState = { ...initialState, ...state }
       return {
         ...currentState,
         availableTokens: tokens
       }
     })
     .addCase(setTargetTokens, (state, { payload: { targetTokens } }) => {
-      const currentState = { ...initialState, ...state };
+      const currentState = { ...initialState, ...state }
       return {
         ...currentState,
-        targetTokens,
+        targetTokens
       }
     })
     .addCase(setCurrentChain, (state, { payload: { chain } }) => {
-      const currentState = { ...initialState, ...state };
+      const currentState = { ...initialState, ...state }
       return {
         ...currentState,
         currentChain: chain
       }
     })
     .addCase(setTargetChain, (state, { payload: { chain } }) => {
-      const currentState = { ...initialState, ...state };
+      const currentState = { ...initialState, ...state }
       return {
         ...currentState,
         targetChain: chain
       }
     })
     .addCase(setCurrentToken, (state, { payload: { token } }) => {
-      const currentState = { ...initialState, ...state };
+      const currentState = { ...initialState, ...state }
       return {
         ...currentState,
         currentToken: token
       }
     })
     .addCase(setCurrentTokenBalance, (state, { payload: { balance } }) => {
-      const currentState = { ...initialState, ...state };
+      const currentState = { ...initialState, ...state }
       return {
         ...currentState,
         currentBalance: balance
       }
     })
     .addCase(setTransferAmount, (state, { payload: { amount } }) => {
-      const currentState = { ...initialState, ...state };
-      console.log(`For cross chain, transfer amount will be ${amount}`);
+      const currentState = { ...initialState, ...state }
+      console.log(`For cross chain, transfer amount will be ${amount}`)
       return {
         ...currentState,
         transferAmount: amount
       }
     })
     .addCase(setCrosschainFee, (state, { payload: { value } }) => {
-      const currentState = { ...initialState, ...state };
+      const currentState = { ...initialState, ...state }
       return {
         ...currentState,
         crosschainFee: value
       }
     })
     .addCase(setCrosschainTransferStatus, (state, { payload: { status } }) => {
-      const currentState = { ...initialState, ...state };
+      const currentState = { ...initialState, ...state }
       return {
         ...currentState,
         crosschainTransferStatus: status
       }
     })
     .addCase(setCrosschainSwapDetails, (state, { payload: { details } }) => {
-      const currentState = { ...initialState, ...state };
+      const currentState = { ...initialState, ...state }
       return {
         ...currentState,
         swapDetails: details
       }
     })
     .addCase(setCrosschainDepositConfirmed, (state, { payload: { confirmed } }) => {
-      const currentState = { ...initialState, ...state };
+      const currentState = { ...initialState, ...state }
       return {
         ...currentState,
         depositConfirmed: confirmed
       }
     })
     .addCase(setCrosschainLastTimeSwitched, (state, {}) => {
-      const currentState = { ...initialState, ...state };
+      const currentState = { ...initialState, ...state }
       return {
         ...currentState,
         lastTimeSwitched: ~~(Date.now() / 1000) + 5
       }
-    }).addCase(setCoinGeckoList, (state,  { payload: { coingeckoList } }) => {
-      const currentState = { ...initialState, ...state };
-      return {
-        ...currentState,
-        coingeckoList
-      }
-    }) .addCase(showCoinGeckoList, (state,  { payload: { isCoingeckoListOn } }) => {
-      const currentState = { ...initialState, ...state };
-      return {
-        ...currentState,
-        isCoingeckoListOn: isCoingeckoListOn
-      }
-    }).addCase(setPartOfList, (state,  { payload: { partOfList } }) => {
-      const currentState = { ...initialState, ...state };
-      return {
-        ...currentState,
-        partOfList: partOfList
-      }
-    }).addCase(setManageListsToggle, (state,  { payload: { isManageLists } }) => {
-      const currentState = { ...initialState, ...state };
-      return {
-        ...currentState,
-        isManageLists: isManageLists
-      }
-    })  
+    })
 )
