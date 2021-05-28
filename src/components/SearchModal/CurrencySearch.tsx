@@ -368,7 +368,7 @@ export function CurrencySearch({
       </Column>
     )
   }
-  console.log(!isCoingeckoListOn)
+
   return (
     <Column style={{ width: '100%', flex: '1 1' }}>
       {!isManageTokenList && (
