@@ -130,7 +130,6 @@ function CurrencyRow({
   isEnd,
   hasQuery,
   tokenBalances,
-  unseenCustomToken = false
 }: {
   isUserTokens?: boolean
   currency: any
@@ -141,7 +140,6 @@ function CurrencyRow({
   isEnd: boolean
   hasQuery: any
   tokenBalances: any
-  unseenCustomToken?: boolean
 }) {
   const { account, chainId } = useActiveWeb3React()
   const key = currencyKey(currency)
@@ -158,10 +156,6 @@ function CurrencyRow({
   // only show add or remove buttons if not on selected list
   const isNative = () => {
     return [ETHER, AVAX, BNB, DEV, MATIC].includes(currency)
-  }
-
-  if (unseenCustomToken && customAdded) {
-    return null
   }
 
   return (
@@ -242,7 +236,6 @@ export default function CurrencyList({
   fixedListRef,
   showETH,
   searchQuery,
-  unseenCustomToken = false
 }: {
   isUserTokens?: boolean
   loadMore?: any
@@ -254,7 +247,6 @@ export default function CurrencyList({
   fixedListRef?: MutableRefObject<FixedSizeList | undefined>
   showETH: boolean
   searchQuery: string | undefined
-  unseenCustomToken?: boolean
 }) {
   const { chainId } = useActiveWeb3React()
   const tokenBalances = useTokenBalances()
@@ -280,30 +272,32 @@ export default function CurrencyList({
       const currency: Currency = data[index]
       const isSelected = Boolean(selectedCurrency && currencyEquals(selectedCurrency, currency))
       const otherSelected = Boolean(otherCurrency && currencyEquals(otherCurrency, currency))
-      const handleSelect = () => onCurrencySelect(currency)
       return (
         <CurrencyRow
           isUserTokens={isUserTokens}
           style={style}
           currency={currency}
           isSelected={isSelected}
-          onSelect={handleSelect}
+          onSelect={() => onCurrencySelect(currency)}
           otherSelected={otherSelected}
           tokenBalances={tokenBalances}
           isEnd={index === data.length - 1}
           hasQuery={searchQuery && searchQuery.length > 0}
-          unseenCustomToken={unseenCustomToken}
         />
       )
     },
     [onCurrencySelect, otherCurrency, selectedCurrency, searchQuery]
   )
-  // console.log(currencies)
+
   const isItemLoaded = (index: any) => itemData.length - index > 10
   const itemKey = useCallback((index: number, data: any) => currencyKey(data[index]), [])
   if (loadMore) {
     return (
-      <InfiniteLoader isItemLoaded={isItemLoaded} itemCount={itemData.length} loadMoreItems={loadMore}>
+      <InfiniteLoader
+        isItemLoaded={isItemLoaded}
+        itemCount={itemData.length}
+        loadMoreItems={loadMore}
+      >
         {({ onItemsRendered, ref }) => (
           <FixedSizeList
             height={height}

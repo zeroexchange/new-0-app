@@ -41,7 +41,6 @@ interface CurrencySearchProps {
   showCommonBases?: boolean
   onChangeList: () => void
   isCrossChain?: boolean
-  transferPage?: boolean
 }
 
 const ManageButton = styled(LinkStyledButton)`
@@ -77,8 +76,7 @@ export function CurrencySearch({
   onDismiss,
   isOpen,
   onChangeList,
-  isCrossChain,
-  transferPage = false
+  isCrossChain
 }: CurrencySearchProps) {
   const { t } = useTranslation()
   const { chainId } = useActiveWeb3React()
@@ -121,7 +119,6 @@ export function CurrencySearch({
           .map((x: any) => {
             return new Token(x.chainId, x.address, x.decimals, x.symbol, x.name)
           })
-          .concat(userTokens)
       : isCoingeckoListOn && isEthChain
       ? [...availableTokens, ...checksumedCoingeckoList]
           .map((x: any) => {
@@ -136,8 +133,13 @@ export function CurrencySearch({
   }, [isCrossChain, availableTokens, isCoingeckoListOn, checksumedCoingeckoList])
 
   if (isCoingeckoListOn && checksumedCoingeckoList && availableTokens && availableTokensArray) {
-    for (let i = availableTokens.length, j = 0; i < availableTokensArray.length - userTokens.length; i++) {
-      if (!availableTokensArray[i]['logoURI'] && checksumedCoingeckoList[j]['logoURI']) {
+    for (let i = availableTokens.length, j = 0; i < availableTokensArray.length - (userTokens.length ?? 0); i++) {
+      if (
+        availableTokensArray[i] &&
+        !availableTokensArray[i].hasOwnProperty('logoURI') &&
+        checksumedCoingeckoList[j] &&
+        checksumedCoingeckoList[j].hasOwnProperty('logoURI')
+      ) {
         availableTokensArray[i]['logoURI'] = checksumedCoingeckoList[j]['logoURI']
       }
       j++
@@ -192,14 +194,15 @@ export function CurrencySearch({
     ]
   }, [filteredTokens, searchQuery, searchToken, tokenComparator])
 
-  const [arrayToShow, setArrayToShow] = useState<Token[]>(filteredSortedTokens.slice(0, 20))
+  const [arrayToShow, setArrayToShow] = useState<Token[]>(
+    filteredSortedTokens.length > 20 ? filteredSortedTokens.slice(0, 20) : filteredSortedTokens
+  )
 
   useEffect(() => {
     setArrayToShow(filteredSortedTokens.slice(0, 20))
   }, [isCoingeckoListOn, searchQuery])
 
   const loadMore = (startIndex: any, stopIndex: any) => {
-    console.log(startIndex, stopIndex)
     return new Promise(resolve => {
       setTimeout(() => {
         let arr = filteredSortedTokens.slice(arrayToShow.length, stopIndex + 10)
@@ -333,7 +336,7 @@ export function CurrencySearch({
                   ? userTokens.length + ' ' + 'Custom token' + (userTokens.length === 1 ? '' : 's')
                   : ''}
               </TYPE.main>
-              <LinkStyledButton onClick={removeAllTokens}>Clear all</LinkStyledButton>
+              <LinkStyledButton onClick={() => removeAllTokens()}>Clear all</LinkStyledButton>
             </RowBetween>
             <div style={{ flex: '1', marginTop: '20px' }}>
               <AutoSizer disableWidth>
@@ -348,7 +351,6 @@ export function CurrencySearch({
                     selectedCurrency={selectedCurrency}
                     fixedListRef={fixedList}
                     searchQuery={searchQuery}
-                    unseenCustomToken={transferPage}
                   />
                 )}
               </AutoSizer>
@@ -410,14 +412,17 @@ export function CurrencySearch({
                   height={height}
                   showETH={isCrossChain ? false : showETH}
                   currencies={
-                    !isCrossChain ? (searchQuery ? filteredSortedTokens : arrayToShow) : uniqueAvailableTokensArray
+                    isCrossChain
+                      ? uniqueAvailableTokensArray
+                      : searchQuery || !isCoingeckoListOn
+                      ? filteredSortedTokens
+                      : arrayToShow
                   }
                   onCurrencySelect={handleCurrencySelect}
                   otherCurrency={otherSelectedCurrency}
                   selectedCurrency={selectedCurrency}
                   fixedListRef={fixedList}
                   searchQuery={searchQuery}
-                  unseenCustomToken={transferPage}
                 />
               )}
             </AutoSizer>
@@ -428,7 +433,7 @@ export function CurrencySearch({
         </>
       )}
 
-      {isEthChain && !isManageTokenList && (
+      {isEthChain && !isManageTokenList && !isCrossChain && (
         <Box>
           <RowCenter>
             <ManageButton onClick={() => setIsManageTokenList(!isManageTokenList)}>Manage Token Lists</ManageButton>
