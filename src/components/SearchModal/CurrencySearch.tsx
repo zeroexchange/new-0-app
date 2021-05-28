@@ -199,7 +199,7 @@ export function CurrencySearch({
 
   useEffect(() => {
     setArrayToShow(filteredSortedTokens.length > 20 ? filteredSortedTokens.slice(0, 20) : filteredSortedTokens)
-  }, [isCoingeckoListOn, searchQuery, tokenComparator])
+  }, [isCoingeckoListOn, searchQuery, invertSearchOrder])
 
   const loadMore = (startIndex: any, stopIndex: any) => {
     return new Promise(resolve => {
