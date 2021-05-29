@@ -103,7 +103,7 @@ const MaxButton = styled.p`
 let web3React: any
 const WithDecimalsHexString = (value: string, decimals: number) => BigNumber.from(utils.parseUnits(value, decimals)).toHexString()
 
-const DEPOSIT_CONTRACT_ADDR = '0xe691fD6Ea139De7b28392e527124e82Cd0FF15Cc';
+const DEPOSIT_CONTRACT_ADDR = '0x8b2bdf262b4869d1a89006f6d5b14509aee249db';
 
 export default function WSDSale() {
   web3React = useActiveWeb3React()
@@ -148,7 +148,7 @@ export default function WSDSale() {
         <SwapFlexRow>
           <SwapWrap>
             <BuyWrap>
-              <h2 style={{ marginBottom: '.5rem' }}>WISE Token Sale:</h2>
+              <h2 style={{ marginBottom: '.5rem' }}>Grow Token Sale:</h2>
               <>
                 {!web3React.account && <p>Please connect to wallet</p>}
                 {web3React.account && (
