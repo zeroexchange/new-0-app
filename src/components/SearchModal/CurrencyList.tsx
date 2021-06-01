@@ -256,7 +256,7 @@ export default function CurrencyList({
       let isImportSelected = false;
       if (selectedCurrency) {
           // @ts-ignore
-          isImportSelected = selectedCurrency.address === currency.address
+          isImportSelected = selectedCurrency.address === currency.address || selectedCurrency.name === currency.name
       }
      
       const otherSelected = Boolean(otherCurrency && currencyEquals(otherCurrency, currency))
