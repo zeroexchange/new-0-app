@@ -254,6 +254,7 @@ export default function Manage({
 
   const theme = useContext(ThemeContext)
   // get currencies and pair
+
   const [currencyA, currencyB] = [useCurrency(currencyIdA), useCurrency(currencyIdB)]
   const tokenA = wrappedCurrency(currencyA ?? undefined, chainId)
   const tokenB = wrappedCurrency(currencyB ?? undefined, chainId)

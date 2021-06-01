@@ -77,7 +77,8 @@ export default function AddLiquidity({
   const theme = useContext(ThemeContext)
 
   const locationState: any = props?.location?.state
-  const stakingRewardAddress: any = locationState?.stakingRewardAddress ? locationState?.stakingRewardAddress : null
+
+ const stakingRewardAddress: any = locationState?.stakingRewardAddress ? locationState?.stakingRewardAddress : null
 
   // hack for BNB / ZERO pool, flip them for staking
   let curA = currencyIdA

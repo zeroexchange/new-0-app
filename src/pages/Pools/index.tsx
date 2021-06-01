@@ -46,13 +46,11 @@ import { Token, Pair } from '@zeroexchange/sdk'
 import { usePairContract, useStakingContract } from '../../hooks/useContract'
 import { Contract } from '@ethersproject/contracts'
 import { isAddress } from '../../utils'
-import { RowBetween } from 'components/Row'
+import CustomLiquidityCard from 'components/pools/CustomLiquidityCard'
 
 const numeral = require('numeral')
 
-const ImportRowBetween = styled(RowBetween)`
-  margin-top: 15px;
-`
+
 
 const PageWrapper = styled.div`
   flex-direction: column;
@@ -64,7 +62,7 @@ const PageWrapper = styled.div`
 `};
 `
 
-const Wrapper = styled.div`
+export const Wrapper = styled.div`
   background: rgba(47, 53, 115, 0.32);
   box-shadow: inset 2px 2px 5px rgba(255, 255, 255, 0.095);
   backdrop-filter: blur(28px);
@@ -301,20 +299,13 @@ const ArrowLeft = styled.div`
   cursor: pointer;
 `
 
-const SelectTitle = styled(LiquidityTitle)`
+export const SelectTitle = styled(LiquidityTitle)`
   font-size: 16px;
   text-align: center;
   color: #727bba;
 `
 
-const PooledImportTitle = styled(SelectTitle)`
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
-font-size: 13px;
-`};
-`
+
 
 const SelectWrap = styled.div`
   display: flex;
@@ -350,31 +341,9 @@ const HasNoLiquidityTitle = styled(WarningTitle)`
   color: #6752f7;
 `
 
-const ImportedWrap = styled.div<{ isPoolCardOpen?: boolean }>`
-  cursor: pointer;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: ${({ isPoolCardOpen }) => (isPoolCardOpen ? '20px' : '0')};
 
-  div {
-    display: flex;
-    justify-content: flex-start;
-  }
 
-  h3 {
-    font-weight: 500;
-    color: #a7b1f4;
-    font-size: 15px;
-    ${({ theme }) => theme.mediaWidth.upToExtraSmall`
-      display: none;
-`};
-  }
-`
 
-const ArrowRotate = styled.div<{ isPoolCardOpen?: boolean }>`
-  transform: ${({ isPoolCardOpen }) => (isPoolCardOpen ? 'rotate(180deg)' : 'none')};
-`
 const ImportWrapper = styled.div`
   width: 500px;
   max-height: 600px;
@@ -833,7 +802,16 @@ export default function Pools() {
             {isUserHasNotLiquidity && (
               <HasNoLiquidityTitle>You don’t have liquidity in this pool yet.</HasNoLiquidityTitle>
             )}
-            {isUserHasAlready && <WarningTitle>You already have this LP Tokens.</WarningTitle>}
+            {isUserHasAlready && (
+              <>
+              <HasNoLiquidityTitle>You already have this LP Tokens.</HasNoLiquidityTitle>
+              <StyledInternalLink className="add-liquidity-link" to={{ pathname: `/add`,
+             state: { token0: `${token0 && token0.address}`, token1: `${token1 && token1.address}` }
+              }} style={{display: 'inline-block', width: '100%', textAlign: 'center'}}>
+                Add Liquidity                  
+              </StyledInternalLink>
+              </>
+            ) }
             <SelectTitle>Select a token to find your liquidity.</SelectTitle>
           </Wrapper>
           <CurrencySearchModal
@@ -987,58 +965,7 @@ export default function Pools() {
  </CustomPoolsHeader>
  <LiquidityContent>
    {poolsTokens.length ? (
-     poolsTokens.map(item => {
-       return (
-         <Wrapper key={item.contractAddress} style={{ padding: '20px' }}>
-           <ImportedWrap
-             isPoolCardOpen={isPoolCardOpen}
-             onClick={() => setIsPoolCardOpen(!isPoolCardOpen)}
-           >
-             <div>
-               <CurrencyLogo currency={item.firstToken} />
-               <CurrencyLogo currency={item.secondToken} />
-             </div>
-
-             <h3>
-               <span>{item.firstToken.symbol}</span>/<span>{item.secondToken.symbol}</span>
-             </h3>
-             <ArrowRotate isPoolCardOpen={isPoolCardOpen}>
-               <Arrow activeColor="#727bba" />
-             </ArrowRotate>
-           </ImportedWrap>
-           {isPoolCardOpen && (
-             <>
-               <ImportRowBetween>
-                 <PooledImportTitle>Pooled {item.firstToken.symbol}:</PooledImportTitle>
-                 <PooledImportTitle>
-                   {Number(item.firstTokenPart).toFixed(5)}
-
-                   <CurrencyLogo currency={item.firstToken} />
-                 </PooledImportTitle>
-               </ImportRowBetween>
-               <ImportRowBetween>
-                 <PooledImportTitle>Pooled {item.secondToken.symbol}:</PooledImportTitle>
-                 <PooledImportTitle>
-                   {Number(item.secondTokenPart).toFixed(5)}
-
-                   <CurrencyLogo currency={item.secondToken} />
-                 </PooledImportTitle>
-               </ImportRowBetween>
-
-               <ImportRowBetween>
-                 <PooledImportTitle>Your pool tokens:</PooledImportTitle>
-                 <PooledImportTitle>{Number(item.balanceOf).toFixed(5)}</PooledImportTitle>
-               </ImportRowBetween>
-
-               <ImportRowBetween>
-                 <PooledImportTitle>Your pool share:</PooledImportTitle>
-                 <PooledImportTitle>{(item.totalPercent * 100).toFixed(10)}%</PooledImportTitle>
-               </ImportRowBetween>
-             </>
-           )}
-         </Wrapper>
-       )
-     })
+     poolsTokens.map(item => <CustomLiquidityCard key={item.contractAddress} item={item}/>)
    ) : (
      <p>No liquidity found.</p>
    )}
