@@ -42,7 +42,7 @@ import { Token, Pair } from '@zeroexchange/sdk'
 import { usePairContract, useStakingContract } from '../../hooks/useContract'
 import CustomLiquidityCard from 'components/pools/CustomLiquidityCard'
 import { RowBetween } from 'components/Row'
-
+import { wrappedCurrency } from 'utils/wrappedCurrency'
 const numeral = require('numeral')
 
 const PageWrapper = styled.div`
@@ -376,7 +376,7 @@ export default function Pools() {
   }, [setModalOpen])
 
   const handleInputSelect = useCallback(inputCurrency => {
-    console.log(inputCurrency)
+    
     if (inputCurrency?.address) {
       const newToken = GetTokenByAddrAndChainId(inputCurrency.address, currentChain.chainID)
       dispatch(
@@ -391,10 +391,32 @@ export default function Pools() {
           }
         })
       )
+    } else {
+ // @ts-ignore
+      const newToken = wrappedCurrency(inputCurrency, chainId)
+      console.log(inputCurrency)
+      console.log(newToken)
+      dispatch(
+   setImportToken({
+     currentToken: 'token0',
+     token: {
+       name: newToken?.name || '',
+       address: newToken?.address || '',
+       chainId,
+       symbol: newToken?.symbol || '',
+       decimals: newToken?.decimals || 18
+     }
+   })
+ )
     }
+
+     
+
   }, [])
 
   const handleOutputSelect = useCallback(inputCurrency => {
+ 
+  
     if (inputCurrency?.address) {
       const newToken = GetTokenByAddrAndChainId(inputCurrency.address, currentChain.chainID)
       dispatch(
@@ -491,14 +513,15 @@ export default function Pools() {
     }
   }
 
+
   const takeInfo = async () => {
     if (token0.symbol.length && token1.symbol.length) {
       const balance = await takeBalance()
       const totalSupply = await takeSupply()
       const reserves = await getReservesFromContract()
       const decimals = await getDecimals()
-      let firstToken = await getFirstToken()
-      let secondToken = await getSecondToken()
+      let theFirstToken = await getFirstToken()
+      let theSecondToken = await getSecondToken()
 
       if (balance != null && !(balance.toString() > 0)) {
         setIsUserHasNotLiquidity(true)
@@ -506,25 +529,31 @@ export default function Pools() {
         setIsUserHasAlready(false)
       }
 
-      if (firstToken && secondToken) {
-        firstToken = GetTokenByAddrAndChainId(firstToken, currentChain.chainID)
-        secondToken = GetTokenByAddrAndChainId(secondToken, currentChain.chainID)
+      // if (theFirstToken && theSecondToken) {
+        
+        
+      //   theFirstToken = GetTokenByAddrAndChainId(theFirstToken, currentChain.chainID)
+      //   theSecondToken = GetTokenByAddrAndChainId(theSecondToken, currentChain.chainID)
+   
 
-        firstToken = new Token(
-          firstToken.chainId,
-          firstToken.address,
-          firstToken.decimals,
-          firstToken.symbol,
-          firstToken.name
-        )
-        secondToken = new Token(
-          secondToken.chainId,
-          secondToken.address,
-          secondToken.decimals,
-          secondToken.symbol,
-          secondToken.name
-        )
-      }
+      //   theFirstToken = new Token(
+      //     theFirstToken.chainId,
+      //     theFirstToken.address,
+      //     theFirstToken.decimals,
+      //     theFirstToken.symbol,
+      //     theFirstToken.name
+      //   )
+      //   theSecondToken = new Token(
+      //     theSecondToken.chainId,
+      //     theSecondToken.address,
+      //     theSecondToken.decimals,
+      //     theSecondToken.symbol,
+      //     theSecondToken.name
+      //   )
+
+      //   console.log(theFirstToken)
+      //   console.log(theSecondToken)
+      // }
 
       if (balance != null && balance.toString() > 0 && totalSupply && reserves && decimals) {
         const totalPercent = Number(String(balance)) / Number(String(totalSupply))
@@ -562,8 +591,8 @@ export default function Pools() {
               firstTokenPart,
               secondTokenPart,
               contractAddress,
-              firstToken,
-              secondToken
+              firstToken: token0,
+              secondToken: token1
             }
           })
         )
