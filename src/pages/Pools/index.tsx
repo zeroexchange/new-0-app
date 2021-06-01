@@ -47,6 +47,7 @@ import { usePairContract, useStakingContract } from '../../hooks/useContract'
 import { Contract } from '@ethersproject/contracts'
 import { isAddress } from '../../utils'
 import CustomLiquidityCard from 'components/pools/CustomLiquidityCard'
+import { RowBetween } from 'components/Row'
 
 const numeral = require('numeral')
 
@@ -288,7 +289,7 @@ padding: 0;
 `
 
 const LiquidityFooter = styled(CustomPoolsHeader)`
-  p {
+  div {
     display: flex;
     gap: 10px;
   }
@@ -796,9 +797,29 @@ export default function Pools() {
               </CurrencySelectPool>
             </SelectWrap>
             <SelectWrap>
-              <ButtonPrimary onClick={takeInfo}>Import</ButtonPrimary>
+            <ButtonPrimary disabled={!(token0.symbol.length && token1.symbol.length)} onClick={takeInfo}>Import</ButtonPrimary>
             </SelectWrap>
-            {isPoolFound && <WarningTitle>No pool found.</WarningTitle>}
+            {isPoolFound && (
+              <>
+              <WarningTitle>No pool found.</WarningTitle>
+              <RowBetween style={{justifyContent:"center"}}>
+              <StyledInternalLink className="add-liquidity-link" 
+               to={{
+                pathname: `/add/${token0.address}/${token1.address}`
+              }} style={{display: 'inline-block', width: 'auto', textAlign: 'center'}}>
+                Create pool                
+              </StyledInternalLink>
+              <QuestionWrap>
+              <QuestionHelper
+                text={
+                  "You are the first liquidity provider. The ratio of tokens you add will set the price of this pool. Once you are happy with the rate click supply to review."
+                }
+              />
+            </QuestionWrap>
+            </RowBetween>
+              </>
+            )
+            }
             {isUserHasNotLiquidity && (
               <HasNoLiquidityTitle>You don’t have liquidity in this pool yet.</HasNoLiquidityTitle>
             )}
@@ -972,12 +993,12 @@ export default function Pools() {
    )}
  </LiquidityContent>
  <LiquidityFooter>
-   <p>
+   <div>
      Don't see a pool you joined?{' '}
      <TextLink onClick={() => dispatch(setImportPoolsPage({ isImportPoolsPage: true }))}>
        Import it.
      </TextLink>
-   </p>
+   </div>
  </LiquidityFooter>
 </Wrapper>
             )}
