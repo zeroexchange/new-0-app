@@ -215,7 +215,8 @@ export default function CurrencyList({
   fixedListRef,
   showETH,
   searchQuery,
-  unseenCustomToken = false
+  unseenCustomToken = false,
+  isImportPage = false
 }: {
   height: number
   currencies: Currency[]
@@ -226,6 +227,7 @@ export default function CurrencyList({
   showETH: boolean
   searchQuery: string | undefined
   unseenCustomToken?: boolean
+  isImportPage?: boolean
 }) {
   const { chainId } = useActiveWeb3React()
   const tokenBalances = useTokenBalances()
@@ -251,13 +253,19 @@ export default function CurrencyList({
      
       const currency: Currency = data[index]
       const isSelected = Boolean(selectedCurrency && currencyEquals(selectedCurrency, currency))
+      let isImportSelected = false;
+      if (selectedCurrency) {
+          // @ts-ignore
+          isImportSelected = selectedCurrency.address === currency.address
+      }
+     
       const otherSelected = Boolean(otherCurrency && currencyEquals(otherCurrency, currency))
       const handleSelect = () => onCurrencySelect(currency)
       return (
         <CurrencyRow
           style={style}
           currency={currency}
-          isSelected={isSelected}
+          isSelected={isImportPage ? isImportSelected : isSelected}
           onSelect={handleSelect}
           otherSelected={otherSelected}
           tokenBalances={tokenBalances}

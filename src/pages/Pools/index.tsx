@@ -2,9 +2,6 @@ import { BigNumber, ethers, utils } from 'ethers'
 import {
   AprObjectProps,
   setAprData,
-  setPoolsData,
-  setStackingInfo,
-  setToggle,
   setPoolEarnings
 } from './../../state/pools/actions'
 import { CustomLightSpinner, StyledInternalLink, TYPE, Title } from '../../theme'
@@ -35,23 +32,18 @@ import { CurrencySelect } from 'components/CurrencyInputPanel'
 import CurrencySearchModal from 'components/SearchModal/CurrencySearchModal'
 import {
   GetTokenByAddrAndChainId,
-  useCrossChain,
-  useCrosschainHooks,
   useCrosschainState
 } from '../../state/crosschain/hooks'
 import { setNewPairLuiqidity, setImportToken, setImportPoolsPage } from '../../state/crosschain/actions'
+import {initTokenObject} from '../../state/crosschain/reducer'
 import CurrencyLogo from 'components/CurrencyLogo'
 import { ButtonPrimary } from 'components/Button'
 import { Token, Pair } from '@zeroexchange/sdk'
 import { usePairContract, useStakingContract } from '../../hooks/useContract'
-import { Contract } from '@ethersproject/contracts'
-import { isAddress } from '../../utils'
 import CustomLiquidityCard from 'components/pools/CustomLiquidityCard'
 import { RowBetween } from 'components/Row'
 
 const numeral = require('numeral')
-
-
 
 const PageWrapper = styled.div`
   flex-direction: column;
@@ -62,7 +54,6 @@ const PageWrapper = styled.div`
   padding:0px;
 `};
 `
-
 export const Wrapper = styled.div`
   background: rgba(47, 53, 115, 0.32);
   box-shadow: inset 2px 2px 5px rgba(255, 255, 255, 0.095);
@@ -91,7 +82,6 @@ const PoolsTable = styled.table`
     width: 100%;
   }
 `
-
 const HeaderCell = styled.th<{ mobile?: boolean }>`
   :last-child {
     width: 45px;
@@ -102,7 +92,6 @@ const HeaderCell = styled.th<{ mobile?: boolean }>`
     display: none;
   `};
 `
-
 const EmptyData = styled.div`
   display: flex;
   flex-direction: column;
@@ -120,7 +109,6 @@ const rotate = keyframes`
     transform: rotate(360deg);
   }
 `
-
 const opacity = keyframes`
   from {
     opacity:.8;
@@ -130,7 +118,6 @@ const opacity = keyframes`
     opacity: .8;
   }
 `
-
 const TextLink = styled.div`
   font-size: 1rem;
   font-weight: bold;
@@ -144,7 +131,6 @@ const TextLink = styled.div`
     opacity: 0.9;
   }
 `
-
 // Here we create a component that will rotate everything we pass in over two seconds
 const Spinner = styled.img`
   width: 100px;
@@ -155,13 +141,11 @@ const Spinner = styled.img`
   padding: 2rem 1rem;
   font-size: 1.2rem;
 `
-
 const GridContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
   column-gap: 28px;
 `
-
 const StatsWrapper = styled.div`
   display: flex;
   justify-content: flex-start;
@@ -210,7 +194,6 @@ const Stat = styled.div`
   }
 `};
 `
-
 const StatLabel = styled.h5`
   font-weight: bold;
   color: #fff;
@@ -220,7 +203,6 @@ const StatLabel = styled.h5`
     font-weight: normal;
   }
 `
-
 const StatValue = styled.h6`
   font-weight: bold;
   color: #fff;
@@ -246,15 +228,12 @@ const DropDownWrap = styled.span`
     }
   }
 `
-
 const HeaderCellSpan = styled.span`
   position: relative;
 `
-
 const LiquidityTitle = styled.h2`
   font-size: 20px;
 `
-
 const CustomPoolsHeader = styled.div`
   display: flex;
   justify-content: space-between;
@@ -267,11 +246,9 @@ const CustomPoolsHeader = styled.div`
 const QuestionWrap = styled(CustomPoolsHeader)`
   padding: 0;
 `
-
 const ImportWrapHeader = styled(CustomPoolsHeader)`
   padding: 0 15px;
 `
-
 const LiquidityContent = styled.div`
   margin: 10px 0;
   display: flex;
@@ -287,40 +264,32 @@ const LiquidityContent = styled.div`
 padding: 0;
 `};
 `
-
 const LiquidityFooter = styled(CustomPoolsHeader)`
   div {
     display: flex;
     gap: 10px;
   }
 `
-
 const ArrowLeft = styled.div`
   transform: rotate(90deg);
   cursor: pointer;
 `
-
 export const SelectTitle = styled(LiquidityTitle)`
   font-size: 16px;
   text-align: center;
   color: #727bba;
 `
-
-
-
 const SelectWrap = styled.div`
   display: flex;
   padding: 0 43px;
   margin: 20px 0px;
 `
-
 const CurrencySelectPool = styled(CurrencySelect)`
   width: 100%;
   ${({ theme }) => theme.mediaWidth.upToExtraSmall`
 font-size: 13px;
 `};
 `
-
 const TokenWrap = styled.div`
   display: flex;
   justify-content: center;
@@ -332,19 +301,13 @@ const TokenWrap = styled.div`
     align-items: center;
   }
 `
-
 const WarningTitle = styled.h5`
   color: red;
   text-align: center;
 `
-
 const HasNoLiquidityTitle = styled(WarningTitle)`
   color: #6752f7;
 `
-
-
-
-
 const ImportWrapper = styled.div`
   width: 500px;
   max-height: 600px;
@@ -377,7 +340,6 @@ export default function Pools() {
   const poolsState = usePoolsState()
   const {
     aprData,
-    poolsData,
     weeklyEarnings,
     readyForHarvest,
     totalLiquidity,
@@ -408,8 +370,6 @@ export default function Pools() {
   const [claimRewardStaking, setClaimRewardStaking] = useState<any>(null)
   const [modalOpen, setModalOpen] = useState(false)
   const [modalOpen2, setModalOpen2] = useState(false)
-
-  const [isPoolCardOpen, setIsPoolCardOpen] = useState<boolean>(false)
 
   const handleDismissSearch = useCallback(() => {
     setModalOpen(false)
@@ -464,12 +424,22 @@ export default function Pools() {
     tokenFirst = new Token(token0.chainId, token0.address, token0.decimals, token0.symbol, token0.name)
     tokenSecond = new Token(token1.chainId, token1.address, token1.decimals, token1.symbol, token1.name)
   }
+// @ts-ignore
+  const createAToken = (item:any) => {
+    if ( Object.keys(item).length > 0 &&
+    item.symbol.length) {
+      return new Token(item.chainId, item.address, item.decimals, item.symbol, item.name)
+    }
+    
+ 
+  }
 
   const [isPoolFound, setIsPoolFound] = useState(false)
   const [isUserHasAlready, setIsUserHasAlready] = useState(false)
   const [isUserHasNotLiquidity, setIsUserHasNotLiquidity] = useState(false)
   const contractAddress = Pair.getAddress(tokenFirst, tokenSecond)
   const pairContract = usePairContract(contractAddress)
+
   const takeBalance = async () => {
     try {
       return await pairContract?.balanceOf(account)
@@ -557,7 +527,6 @@ export default function Pools() {
       }
 
       if (balance != null && balance.toString() > 0 && totalSupply && reserves && decimals) {
-        console.log(balance)
         const totalPercent = Number(String(balance)) / Number(String(totalSupply))
         const balanceOf = ethers.utils.formatUnits(balance, decimals)
 
@@ -599,6 +568,9 @@ export default function Pools() {
           })
         )
         dispatch(setImportPoolsPage({ isImportPoolsPage: false }))
+        setIsPoolFound(false)
+        setIsUserHasNotLiquidity(false)
+        setIsUserHasAlready(false)
       }
     }
   }
@@ -642,32 +614,33 @@ export default function Pools() {
 
   setArrayToShow()
 
+  const clearImportPageTokens = (value: string) => {
+    dispatch(
+      setImportToken({
+        currentToken: value,
+        token: {
+          name: '',
+          address: '',
+          chainId,
+          symbol: '',
+          decimals: 18
+        }
+      })
+    )
+  }
+
+  useEffect(() => {
+    // Function will be called on component unmount 
+    return () => {
+      clearImportPageTokens('token0')
+      clearImportPageTokens('token1')
+    }
+  }, [])
+
   useEffect(() => {
     dispatch(setImportPoolsPage({ isImportPoolsPage: false }))
-    dispatch(
-      setImportToken({
-        currentToken: 'token1',
-        token: {
-          name: '',
-          address: '',
-          chainId,
-          symbol: '',
-          decimals: 18
-        }
-      })
-    )
-    dispatch(
-      setImportToken({
-        currentToken: 'token0',
-        token: {
-          name: '',
-          address: '',
-          chainId,
-          symbol: '',
-          decimals: 18
-        }
-      })
-    )
+    clearImportPageTokens('token0')
+    clearImportPageTokens('token1')
   }, [])
   useEffect(() => {
     let earnings: any = 0
@@ -712,6 +685,16 @@ export default function Pools() {
     setClaimRewardStaking(stakingInfo)
     setShowClaimRewardModal(true)
   }
+  
+
+  const clearAllInfoImportPage = () => {
+    dispatch(setImportPoolsPage({ isImportPoolsPage: true }))
+       setIsPoolFound(false)
+       setIsUserHasNotLiquidity(false)
+       setIsUserHasAlready(false)
+       clearImportPageTokens('token0')
+       clearImportPageTokens('token1')
+  } 
 
   const SortedTitle = ({ title }: SortedTitleProps) => (
     <HeaderCellSpan>
@@ -849,11 +832,15 @@ export default function Pools() {
             isOpen={modalOpen}
             onDismiss={handleDismissSearch}
             onCurrencySelect={handleInputSelect}
+            selectedCurrency={createAToken(token1)}
+            isImportPage={true}
           />
           <CurrencySearchModal
             isOpen={modalOpen2}
             onDismiss={() => setModalOpen2(false)}
             onCurrencySelect={handleOutputSelect}
+            selectedCurrency={createAToken(token0)}
+            isImportPage={true}
           />
         </ImportWrapper>
       )}
@@ -1004,7 +991,7 @@ export default function Pools() {
  <LiquidityFooter>
    <div>
      Don't see a pool you joined?{' '}
-     <TextLink onClick={() => dispatch(setImportPoolsPage({ isImportPoolsPage: true }))}>
+     <TextLink onClick={clearAllInfoImportPage}>
        Import it.
      </TextLink>
    </div>

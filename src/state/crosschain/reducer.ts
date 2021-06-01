@@ -46,6 +46,14 @@ export interface PoolLiquidityToken {
 }
 
 
+export const initTokenObject = {
+  name: '',
+  address: '',
+  chainId: '',
+  symbol: '',
+  decimals: 18
+}
+
 
 export interface CrosschainState {
   readonly currentRecipient: string
@@ -73,37 +81,12 @@ export interface CrosschainState {
 }
 
 
-
 export const initialState: CrosschainState = {
   poolsTokens: [],
-  token0: {
-    name: '',
-    address: '',
-    chainId: '',
-    symbol: '',
-    decimals: 18
-  },
-  token1: {
-    name: '',
-    address: '',
-    chainId: '',
-    symbol: '',
-    decimals: 18
-  },
-  firstToken: {
-    name: '',
-    address: '',
-    chainId: '',
-    symbol: '',
-    decimals: 18
-  },
-  secondToken: {
-    name: '',
-    address: '',
-    chainId: '',
-    symbol: '',
-    decimals: 18
-  },
+  token0: initTokenObject,
+  token1: initTokenObject,
+  firstToken: initTokenObject,
+  secondToken: initTokenObject,
   isImportPoolsPage: false,
   currentRecipient: '',
   currentTxID: '',
@@ -253,7 +236,6 @@ export default createReducer<CrosschainState>(initialState, builder =>
         lastTimeSwitched: ~~(Date.now() / 1000) + 5
       }
     }).addCase(setNewPairLuiqidity, (state, { payload: { pairLiquidity } }) => {
-      console.log(pairLiquidity)
       return {
         ...state,
         poolsTokens: [...state.poolsTokens, pairLiquidity]

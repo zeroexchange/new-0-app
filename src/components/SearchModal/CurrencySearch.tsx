@@ -36,6 +36,7 @@ interface CurrencySearchProps {
   onChangeList: () => void
   isCrossChain?: boolean
   transferPage?: boolean
+  isImportPage?: boolean
 }
 
 const DEFAULT_TOKEN_LIST = process.env.REACT_APP_TESTNET ? DEFAULT_TOKEN_LIST_TESTNET : DEFAULT_TOKEN_LIST_MAINNET
@@ -49,7 +50,8 @@ export function CurrencySearch({
   isOpen,
   onChangeList,
   isCrossChain,
-  transferPage = false
+  transferPage = false,
+  isImportPage = false
 }: CurrencySearchProps) {
   const { t } = useTranslation()
   const { chainId } = useActiveWeb3React()
@@ -225,6 +227,7 @@ export function CurrencySearch({
               fixedListRef={fixedList}
               searchQuery={searchQuery}
               unseenCustomToken={transferPage}
+              isImportPage={isImportPage}
             />
           )}
         </AutoSizer>

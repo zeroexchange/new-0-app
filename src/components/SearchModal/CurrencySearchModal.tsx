@@ -14,6 +14,7 @@ interface CurrencySearchModalProps {
   showCommonBases?: boolean
   isCrossChain?: boolean
   transferPage?: boolean
+  isImportPage?: boolean
 }
 
 export default function CurrencySearchModal({
@@ -24,7 +25,8 @@ export default function CurrencySearchModal({
   otherSelectedCurrency,
   isCrossChain,
   showCommonBases = false,
-  transferPage = false
+  transferPage = false,
+  isImportPage = false
 }: CurrencySearchModalProps) {
   const [listView, setListView] = useState<boolean>(false)
   const lastOpen = useLast(isOpen)
@@ -62,6 +64,7 @@ export default function CurrencySearchModal({
         showCommonBases={showCommonBases}
         isCrossChain={isCrossChain}
         transferPage={transferPage}
+        isImportPage={isImportPage}
       />
     </Modal>
   )
