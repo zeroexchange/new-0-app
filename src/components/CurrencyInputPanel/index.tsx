@@ -29,7 +29,7 @@ margin-top: 25px;
 `};
 `
 
-const CurrencySelect = styled.button<{ selected: boolean }>`
+export const CurrencySelect = styled.button<{ selected: boolean }>`
   align-items: center;
   height: 2.2rem;
   font-size: 20px;

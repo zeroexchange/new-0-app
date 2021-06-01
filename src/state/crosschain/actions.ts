@@ -1,4 +1,5 @@
 import { createAction } from '@reduxjs/toolkit'
+import {PoolLiquidityToken} from './reducer'
 
 export enum ProposalStatus {
   INACTIVE = '0',
@@ -70,3 +71,6 @@ export const setCrosschainDepositConfirmed = createAction<{ confirmed: boolean }
 export const setCrosschainSwapDetails = createAction<{ details: SwapDetails }>('crosschain/set-swap-details')
 export const setPendingTransfer = createAction<{ pendingTransfer: PendingTransfer }>('crosschain/set-pending-transfer')
 export const setCrosschainLastTimeSwitched = createAction<{ }>('crosschain/last-time-switched')
+export const setNewPairLuiqidity = createAction<{ pairLiquidity: PoolLiquidityToken }>('crosschain/setNewPairLuiqidity')
+export const setImportToken = createAction<{ currentToken: string, token: any }>('crosschain/setImportToken')
+export const setImportPoolsPage = createAction<{ isImportPoolsPage: boolean}>('crosschain/setImportPoolsPage')

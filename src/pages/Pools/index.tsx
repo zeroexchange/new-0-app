@@ -1,3 +1,4 @@
+import { BigNumber, ethers, utils } from 'ethers'
 import {
   AprObjectProps,
   setAprData,
@@ -7,11 +8,12 @@ import {
   setPoolEarnings
 } from './../../state/pools/actions'
 import { CustomLightSpinner, StyledInternalLink, TYPE, Title } from '../../theme'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import { STAKING_REWARDS_INFO, useStakingInfo } from '../../state/stake/hooks'
 import { filterPoolsItems, searchItems, setOptions } from 'utils/sortPoolsPage'
 import styled, { keyframes } from 'styled-components'
-
+import { ArrowDown as Arrow } from '../../components/Arrows'
+import QuestionHelper from '../../components/QuestionHelper'
 import { AppDispatch } from '../../state'
 import { ButtonOutlined } from '../../components/Button'
 import Circle from '../../assets/images/blue-loader.svg'
@@ -29,7 +31,28 @@ import { useDispatch } from 'react-redux'
 import { usePoolsState } from './../../state/pools/hooks'
 import { useWalletModalToggle } from '../../state/application/hooks'
 
+import { CurrencySelect } from 'components/CurrencyInputPanel'
+import CurrencySearchModal from 'components/SearchModal/CurrencySearchModal'
+import {
+  GetTokenByAddrAndChainId,
+  useCrossChain,
+  useCrosschainHooks,
+  useCrosschainState
+} from '../../state/crosschain/hooks'
+import { setNewPairLuiqidity, setImportToken, setImportPoolsPage } from '../../state/crosschain/actions'
+import CurrencyLogo from 'components/CurrencyLogo'
+import { ButtonPrimary } from 'components/Button'
+import { Token, Pair } from '@zeroexchange/sdk'
+import { usePairContract, useStakingContract } from '../../hooks/useContract'
+import { Contract } from '@ethersproject/contracts'
+import { isAddress } from '../../utils'
+import { RowBetween } from 'components/Row'
+
 const numeral = require('numeral')
+
+const ImportRowBetween = styled(RowBetween)`
+  margin-top: 15px;
+`
 
 const PageWrapper = styled.div`
   flex-direction: column;
@@ -229,15 +252,159 @@ const HeaderCellSpan = styled.span`
   position: relative;
 `
 
+const LiquidityTitle = styled.h2`
+  font-size: 20px;
+`
+
+const CustomPoolsHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 56px;
+  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+  padding: 0;
+`};
+`
+const QuestionWrap = styled(CustomPoolsHeader)`
+  padding: 0;
+`
+
+const ImportWrapHeader = styled(CustomPoolsHeader)`
+  padding: 0 15px;
+`
+
+const LiquidityContent = styled.div`
+  margin: 10px 0;
+  display: flex;
+  flex-direction: column;
+  padding: 0 56px;
+
+  p {
+    font-size: 14px;
+    color: #a7b1f4;
+    text-align: center;
+  }
+  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+padding: 0;
+`};
+`
+
+const LiquidityFooter = styled(CustomPoolsHeader)`
+  p {
+    display: flex;
+    gap: 10px;
+  }
+`
+
+const ArrowLeft = styled.div`
+  transform: rotate(90deg);
+  cursor: pointer;
+`
+
+const SelectTitle = styled(LiquidityTitle)`
+  font-size: 16px;
+  text-align: center;
+  color: #727bba;
+`
+
+const PooledImportTitle = styled(SelectTitle)`
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+font-size: 13px;
+`};
+`
+
+const SelectWrap = styled.div`
+  display: flex;
+  padding: 0 43px;
+  margin: 20px 0px;
+`
+
+const CurrencySelectPool = styled(CurrencySelect)`
+  width: 100%;
+  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+font-size: 13px;
+`};
+`
+
+const TokenWrap = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+
+  div {
+    display: flex;
+    align-items: center;
+  }
+`
+
+const WarningTitle = styled.h5`
+  color: red;
+  text-align: center;
+`
+
+const HasNoLiquidityTitle = styled(WarningTitle)`
+  color: #6752f7;
+`
+
+const ImportedWrap = styled.div<{ isPoolCardOpen?: boolean }>`
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: ${({ isPoolCardOpen }) => (isPoolCardOpen ? '20px' : '0')};
+
+  div {
+    display: flex;
+    justify-content: flex-start;
+  }
+
+  h3 {
+    font-weight: 500;
+    color: #a7b1f4;
+    font-size: 15px;
+    ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+      display: none;
+`};
+  }
+`
+
+const ArrowRotate = styled.div<{ isPoolCardOpen?: boolean }>`
+  transform: ${({ isPoolCardOpen }) => (isPoolCardOpen ? 'rotate(180deg)' : 'none')};
+`
+const ImportWrapper = styled.div`
+  width: 500px;
+  max-height: 600px;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+  max-width: 320px;
+  width: 100%;
+`};
+`
+
 export type SortedTitleProps = {
   title: String
 }
 
 export default function Pools() {
+  const {
+    availableChains: allChains,
+    currentChain,
+    token0,
+    token1,
+    isImportPoolsPage,
+    poolsTokens
+  } = useCrosschainState()
+
   //@ts-ignore
   const serializePoolControls = JSON.parse(localStorage.getItem('PoolControls')) //get filter data from local storage
   const dispatch = useDispatch<AppDispatch>()
-  const aprAllData = usePoolsState()
+  const poolsState = usePoolsState()
   const {
     aprData,
     poolsData,
@@ -246,9 +413,10 @@ export default function Pools() {
     totalLiquidity,
     weeklyEarningsTotalValue,
     readyForHarvestTotalValue
-  } = aprAllData
+  } = poolsState
   const { account, chainId } = useActiveWeb3React()
   const stakingInfos = useStakingInfo()
+  console.log(stakingInfos)
   const toggleWalletModal = useWalletModalToggle()
 
   // filters & sorting
@@ -268,6 +436,201 @@ export default function Pools() {
 
   const [showClaimRewardModal, setShowClaimRewardModal] = useState<boolean>(false)
   const [claimRewardStaking, setClaimRewardStaking] = useState<any>(null)
+  const [modalOpen, setModalOpen] = useState(false)
+  const [modalOpen2, setModalOpen2] = useState(false)
+
+  const [isPoolCardOpen, setIsPoolCardOpen] = useState<boolean>(false)
+
+  const handleDismissSearch = useCallback(() => {
+    setModalOpen(false)
+  }, [setModalOpen])
+
+  const handleInputSelect = useCallback(inputCurrency => {
+    console.log(inputCurrency)
+    if (inputCurrency?.address) {
+      const newToken = GetTokenByAddrAndChainId(inputCurrency.address, currentChain.chainID)
+      dispatch(
+        setImportToken({
+          currentToken: 'token0',
+          token: {
+            name: newToken?.name || '',
+            address: newToken?.address || '',
+            chainId,
+            symbol: newToken?.symbol || '',
+            decimals: newToken?.decimals || 18
+          }
+        })
+      )
+    }
+  }, [])
+
+  const handleOutputSelect = useCallback(inputCurrency => {
+    if (inputCurrency?.address) {
+      const newToken = GetTokenByAddrAndChainId(inputCurrency.address, currentChain.chainID)
+      dispatch(
+        setImportToken({
+          currentToken: 'token1',
+          token: {
+            name: newToken?.name || '',
+            address: newToken?.address || '',
+            chainId,
+            symbol: newToken?.symbol || '',
+            decimals: newToken?.decimals || 18
+          }
+        })
+      )
+    }
+  }, [])
+
+  let tokenFirst = new Token(56, '0x4f491d389A5bF7C56bd1e4d8aF2280fD217C8543', 18, 'WISB', 'Wise Token')
+  let tokenSecond = new Token(56, '0xA6b4a72a6f8116dab486fB88192450CF3ed4150C', 18, 'INDA', 'ZERO INDA')
+
+  if (
+    Object.keys(token0).length > 0 &&
+    token0.symbol.length &&
+    Object.keys(token1).length > 0 &&
+    token1.symbol.length
+  ) {
+    tokenFirst = new Token(token0.chainId, token0.address, token0.decimals, token0.symbol, token0.name)
+    tokenSecond = new Token(token1.chainId, token1.address, token1.decimals, token1.symbol, token1.name)
+  }
+
+  const [isPoolFound, setIsPoolFound] = useState(false)
+  const [isUserHasAlready, setIsUserHasAlready] = useState(false)
+  const [isUserHasNotLiquidity, setIsUserHasNotLiquidity] = useState(false)
+  const contractAddress = Pair.getAddress(tokenFirst, tokenSecond)
+  const pairContract = usePairContract(contractAddress)
+  const takeBalance = async () => {
+    try {
+      return await pairContract?.balanceOf(account)
+    } catch (e) {
+      setIsPoolFound(true)
+      setIsUserHasNotLiquidity(false)
+      setIsUserHasAlready(false)
+      return null
+    }
+  }
+
+  const takeSupply = async () => {
+    try {
+      return await pairContract?.totalSupply()
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+  const getReservesFromContract = async () => {
+    try {
+      return await pairContract?.getReserves()
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+  const getDecimals = async () => {
+    try {
+      return await pairContract?.decimals()
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+  const getFirstToken = async () => {
+    try {
+      return await pairContract?.token0()
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+  const getSecondToken = async () => {
+    try {
+      return await pairContract?.token1()
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+  const takeInfo = async () => {
+    if (token0.symbol.length && token1.symbol.length) {
+      const balance = await takeBalance()
+      const totalSupply = await takeSupply()
+      const reserves = await getReservesFromContract()
+      const decimals = await getDecimals()
+      let firstToken = await getFirstToken()
+      let secondToken = await getSecondToken()
+
+      if (balance != null && !(balance.toString() > 0)) {
+        setIsUserHasNotLiquidity(true)
+        setIsPoolFound(false)
+        setIsUserHasAlready(false)
+      }
+
+      if (firstToken && secondToken) {
+        firstToken = GetTokenByAddrAndChainId(firstToken, currentChain.chainID)
+        secondToken = GetTokenByAddrAndChainId(secondToken, currentChain.chainID)
+
+        firstToken = new Token(
+          firstToken.chainId,
+          firstToken.address,
+          firstToken.decimals,
+          firstToken.symbol,
+          firstToken.name
+        )
+        secondToken = new Token(
+          secondToken.chainId,
+          secondToken.address,
+          secondToken.decimals,
+          secondToken.symbol,
+          secondToken.name
+        )
+      }
+
+      if (balance != null && balance.toString() > 0 && totalSupply && reserves && decimals) {
+        console.log(balance)
+        const totalPercent = Number(String(balance)) / Number(String(totalSupply))
+        const balanceOf = ethers.utils.formatUnits(balance, decimals)
+
+        let firstTokenPart = reserves.reserve0.mul(balance).div(totalSupply)
+        firstTokenPart = ethers.utils.formatUnits(firstTokenPart.toString(), decimals)
+
+        let secondTokenPart = reserves.reserve1.mul(balance).div(totalSupply)
+        secondTokenPart = ethers.utils.formatUnits(secondTokenPart.toString(), decimals)
+
+        let returnFlag = false
+
+        if (poolsTokens.length > 0) {
+          // @ts-ignore
+          poolsTokens.forEach(item => {
+            if (item.contractAddress === contractAddress) {
+              returnFlag = true
+            }
+          })
+        }
+
+        if (returnFlag) {
+          setIsPoolFound(false)
+          setIsUserHasNotLiquidity(false)
+          setIsUserHasAlready(true)
+          return
+        }
+
+        dispatch(
+          setNewPairLuiqidity({
+            pairLiquidity: {
+              balanceOf,
+              totalPercent,
+              firstTokenPart,
+              secondTokenPart,
+              contractAddress,
+              firstToken,
+              secondToken
+            }
+          })
+        )
+      }
+    }
+  }
 
   const [apyRequested, setApyRequested] = useState(false)
   const getAllAPY = async () => {
@@ -309,6 +672,33 @@ export default function Pools() {
   setArrayToShow()
 
   useEffect(() => {
+    dispatch(setImportPoolsPage({ isImportPoolsPage: false }))
+    dispatch(
+      setImportToken({
+        currentToken: 'token1',
+        token: {
+          name: '',
+          address: '',
+          chainId,
+          symbol: '',
+          decimals: 18
+        }
+      })
+    )
+    dispatch(
+      setImportToken({
+        currentToken: 'token0',
+        token: {
+          name: '',
+          address: '',
+          chainId,
+          symbol: '',
+          decimals: 18
+        }
+      })
+    )
+  }, [])
+  useEffect(() => {
     let earnings: any = 0
     let harvest: any = 0
     Object.values(weeklyEarnings).forEach(value => {
@@ -320,7 +710,7 @@ export default function Pools() {
     if (weeklyEarningsTotalValue !== earnings || readyForHarvestTotalValue !== harvest) {
       dispatch(setPoolEarnings({ weeklyEarningsTotalValue: earnings, readyForHarvestTotalValue: harvest }))
     }
-  }, [weeklyEarnings, readyForHarvest, stakingInfos])
+  }, [weeklyEarnings, readyForHarvest, stakingInfos, token0, token1])
 
   const onSortChange = (key: string, value: string | boolean) => {
     switch (key) {
@@ -378,9 +768,90 @@ export default function Pools() {
         </>
       )}
       <Title>Pools</Title>
+      {isImportPoolsPage && (
+        <ImportWrapper>
+          <Wrapper>
+            <ImportWrapHeader>
+              <ArrowLeft onClick={() => dispatch(setImportPoolsPage({ isImportPoolsPage: false }))}>
+                <Arrow activeColor="#727bba" />
+              </ArrowLeft>
+              <LiquidityTitle>Import Pool</LiquidityTitle>
+              <QuestionWrap>
+                <QuestionHelper
+                  text={'Use this tool to find pairs that do not automatically appear in the interface'}
+                />
+              </QuestionWrap>
+            </ImportWrapHeader>
+
+            <SelectWrap>
+              <CurrencySelectPool
+                selected={false}
+                className={`open-currency-select-button ${true ? 'centered' : ''}`}
+                onClick={() => {
+                  setModalOpen(true)
+                }}
+              >
+                {token0.symbol.length > 0 ? (
+                  <TokenWrap>
+                    <div>
+                      <CurrencyLogo currency={token0} />
+                      <span style={{ display: 'inline-block', marginLeft: '10px' }}>{token0.symbol}</span>
+                    </div>
+                    <Arrow activeColor="#fff" />
+                  </TokenWrap>
+                ) : (
+                  'Select a Token'
+                )}
+              </CurrencySelectPool>
+            </SelectWrap>
+
+            <SelectWrap>
+              <CurrencySelectPool
+                selected={false}
+                className={`open-currency-select-button ${true ? 'centered' : ''}`}
+                onClick={() => {
+                  setModalOpen2(true)
+                }}
+              >
+                {token1.symbol.length > 0 ? (
+                  <TokenWrap>
+                    <div>
+                      <CurrencyLogo currency={token1} />
+                      <span style={{ display: 'inline-block', marginLeft: '10px' }}>{token1.symbol}</span>
+                    </div>
+                    <Arrow activeColor="#fff" />
+                  </TokenWrap>
+                ) : (
+                  'Select a Token'
+                )}
+              </CurrencySelectPool>
+            </SelectWrap>
+            <SelectWrap>
+              <ButtonPrimary onClick={takeInfo}>Import</ButtonPrimary>
+            </SelectWrap>
+            {isPoolFound && <WarningTitle>No pool found.</WarningTitle>}
+            {isUserHasNotLiquidity && (
+              <HasNoLiquidityTitle>You don’t have liquidity in this pool yet.</HasNoLiquidityTitle>
+            )}
+            {isUserHasAlready && <WarningTitle>You already have this LP Tokens.</WarningTitle>}
+            <SelectTitle>Select a token to find your liquidity.</SelectTitle>
+          </Wrapper>
+          <CurrencySearchModal
+            isOpen={modalOpen}
+            onDismiss={handleDismissSearch}
+            onCurrencySelect={handleInputSelect}
+          />
+          <CurrencySearchModal
+            isOpen={modalOpen2}
+            onDismiss={() => setModalOpen2(false)}
+            onCurrencySelect={handleOutputSelect}
+          />
+        </ImportWrapper>
+      )}
+
       {(!arrayToShow || apyRequested) && <CustomLightSpinner src={Circle} alt="loader" size={'90px'} />}
       <PageContainer>
-        {account !== null && arrayToShow?.length > 0 && aprData?.length > 0 && !apyRequested && (
+        {account !== null && arrayToShow?.length > 0 && aprData?.length > 0 && !apyRequested && !isImportPoolsPage && (
           <StatsWrapper>
             <Stat className="weekly">
               <StatLabel>Weekly Earnings:</StatLabel>
@@ -403,7 +874,7 @@ export default function Pools() {
           </StatsWrapper>
         )}
         <PageWrapper>
-          {account !== null && (
+          {account !== null && !isImportPoolsPage && (
             <PoolControls
               isLive={isLive}
               displayMode={displayMode}
@@ -417,72 +888,75 @@ export default function Pools() {
           {account !== null &&
             stakingInfos?.length > 0 &&
             arrayToShow?.length > 0 &&
+            !isImportPoolsPage &&
             (displayMode === 'table' ? (
-              <Wrapper>
-                <PoolsTable style={{ width: '100%' }}>
-                  <thead>
-                    <tr style={{ verticalAlign: 'top', height: '30px' }}>
-                      <HeaderCell style={{ width: '45px' }}></HeaderCell>
-                      <HeaderCell>
-                        <TYPE.main fontWeight={600} fontSize={12} style={{ textAlign: 'left', paddingLeft: '20px' }}>
-                          Type
-                        </TYPE.main>
-                      </HeaderCell>
-                      <HeaderCell mobile={false}>
-                        <TYPE.main fontWeight={600} fontSize={12}>
-                          Reward
-                        </TYPE.main>
-                      </HeaderCell>
-                      <HeaderCell
-                        style={{ cursor: 'pointer' }}
-                        mobile={false}
-                        onClick={() => onSortChange('filteredMode', 'APR')}
-                      >
-                        <TYPE.main fontWeight={600} fontSize={12}>
-                          <SortedTitle title="APR" />
-                        </TYPE.main>
-                      </HeaderCell>
-                      <HeaderCell
-                        style={{ cursor: 'pointer' }}
-                        mobile={false}
-                        onClick={() => onSortChange('filteredMode', 'Liquidity')}
-                      >
-                        <TYPE.main fontWeight={600} fontSize={12}>
-                          <SortedTitle title="Liquidity" />
-                        </TYPE.main>
-                      </HeaderCell>
-                      <HeaderCell
-                        style={{ cursor: 'pointer' }}
-                        mobile={false}
-                        onClick={() => onSortChange('filteredMode', 'Earned')}
-                      >
-                        <TYPE.main fontWeight={600} fontSize={12}>
-                          <SortedTitle title="Earned" />
-                        </TYPE.main>
-                      </HeaderCell>
-                      <HeaderCell style={{ width: '150px' }}>
-                        <TYPE.main fontWeight={600} fontSize={12} style={{ textAlign: 'left', paddingLeft: '20px' }}>
-                          Ending:
-                        </TYPE.main>
-                      </HeaderCell>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {arrayToShow?.map((item: any) => {
-                      if (!item) {
-                        return <></>
-                      }
-                      return (
-                        <PoolRow
-                          onHarvest={() => handleHarvest(item)}
-                          key={item.stakingRewardAddress}
-                          stakingInfoTop={item}
-                        />
-                      )
-                    })}
-                  </tbody>
-                </PoolsTable>
-              </Wrapper>
+              <>
+                <Wrapper>
+                  <PoolsTable style={{ width: '100%' }}>
+                    <thead>
+                      <tr style={{ verticalAlign: 'top', height: '30px' }}>
+                        <HeaderCell style={{ width: '45px' }}></HeaderCell>
+                        <HeaderCell>
+                          <TYPE.main fontWeight={600} fontSize={12} style={{ textAlign: 'left', paddingLeft: '20px' }}>
+                            Type
+                          </TYPE.main>
+                        </HeaderCell>
+                        <HeaderCell mobile={false}>
+                          <TYPE.main fontWeight={600} fontSize={12}>
+                            Reward
+                          </TYPE.main>
+                        </HeaderCell>
+                        <HeaderCell
+                          style={{ cursor: 'pointer' }}
+                          mobile={false}
+                          onClick={() => onSortChange('filteredMode', 'APR')}
+                        >
+                          <TYPE.main fontWeight={600} fontSize={12}>
+                            <SortedTitle title="APR" />
+                          </TYPE.main>
+                        </HeaderCell>
+                        <HeaderCell
+                          style={{ cursor: 'pointer' }}
+                          mobile={false}
+                          onClick={() => onSortChange('filteredMode', 'Liquidity')}
+                        >
+                          <TYPE.main fontWeight={600} fontSize={12}>
+                            <SortedTitle title="Liquidity" />
+                          </TYPE.main>
+                        </HeaderCell>
+                        <HeaderCell
+                          style={{ cursor: 'pointer' }}
+                          mobile={false}
+                          onClick={() => onSortChange('filteredMode', 'Earned')}
+                        >
+                          <TYPE.main fontWeight={600} fontSize={12}>
+                            <SortedTitle title="Earned" />
+                          </TYPE.main>
+                        </HeaderCell>
+                        <HeaderCell style={{ width: '150px' }}>
+                          <TYPE.main fontWeight={600} fontSize={12} style={{ textAlign: 'left', paddingLeft: '20px' }}>
+                            Ending:
+                          </TYPE.main>
+                        </HeaderCell>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {arrayToShow?.map((item: any) => {
+                        if (!item) {
+                          return <></>
+                        }
+                        return (
+                          <PoolRow
+                            onHarvest={() => handleHarvest(item)}
+                            key={item.stakingRewardAddress}
+                            stakingInfoTop={item}
+                          />
+                        )
+                      })}
+                    </tbody>
+                  </PoolsTable>
+                </Wrapper>
+              </>
             ) : (
               <GridContainer>
                 {arrayToShow?.map((item: any) => {
@@ -499,6 +973,87 @@ export default function Pools() {
                 })}
               </GridContainer>
             ))}
+            {account !== null && arrayToShow?.length > 0 && aprData?.length > 0 && !apyRequested && !isImportPoolsPage && (
+ <Wrapper>
+ <CustomPoolsHeader>
+   <LiquidityTitle>Your Liquidity</LiquidityTitle>
+   <QuestionWrap>
+     <QuestionHelper
+       text={
+         "When you add liquidity, you are given pool tokens that represent your share. If you don't see a pool you joined in this list, try importing a pool below."
+       }
+     />
+   </QuestionWrap>
+ </CustomPoolsHeader>
+ <LiquidityContent>
+   {poolsTokens.length ? (
+     poolsTokens.map(item => {
+       return (
+         <Wrapper key={item.contractAddress} style={{ padding: '20px' }}>
+           <ImportedWrap
+             isPoolCardOpen={isPoolCardOpen}
+             onClick={() => setIsPoolCardOpen(!isPoolCardOpen)}
+           >
+             <div>
+               <CurrencyLogo currency={item.firstToken} />
+               <CurrencyLogo currency={item.secondToken} />
+             </div>
+
+             <h3>
+               <span>{item.firstToken.symbol}</span>/<span>{item.secondToken.symbol}</span>
+             </h3>
+             <ArrowRotate isPoolCardOpen={isPoolCardOpen}>
+               <Arrow activeColor="#727bba" />
+             </ArrowRotate>
+           </ImportedWrap>
+           {isPoolCardOpen && (
+             <>
+               <ImportRowBetween>
+                 <PooledImportTitle>Pooled {item.firstToken.symbol}:</PooledImportTitle>
+                 <PooledImportTitle>
+                   {Number(item.firstTokenPart).toFixed(5)}
+
+                   <CurrencyLogo currency={item.firstToken} />
+                 </PooledImportTitle>
+               </ImportRowBetween>
+               <ImportRowBetween>
+                 <PooledImportTitle>Pooled {item.secondToken.symbol}:</PooledImportTitle>
+                 <PooledImportTitle>
+                   {Number(item.secondTokenPart).toFixed(5)}
+
+                   <CurrencyLogo currency={item.secondToken} />
+                 </PooledImportTitle>
+               </ImportRowBetween>
+
+               <ImportRowBetween>
+                 <PooledImportTitle>Your pool tokens:</PooledImportTitle>
+                 <PooledImportTitle>{Number(item.balanceOf).toFixed(5)}</PooledImportTitle>
+               </ImportRowBetween>
+
+               <ImportRowBetween>
+                 <PooledImportTitle>Your pool share:</PooledImportTitle>
+                 <PooledImportTitle>{(item.totalPercent * 100).toFixed(10)}%</PooledImportTitle>
+               </ImportRowBetween>
+             </>
+           )}
+         </Wrapper>
+       )
+     })
+   ) : (
+     <p>No liquidity found.</p>
+   )}
+ </LiquidityContent>
+ <LiquidityFooter>
+   <p>
+     Don't see a pool you joined?{' '}
+     <TextLink onClick={() => dispatch(setImportPoolsPage({ isImportPoolsPage: true }))}>
+       Import it.
+     </TextLink>
+   </p>
+ </LiquidityFooter>
+</Wrapper>
+            )}
+            
           {account !== null && stakingRewardsExist && stakingInfos?.length === 0 && (
             <EmptyData>
               <Spinner src={ZeroIcon} />

@@ -20,10 +20,32 @@ import {
   setPendingTransfer,
   setTargetChain,
   setTargetTokens,
-  setTransferAmount
+  setTransferAmount,
+  setNewPairLuiqidity,
+  setImportToken,
+  setImportPoolsPage
 } from './actions'
 
 import { createReducer } from '@reduxjs/toolkit'
+
+export interface Token {
+  name: string
+  address: string
+  chainId: any
+  symbol: string
+  decimals: number
+}
+export interface PoolLiquidityToken {
+  balanceOf: string
+  totalPercent: number
+  firstTokenPart: number,
+  secondTokenPart: number,
+  firstToken: Token,
+  secondToken: Token,
+  contractAddress: string
+}
+
+
 
 export interface CrosschainState {
   readonly currentRecipient: string
@@ -42,9 +64,47 @@ export interface CrosschainState {
   readonly depositConfirmed: boolean
   readonly pendingTransfer: PendingTransfer
   readonly lastTimeSwitched: number
+  readonly poolsTokens: Array<PoolLiquidityToken>
+  readonly token0: Token
+  readonly token1: Token
+  readonly firstToken: Token
+  readonly secondToken: Token
+  readonly isImportPoolsPage: boolean
 }
 
+
+
 export const initialState: CrosschainState = {
+  poolsTokens: [],
+  token0: {
+    name: '',
+    address: '',
+    chainId: '',
+    symbol: '',
+    decimals: 18
+  },
+  token1: {
+    name: '',
+    address: '',
+    chainId: '',
+    symbol: '',
+    decimals: 18
+  },
+  firstToken: {
+    name: '',
+    address: '',
+    chainId: '',
+    symbol: '',
+    decimals: 18
+  },
+  secondToken: {
+    name: '',
+    address: '',
+    chainId: '',
+    symbol: '',
+    decimals: 18
+  },
+  isImportPoolsPage: false,
   currentRecipient: '',
   currentTxID: '',
   availableChains: new Array<CrosschainChain>(),
@@ -75,7 +135,7 @@ export const initialState: CrosschainState = {
   },
   depositConfirmed: false,
   pendingTransfer: {},
-  lastTimeSwitched: ~~(Date.now() / 1000)
+  lastTimeSwitched: ~~(Date.now() / 1000),
 }
 
 export default createReducer<CrosschainState>(initialState, builder =>
@@ -191,6 +251,22 @@ export default createReducer<CrosschainState>(initialState, builder =>
       return {
         ...currentState,
         lastTimeSwitched: ~~(Date.now() / 1000) + 5
+      }
+    }).addCase(setNewPairLuiqidity, (state, { payload: { pairLiquidity } }) => {
+      console.log(pairLiquidity)
+      return {
+        ...state,
+        poolsTokens: [...state.poolsTokens, pairLiquidity]
+      }
+    }).addCase(setImportToken, (state, { payload: { currentToken, token } }) => {
+      return {
+        ...state,
+        [currentToken]: token
+      }
+    }).addCase(setImportPoolsPage, (state, { payload: { isImportPoolsPage } }) => {
+      return {
+        ...state,
+        isImportPoolsPage: isImportPoolsPage
       }
     })
 )
