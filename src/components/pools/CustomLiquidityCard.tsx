@@ -7,7 +7,8 @@ import CurrencyLogo from 'components/CurrencyLogo'
 import { Wrapper } from 'pages/Pools'
 import { ArrowDown as Arrow } from 'components/Arrows'
 import { RowBetween } from 'components/Row'
-
+import { StyledTradelLink } from 'pages/Pools/Manage'
+import { ButtonOutlined } from 'components/Button'
 const LiquidityTitle = styled.h2`
   font-size: 20px;
 `
@@ -105,6 +106,17 @@ const CustomLiquidityCard = ({ item }: CustomLiquidityCardProps) => {
           <ImportRowBetween>
             <PooledImportTitle>Your pool share:</PooledImportTitle>
             <PooledImportTitle>{(item.totalPercent * 100).toFixed(10)}%</PooledImportTitle>
+          </ImportRowBetween>
+          <ImportRowBetween style={{justifyContent: 'center'}}>
+            <StyledTradelLink
+              
+              className="trade-button-link"
+              to={{
+                pathname: `/remove/${item.firstToken.address}/${item.secondToken.address}`
+              }}
+            >
+              <ButtonOutlined className="add-liquidity-button">Remove</ButtonOutlined>
+            </StyledTradelLink>
           </ImportRowBetween>
         </>
       )}

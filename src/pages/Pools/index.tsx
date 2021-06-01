@@ -805,8 +805,9 @@ export default function Pools() {
             {isUserHasAlready && (
               <>
               <HasNoLiquidityTitle>You already have this LP Tokens.</HasNoLiquidityTitle>
-              <StyledInternalLink className="add-liquidity-link" to={{ pathname: `/add`,
-             state: { token0: `${token0 && token0.address}`, token1: `${token1 && token1.address}` }
+              <StyledInternalLink className="add-liquidity-link" 
+               to={{
+                pathname: `/add/${token0.address}/${token1.address}`
               }} style={{display: 'inline-block', width: '100%', textAlign: 'center'}}>
                 Add Liquidity                  
               </StyledInternalLink>

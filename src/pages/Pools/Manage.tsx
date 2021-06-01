@@ -217,7 +217,7 @@ const TextLink = styled.div`
     opacity: 0.9;
   }
 `
-const StyledTradelLink = styled(StyledInternalLink)`
+export const StyledTradelLink = styled(StyledInternalLink)`
   ${({ theme }) => theme.mediaWidth.upToMedium`
     margin-bottom: 10px;
 `};
@@ -254,7 +254,6 @@ export default function Manage({
 
   const theme = useContext(ThemeContext)
   // get currencies and pair
-
   const [currencyA, currencyB] = [useCurrency(currencyIdA), useCurrency(currencyIdB)]
   const tokenA = wrappedCurrency(currencyA ?? undefined, chainId)
   const tokenB = wrappedCurrency(currencyB ?? undefined, chainId)
