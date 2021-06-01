@@ -598,6 +598,7 @@ export default function Pools() {
             }
           })
         )
+        dispatch(setImportPoolsPage({ isImportPoolsPage: false }))
       }
     }
   }
@@ -821,7 +822,15 @@ export default function Pools() {
             )
             }
             {isUserHasNotLiquidity && (
+              <>
               <HasNoLiquidityTitle>You don’t have liquidity in this pool yet.</HasNoLiquidityTitle>
+              <StyledInternalLink className="add-liquidity-link" 
+               to={{
+                pathname: `/add/${token0.address}/${token1.address}`
+              }} style={{display: 'inline-block', width: '100%', textAlign: 'center'}}>
+                Add Liquidity                  
+              </StyledInternalLink>
+              </>
             )}
             {isUserHasAlready && (
               <>
