@@ -43,6 +43,7 @@ import { usePairContract, useStakingContract } from '../../hooks/useContract'
 import CustomLiquidityCard from 'components/pools/CustomLiquidityCard'
 import { RowBetween } from 'components/Row'
 import { wrappedCurrency } from 'utils/wrappedCurrency'
+import { useAllTokens, useToken } from '../../hooks/Tokens'
 const numeral = require('numeral')
 
 const PageWrapper = styled.div`
@@ -350,7 +351,7 @@ export default function Pools() {
   const stakingInfos = useStakingInfo()
   console.log(stakingInfos)
   const toggleWalletModal = useWalletModalToggle()
-
+  console.log(chainId)
   // filters & sorting
   const [searchText, setSearchText] = useState(serializePoolControls ? serializePoolControls.searchText : '')
   const [isStaked, setShowStaked] = useState(
@@ -446,6 +447,8 @@ export default function Pools() {
     tokenFirst = new Token(token0.chainId, token0.address, token0.decimals, token0.symbol, token0.name)
     tokenSecond = new Token(token1.chainId, token1.address, token1.decimals, token1.symbol, token1.name)
   }
+
+    
 // @ts-ignore
   const createAToken = (item:any) => {
     if ( Object.keys(item).length > 0 &&
@@ -737,6 +740,9 @@ export default function Pools() {
        clearImportPageTokens('token1')
   } 
 
+
+  const poolsTokensToShow = poolsTokens.filter((item) => item.firstToken?.chainId === chainId || item.secondToken?.chainId === chainId )
+
   const SortedTitle = ({ title }: SortedTitleProps) => (
     <HeaderCellSpan>
       {title}
@@ -1023,8 +1029,8 @@ export default function Pools() {
    </QuestionWrap>
  </CustomPoolsHeader>
  <LiquidityContent>
-   {poolsTokens.length ? (
-     poolsTokens.map(item => <CustomLiquidityCard key={item.contractAddress} item={item}/>)
+   {poolsTokensToShow.length ? (
+     poolsTokensToShow.map(item => <CustomLiquidityCard key={item.contractAddress} item={item}/>)
    ) : (
      <p>No liquidity found.</p>
    )}
