@@ -415,8 +415,6 @@ export default function Pools() {
   }, [])
 
   const handleOutputSelect = useCallback(inputCurrency => {
- 
-  
     if (inputCurrency?.address) {
       const newToken = GetTokenByAddrAndChainId(inputCurrency.address, currentChain.chainID)
       dispatch(
@@ -522,8 +520,8 @@ export default function Pools() {
       const totalSupply = await takeSupply()
       const reserves = await getReservesFromContract()
       const decimals = await getDecimals()
-      let theFirstToken = await getFirstToken()
-      let theSecondToken = await getSecondToken()
+      let firstToken = await getFirstToken()
+      let secondToken = await getSecondToken()
 
       if (balance != null && !(balance.toString() > 0)) {
         setIsUserHasNotLiquidity(true)
@@ -531,43 +529,39 @@ export default function Pools() {
         setIsUserHasAlready(false)
       }
 
-      if (theFirstToken && theSecondToken) {
+      if (firstToken && secondToken) {
         
 
-        theFirstToken = GetTokenByAddrAndChainId(theFirstToken, currentChain.chainID)
-        theSecondToken = GetTokenByAddrAndChainId(theSecondToken, currentChain.chainID)
+        firstToken = GetTokenByAddrAndChainId(firstToken, currentChain.chainID)
+        secondToken = GetTokenByAddrAndChainId(secondToken, currentChain.chainID)
         
-        const arr = [theFirstToken, theSecondToken];
+        const arr = [firstToken, secondToken];
         const arr2 = [token0, token1]
 
-        let firstRightToken: any = [];
-        let secondRightToken: any = [];
-
-    
         outer: for (let i = 0; i < arr.length; i++) {
           for (let j = 0; j < arr2.length; j++) {
             if (arr[i].address === arr2[j].address) {
-              firstRightToken = arr[i]
+              firstToken = arr[i]
               arr2.splice(j, 1);
-              secondRightToken = arr2[0]
+              secondToken = arr2[0]
               break outer
             }
           }
         }
 
-        theFirstToken = new Token(
-          firstRightToken.chainId,
-          firstRightToken.address,
-          firstRightToken.decimals,
-          firstRightToken.symbol,
-          firstRightToken.name
+        firstToken = new Token(
+          firstToken.chainId,
+          firstToken.address,
+          firstToken.decimals,
+          firstToken.symbol,
+          firstToken.name
         )
-        theSecondToken = new Token(
-          secondRightToken.chainId,
-          secondRightToken.address,
-          secondRightToken.decimals,
-          secondRightToken.symbol,
-          secondRightToken.name
+        secondToken = new Token(
+          secondToken.chainId,
+          secondToken.address,
+          secondToken.decimals,
+          secondToken.symbol,
+          secondToken.name
         )
 
       
@@ -609,8 +603,8 @@ export default function Pools() {
               firstTokenPart,
               secondTokenPart,
               contractAddress,
-              firstToken: theFirstToken,
-              secondToken: theSecondToken
+              firstToken,
+              secondToken
             }
           })
         )
