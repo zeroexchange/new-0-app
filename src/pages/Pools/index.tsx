@@ -438,8 +438,10 @@ export default function Pools() {
   let tokenSecond = new Token(56, '0xA6b4a72a6f8116dab486fB88192450CF3ed4150C', 18, 'INDA', 'ZERO INDA')
 
   if (
+    token0 && 
     Object.keys(token0).length > 0 &&
     token0.symbol.length &&
+    token1 && 
     Object.keys(token1).length > 0 &&
     token1.symbol.length
   ) {
@@ -529,31 +531,47 @@ export default function Pools() {
         setIsUserHasAlready(false)
       }
 
-      // if (theFirstToken && theSecondToken) {
+      if (theFirstToken && theSecondToken) {
         
+
+        theFirstToken = GetTokenByAddrAndChainId(theFirstToken, currentChain.chainID)
+        theSecondToken = GetTokenByAddrAndChainId(theSecondToken, currentChain.chainID)
         
-      //   theFirstToken = GetTokenByAddrAndChainId(theFirstToken, currentChain.chainID)
-      //   theSecondToken = GetTokenByAddrAndChainId(theSecondToken, currentChain.chainID)
-   
+        const arr = [theFirstToken, theSecondToken];
+        const arr2 = [token0, token1]
 
-      //   theFirstToken = new Token(
-      //     theFirstToken.chainId,
-      //     theFirstToken.address,
-      //     theFirstToken.decimals,
-      //     theFirstToken.symbol,
-      //     theFirstToken.name
-      //   )
-      //   theSecondToken = new Token(
-      //     theSecondToken.chainId,
-      //     theSecondToken.address,
-      //     theSecondToken.decimals,
-      //     theSecondToken.symbol,
-      //     theSecondToken.name
-      //   )
+        let firstRightToken: any = [];
+        let secondRightToken: any = [];
 
-      //   console.log(theFirstToken)
-      //   console.log(theSecondToken)
-      // }
+    
+        outer: for (let i = 0; i < arr.length; i++) {
+          for (let j = 0; j < arr2.length; j++) {
+            if (arr[i].address === arr2[j].address) {
+              firstRightToken = arr[i]
+              arr2.splice(j, 1);
+              secondRightToken = arr2[0]
+              break outer
+            }
+          }
+        }
+
+        theFirstToken = new Token(
+          firstRightToken.chainId,
+          firstRightToken.address,
+          firstRightToken.decimals,
+          firstRightToken.symbol,
+          firstRightToken.name
+        )
+        theSecondToken = new Token(
+          secondRightToken.chainId,
+          secondRightToken.address,
+          secondRightToken.decimals,
+          secondRightToken.symbol,
+          secondRightToken.name
+        )
+
+      
+      }
 
       if (balance != null && balance.toString() > 0 && totalSupply && reserves && decimals) {
         const totalPercent = Number(String(balance)) / Number(String(totalSupply))
@@ -591,8 +609,8 @@ export default function Pools() {
               firstTokenPart,
               secondTokenPart,
               contractAddress,
-              firstToken: token0,
-              secondToken: token1
+              firstToken: theFirstToken,
+              secondToken: theSecondToken
             }
           })
         )
