@@ -1,13 +1,9 @@
-import { BigNumber, ethers, utils } from 'ethers'
-import {
-  AprObjectProps,
-  setAprData,
-  setPoolEarnings
-} from './../../state/pools/actions'
+import { ethers, utils } from 'ethers'
+import { AprObjectProps, setAprData, setPoolEarnings } from './../../state/pools/actions'
 import { CustomLightSpinner, StyledInternalLink, TYPE, Title } from '../../theme'
 import React, { useEffect, useState, useCallback } from 'react'
 import { STAKING_REWARDS_INFO, useStakingInfo } from '../../state/stake/hooks'
-import { filterPoolsItems, searchItems, setOptions } from 'utils/sortPoolsPage'
+import { filterPoolsItems, setOptions } from 'utils/sortPoolsPage'
 import styled, { keyframes } from 'styled-components'
 import { ArrowDown as Arrow } from '../../components/Arrows'
 import QuestionHelper from '../../components/QuestionHelper'
@@ -30,20 +26,17 @@ import { useWalletModalToggle } from '../../state/application/hooks'
 
 import { CurrencySelect } from 'components/CurrencyInputPanel'
 import CurrencySearchModal from 'components/SearchModal/CurrencySearchModal'
-import {
-  GetTokenByAddrAndChainId,
-  useCrosschainState
-} from '../../state/crosschain/hooks'
+import { GetTokenByAddrAndChainId, useCrosschainState } from '../../state/crosschain/hooks'
 import { setNewPairLuiqidity, setImportToken, setImportPoolsPage } from '../../state/crosschain/actions'
-import {initTokenObject} from '../../state/crosschain/reducer'
+import { initTokenObject } from '../../state/crosschain/reducer'
 import CurrencyLogo from 'components/CurrencyLogo'
 import { ButtonPrimary } from 'components/Button'
 import { Token, Pair } from '@zeroexchange/sdk'
-import { usePairContract, useStakingContract } from '../../hooks/useContract'
+import { usePairContract } from '../../hooks/useContract'
 import CustomLiquidityCard from 'components/pools/CustomLiquidityCard'
 import { RowBetween } from 'components/Row'
 import { wrappedCurrency } from 'utils/wrappedCurrency'
-import { useAllTokens, useToken } from '../../hooks/Tokens'
+import { useToken } from '../../hooks/Tokens'
 const numeral = require('numeral')
 
 const PageWrapper = styled.div`
@@ -349,9 +342,7 @@ export default function Pools() {
   } = poolsState
   const { account, chainId } = useActiveWeb3React()
   const stakingInfos = useStakingInfo()
-  console.log(stakingInfos)
   const toggleWalletModal = useWalletModalToggle()
-  console.log(chainId)
   // filters & sorting
   const [searchText, setSearchText] = useState(serializePoolControls ? serializePoolControls.searchText : '')
   const [isStaked, setShowStaked] = useState(
@@ -376,10 +367,38 @@ export default function Pools() {
     setModalOpen(false)
   }, [setModalOpen])
 
+  const [searchQuery, setSearchQuery] = useState<string>('')
+  const [searchQuery2, setSearchQuery2] = useState<string>('')
+  const searchToken = useToken(searchQuery)
+  const searchToken2 = useToken(searchQuery2)
+
+  if (searchToken) {
+    dispatch(
+      setImportToken({
+        currentToken: 'token0',
+        token: searchToken
+      })
+    )
+    setSearchQuery('')
+  }
+
+  if (searchToken2) {
+    dispatch(
+      setImportToken({
+        currentToken: 'token1',
+        token: searchToken2
+      })
+    )
+    setSearchQuery2('')
+  }
+
   const handleInputSelect = useCallback(inputCurrency => {
-    
     if (inputCurrency?.address) {
       const newToken = GetTokenByAddrAndChainId(inputCurrency.address, currentChain.chainID)
+      setSearchQuery(inputCurrency?.address)
+    } else {
+      // @ts-ignore
+      const newToken = wrappedCurrency(inputCurrency, chainId)
       dispatch(
         setImportToken({
           currentToken: 'token0',
@@ -392,44 +411,12 @@ export default function Pools() {
           }
         })
       )
-    } else {
- // @ts-ignore
-      const newToken = wrappedCurrency(inputCurrency, chainId)
-      console.log(inputCurrency)
-      console.log(newToken)
-      dispatch(
-   setImportToken({
-     currentToken: 'token0',
-     token: {
-       name: newToken?.name || '',
-       address: newToken?.address || '',
-       chainId,
-       symbol: newToken?.symbol || '',
-       decimals: newToken?.decimals || 18
-     }
-   })
- )
     }
-
-     
-
   }, [])
 
   const handleOutputSelect = useCallback(inputCurrency => {
     if (inputCurrency?.address) {
-      const newToken = GetTokenByAddrAndChainId(inputCurrency.address, currentChain.chainID)
-      dispatch(
-        setImportToken({
-          currentToken: 'token1',
-          token: {
-            name: newToken?.name || '',
-            address: newToken?.address || '',
-            chainId,
-            symbol: newToken?.symbol || '',
-            decimals: newToken?.decimals || 18
-          }
-        })
-      )
+      setSearchQuery2(inputCurrency?.address)
     }
   }, [])
 
@@ -437,10 +424,10 @@ export default function Pools() {
   let tokenSecond = new Token(56, '0xA6b4a72a6f8116dab486fB88192450CF3ed4150C', 18, 'INDA', 'ZERO INDA')
 
   if (
-    token0 && 
+    token0 &&
     Object.keys(token0).length > 0 &&
     token0.symbol.length &&
-    token1 && 
+    token1 &&
     Object.keys(token1).length > 0 &&
     token1.symbol.length
   ) {
@@ -448,15 +435,11 @@ export default function Pools() {
     tokenSecond = new Token(token1.chainId, token1.address, token1.decimals, token1.symbol, token1.name)
   }
 
-    
-// @ts-ignore
-  const createAToken = (item:any) => {
-    if ( Object.keys(item).length > 0 &&
-    item.symbol.length) {
+  // @ts-ignore
+  const createAToken = (item: any) => {
+    if (Object.keys(item).length > 0 && item.symbol.length) {
       return new Token(item.chainId, item.address, item.decimals, item.symbol, item.name)
     }
-    
- 
   }
 
   const [isPoolFound, setIsPoolFound] = useState(false)
@@ -516,7 +499,6 @@ export default function Pools() {
     }
   }
 
-
   const takeInfo = async () => {
     if (token0.symbol.length && token1.symbol.length) {
       const balance = await takeBalance()
@@ -533,24 +515,10 @@ export default function Pools() {
       }
 
       if (firstToken && secondToken) {
-        
+        const tokensArray = [token0, token1]
 
-        firstToken = GetTokenByAddrAndChainId(firstToken, currentChain.chainID)
-        secondToken = GetTokenByAddrAndChainId(secondToken, currentChain.chainID)
-        
-        const arr = [firstToken, secondToken];
-        const arr2 = [token0, token1]
-
-        outer: for (let i = 0; i < arr.length; i++) {
-          for (let j = 0; j < arr2.length; j++) {
-            if (arr[i].address === arr2[j].address) {
-              firstToken = arr[i]
-              arr2.splice(j, 1);
-              secondToken = arr2[0]
-              break outer
-            }
-          }
-        }
+        firstToken = tokensArray.find((item: any) => item.address === firstToken)
+        secondToken = tokensArray.find((item: any) => item.address === secondToken)
 
         firstToken = new Token(
           firstToken.chainId,
@@ -566,8 +534,6 @@ export default function Pools() {
           secondToken.symbol,
           secondToken.name
         )
-
-      
       }
 
       if (balance != null && balance.toString() > 0 && totalSupply && reserves && decimals) {
@@ -662,19 +628,13 @@ export default function Pools() {
     dispatch(
       setImportToken({
         currentToken: value,
-        token: {
-          name: '',
-          address: '',
-          chainId,
-          symbol: '',
-          decimals: 18
-        }
+        token: initTokenObject
       })
     )
   }
 
   useEffect(() => {
-    // Function will be called on component unmount 
+    // Function will be called on component unmount
     return () => {
       clearImportPageTokens('token0')
       clearImportPageTokens('token1')
@@ -729,19 +689,19 @@ export default function Pools() {
     setClaimRewardStaking(stakingInfo)
     setShowClaimRewardModal(true)
   }
-  
 
   const clearAllInfoImportPage = () => {
     dispatch(setImportPoolsPage({ isImportPoolsPage: true }))
-       setIsPoolFound(false)
-       setIsUserHasNotLiquidity(false)
-       setIsUserHasAlready(false)
-       clearImportPageTokens('token0')
-       clearImportPageTokens('token1')
-  } 
+    setIsPoolFound(false)
+    setIsUserHasNotLiquidity(false)
+    setIsUserHasAlready(false)
+    clearImportPageTokens('token0')
+    clearImportPageTokens('token1')
+  }
 
-
-  const poolsTokensToShow = poolsTokens.filter((item) => item.firstToken?.chainId === chainId || item.secondToken?.chainId === chainId )
+  const poolsTokensToShow = poolsTokens.filter(
+    item => item.firstToken?.chainId === chainId || item.secondToken?.chainId === chainId
+  )
 
   const SortedTitle = ({ title }: SortedTitleProps) => (
     <HeaderCellSpan>
@@ -828,51 +788,61 @@ export default function Pools() {
               </CurrencySelectPool>
             </SelectWrap>
             <SelectWrap>
-            <ButtonPrimary disabled={!(token0.symbol.length && token1.symbol.length)} onClick={takeInfo}>Import</ButtonPrimary>
+              <ButtonPrimary disabled={!(token0.symbol.length && token1.symbol.length)} onClick={takeInfo}>
+                Import
+              </ButtonPrimary>
             </SelectWrap>
             {isPoolFound && (
               <>
-              <WarningTitle>No pool found.</WarningTitle>
-              <RowBetween style={{justifyContent:"center"}}>
-              <StyledInternalLink className="add-liquidity-link" 
-               to={{
-                pathname: `/add/${token0.address}/${token1.address}`
-              }} style={{display: 'inline-block', width: 'auto', textAlign: 'center'}}>
-                Create pool                
-              </StyledInternalLink>
-              <QuestionWrap>
-              <QuestionHelper
-                text={
-                  "You are the first liquidity provider. The ratio of tokens you add will set the price of this pool. Once you are happy with the rate click supply to review."
-                }
-              />
-            </QuestionWrap>
-            </RowBetween>
+                <WarningTitle>No pool found.</WarningTitle>
+                <RowBetween style={{ justifyContent: 'center' }}>
+                  <StyledInternalLink
+                    className="add-liquidity-link"
+                    to={{
+                      pathname: `/add/${token0.address}/${token1.address}`
+                    }}
+                    style={{ display: 'inline-block', width: 'auto', textAlign: 'center' }}
+                  >
+                    Create pool
+                  </StyledInternalLink>
+                  <QuestionWrap>
+                    <QuestionHelper
+                      text={
+                        'You are the first liquidity provider. The ratio of tokens you add will set the price of this pool. Once you are happy with the rate click supply to review.'
+                      }
+                    />
+                  </QuestionWrap>
+                </RowBetween>
               </>
-            )
-            }
+            )}
             {isUserHasNotLiquidity && (
               <>
-              <HasNoLiquidityTitle>You don’t have liquidity in this pool yet.</HasNoLiquidityTitle>
-              <StyledInternalLink className="add-liquidity-link" 
-               to={{
-                pathname: `/add/${token0.address}/${token1.address}`
-              }} style={{display: 'inline-block', width: '100%', textAlign: 'center'}}>
-                Add Liquidity                  
-              </StyledInternalLink>
+                <HasNoLiquidityTitle>You don’t have liquidity in this pool yet.</HasNoLiquidityTitle>
+                <StyledInternalLink
+                  className="add-liquidity-link"
+                  to={{
+                    pathname: `/add/${token0.address}/${token1.address}`
+                  }}
+                  style={{ display: 'inline-block', width: '100%', textAlign: 'center' }}
+                >
+                  Add Liquidity
+                </StyledInternalLink>
               </>
             )}
             {isUserHasAlready && (
               <>
-              <HasNoLiquidityTitle>You already have this LP Tokens.</HasNoLiquidityTitle>
-              <StyledInternalLink className="add-liquidity-link" 
-               to={{
-                pathname: `/add/${token0.address}/${token1.address}`
-              }} style={{display: 'inline-block', width: '100%', textAlign: 'center'}}>
-                Add Liquidity                  
-              </StyledInternalLink>
+                <HasNoLiquidityTitle>You already have this LP Tokens.</HasNoLiquidityTitle>
+                <StyledInternalLink
+                  className="add-liquidity-link"
+                  to={{
+                    pathname: `/add/${token0.address}/${token1.address}`
+                  }}
+                  style={{ display: 'inline-block', width: '100%', textAlign: 'center' }}
+                >
+                  Add Liquidity
+                </StyledInternalLink>
               </>
-            ) }
+            )}
             <SelectTitle>Select a token to find your liquidity.</SelectTitle>
           </Wrapper>
           <CurrencySearchModal
@@ -1016,36 +986,33 @@ export default function Pools() {
                 })}
               </GridContainer>
             ))}
-            {account !== null && arrayToShow?.length > 0 && aprData?.length > 0 && !apyRequested && !isImportPoolsPage && (
- <Wrapper>
- <CustomPoolsHeader>
-   <LiquidityTitle>Your Liquidity</LiquidityTitle>
-   <QuestionWrap>
-     <QuestionHelper
-       text={
-         "When you add liquidity, you are given pool tokens that represent your share. If you don't see a pool you joined in this list, try importing a pool below."
-       }
-     />
-   </QuestionWrap>
- </CustomPoolsHeader>
- <LiquidityContent>
-   {poolsTokensToShow.length ? (
-     poolsTokensToShow.map(item => <CustomLiquidityCard key={item.contractAddress} item={item}/>)
-   ) : (
-     <p>No liquidity found.</p>
-   )}
- </LiquidityContent>
- <LiquidityFooter>
-   <div>
-     Don't see a pool you joined?{' '}
-     <TextLink onClick={clearAllInfoImportPage}>
-       Import it.
-     </TextLink>
-   </div>
- </LiquidityFooter>
-</Wrapper>
-            )}
-            
+          {account !== null && arrayToShow?.length > 0 && aprData?.length > 0 && !apyRequested && !isImportPoolsPage && (
+            <Wrapper>
+              <CustomPoolsHeader>
+                <LiquidityTitle>Your Liquidity</LiquidityTitle>
+                <QuestionWrap>
+                  <QuestionHelper
+                    text={
+                      "When you add liquidity, you are given pool tokens that represent your share. If you don't see a pool you joined in this list, try importing a pool below."
+                    }
+                  />
+                </QuestionWrap>
+              </CustomPoolsHeader>
+              <LiquidityContent>
+                {poolsTokensToShow.length ? (
+                  poolsTokensToShow.map(item => <CustomLiquidityCard key={item.contractAddress} item={item} />)
+                ) : (
+                  <p>No liquidity found.</p>
+                )}
+              </LiquidityContent>
+              <LiquidityFooter>
+                <div>
+                  Don't see a pool you joined? <TextLink onClick={clearAllInfoImportPage}>Import it.</TextLink>
+                </div>
+              </LiquidityFooter>
+            </Wrapper>
+          )}
+
           {account !== null && stakingRewardsExist && stakingInfos?.length === 0 && (
             <EmptyData>
               <Spinner src={ZeroIcon} />
