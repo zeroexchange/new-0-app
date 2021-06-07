@@ -261,13 +261,13 @@ export default function CurrencyList({
     showETH,
     nativeToken
   ])
-  
+
   const sortTokensByBalance = useTokenBalancesWithSortBalances(isAscendingFilter)
-  
-    const sortedTokensByAmount = Object.values(Object.assign({}, sortTokensByBalance[0])) ;
-    const sortItemDataByBalance = sortedTokensByAmount.length ? [nativeToken, ...sortedTokensByAmount.map
-      ((token: TokenAmount) => itemData.find(curr => curr.name === token.token.name))]
-      : itemData
+
+  const sortedTokensByAmount = Object.values(Object.assign({}, sortTokensByBalance[0]));
+  const sortItemDataByBalance = sortedTokensByAmount.length ? [nativeToken, ...sortedTokensByAmount.map
+    ((token: TokenAmount) => itemData.find(curr => curr.name === token.token.name))]
+    : itemData
 
 
   const Row = useCallback(
@@ -277,8 +277,8 @@ export default function CurrencyList({
       const isSelected = Boolean(selectedCurrency && currencyEquals(selectedCurrency, currency))
       let isImportSelected = false;
       if (selectedCurrency) {
-          // @ts-ignore
-          isImportSelected = selectedCurrency.address === currency.address || selectedCurrency.name === currency.name
+        // @ts-ignore
+        isImportSelected = selectedCurrency.address === currency.address || selectedCurrency.name === currency.name
       }
 
       const otherSelected = Boolean(otherCurrency && currencyEquals(otherCurrency, currency))

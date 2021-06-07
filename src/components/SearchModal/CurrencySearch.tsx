@@ -108,7 +108,7 @@ export function CurrencySearch({
     ?.filter((x: any) => x.chainId === chainId)
     ?.map((x: any) => {
       return new Token(x.chainId, x.address, x.decimals, x.symbol, x.name)
-    }) 
+    })
 
   const defaultTokenList = DEFAULT_TOKEN_LIST.filter((x: any) => x.chainId === chainId)
     .map((x: any) => {
@@ -119,18 +119,18 @@ export function CurrencySearch({
   let availableTokensArray = useMemo(() => {
     return isCrossChain
       ? availableTokens
-          .filter(a => a.name !== 'BUSD')
-          .filter(y => !y.disableTransfer)
-          .map((x: any) => {
-            return new Token(x.chainId, x.address, x.decimals, x.symbol, x.name)
-          })
+        .filter(a => a.name !== 'BUSD')
+        .filter(y => !y.disableTransfer)
+        .map((x: any) => {
+          return new Token(x.chainId, x.address, x.decimals, x.symbol, x.name)
+        })
       : isCoingeckoListOn && isEthChain
-      ? [...availableTokens, ...checksumedCoingeckoList]
+        ? [...availableTokens, ...checksumedCoingeckoList]
           .map((x: any) => {
             return new Token(x.chainId, x.address, x.decimals, x.symbol, x.name)
           })
           .concat(userTokens)
-      : availableTokens
+        : availableTokens
           .map((x: any) => {
             return new Token(x.chainId, x.address, x.decimals, x.symbol, x.name)
           })

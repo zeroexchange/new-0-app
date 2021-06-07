@@ -431,21 +431,7 @@ export default function CurrencyInputPanel({
             showCommonBases={showCommonBases}
           />
         )}
-      </InputPanel>
-      {/*altCurrency && altCurrency?.address && (
-        <CopyRow>
-          <CopyToClipboard text={altCurrency?.address}>
-            <p>
-              <span className="active">address</span>
-              <Copy className="active" size={'14'} />
-              <span className="inactive" style={{ color: 'green' }}>
-                copied!
-              </span>
-              <Check className="inactive" color="green" size={'14'} />
-            </p>
-          </CopyToClipboard>
-        </CopyRow>
-      )*/}
+      </InputPanel>     
     </>
   )
 }
