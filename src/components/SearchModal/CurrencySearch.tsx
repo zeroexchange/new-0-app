@@ -93,7 +93,7 @@ export function CurrencySearch({
   const [isManageLists, setManageListsToggle] = useState<boolean>(true)
   const [isCoingeckoListOn, showCoinGeckoList] = useState<boolean>(false)
   const [invertSearchOrder, setInvertSearchOrder] = useState<boolean>(false)
-
+  const userAddedTokens = useUserAddedTokens()
   // if they input an address, use it
   const isAddressSearch = isAddress(searchQuery)
   const searchToken = useToken(searchQuery)
@@ -108,7 +108,7 @@ export function CurrencySearch({
     ?.filter((x: any) => x.chainId === chainId)
     ?.map((x: any) => {
       return new Token(x.chainId, x.address, x.decimals, x.symbol, x.name)
-    })
+    }) 
 
   const defaultTokenList = DEFAULT_TOKEN_LIST.filter((x: any) => x.chainId === chainId)
     .map((x: any) => {
