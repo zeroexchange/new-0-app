@@ -42,6 +42,8 @@ interface CurrencySearchProps {
   showCommonBases?: boolean
   onChangeList: () => void
   isCrossChain?: boolean
+  transferPage?: boolean
+  isImportPage?: boolean
 }
 
 const ManageButton = styled(LinkStyledButton)`
@@ -77,7 +79,9 @@ export function CurrencySearch({
   onDismiss,
   isOpen,
   onChangeList,
-  isCrossChain
+  isCrossChain,
+  transferPage = false,
+  isImportPage = false
 }: CurrencySearchProps) {
   const { t } = useTranslation()
   const { chainId } = useActiveWeb3React()

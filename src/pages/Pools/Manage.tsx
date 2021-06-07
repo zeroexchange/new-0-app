@@ -217,7 +217,7 @@ const TextLink = styled.div`
     opacity: 0.9;
   }
 `
-const StyledTradelLink = styled(StyledInternalLink)`
+export const StyledTradelLink = styled(StyledInternalLink)`
   ${({ theme }) => theme.mediaWidth.upToMedium`
     margin-bottom: 10px;
 `};
