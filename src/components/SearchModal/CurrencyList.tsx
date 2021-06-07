@@ -227,7 +227,8 @@ export default function CurrencyList({
   searchQuery,
   unseenCustomToken = false,
   isImportPage = false,
-  isAscendingFilter = false
+  isAscendingFilter = false,
+  isAdditionalCurrency = false
 }: {
   isUserTokens?: boolean
   loadMore?: any
@@ -241,7 +242,8 @@ export default function CurrencyList({
   searchQuery: string | undefined
   unseenCustomToken?: boolean
   isImportPage?: boolean
-  isAscendingFilter?: boolean
+  isAscendingFilter?: boolean,
+  isAdditionalCurrency?: boolean
 }) {
   const { chainId } = useActiveWeb3React()
   const tokenBalances = useTokenBalances()
@@ -265,8 +267,16 @@ export default function CurrencyList({
   const sortTokensByBalance = useTokenBalancesWithSortBalances(isAscendingFilter)
 
   const sortedTokensByAmount = Object.values(Object.assign({}, sortTokensByBalance[0]));
-  const sortItemDataByBalance = sortedTokensByAmount.length ? [nativeToken, ...sortedTokensByAmount.map
-    ((token: TokenAmount) => itemData.find(curr => curr.name === token.token.name))]
+  let sortedCurrencies = [] as Currency[]
+  sortedTokensByAmount.forEach
+    ((token: TokenAmount) => {
+      const currency = itemData.find(curr => curr.name === token.token.name)
+      if(currency) {
+        sortedCurrencies.push(currency)
+      }
+      
+    })
+  const sortItemDataByBalance = sortedTokensByAmount.length && isAdditionalCurrency ? [nativeToken, ...sortedCurrencies]
     : itemData
 
 
@@ -314,8 +324,8 @@ export default function CurrencyList({
             height={height}
             ref={ref}
             width="100%"
-            itemData={itemData}
-            itemCount={itemData.length}
+            itemData={sortItemDataByBalance}
+            itemCount={sortItemDataByBalance.length}
             itemSize={56}
             // itemKey={itemKey}
             overscanCount={30}

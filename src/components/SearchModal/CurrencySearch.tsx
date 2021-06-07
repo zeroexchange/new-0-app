@@ -92,7 +92,7 @@ export function CurrencySearch({
   const [searchQuery, setSearchQuery] = useState<string>('')
   const [isManageLists, setManageListsToggle] = useState<boolean>(true)
   const [isCoingeckoListOn, showCoinGeckoList] = useState<boolean>(false)
-  const [invertSearchOrder, setInvertSearchOrder] = useState<boolean>(false)
+  const [invertSearchOrder, setInvertSearchOrder] = useState<boolean>(true)
   const userAddedTokens = useUserAddedTokens()
   // if they input an address, use it
   const isAddressSearch = isAddress(searchQuery)
@@ -357,6 +357,8 @@ export function CurrencySearch({
                     selectedCurrency={selectedCurrency}
                     fixedListRef={fixedList}
                     searchQuery={searchQuery}
+                    isAscendingFilter={invertSearchOrder}
+                    isAdditionalCurrency={false}
                   />
                 )}
               </AutoSizer>
@@ -426,6 +428,8 @@ export function CurrencySearch({
                   selectedCurrency={selectedCurrency}
                   fixedListRef={fixedList}
                   searchQuery={searchQuery}
+                  isAscendingFilter={invertSearchOrder}
+                  isAdditionalCurrency={!isCoingeckoListOn }
                 />
               )}
             </AutoSizer>

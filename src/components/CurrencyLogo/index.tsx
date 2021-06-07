@@ -70,7 +70,7 @@ export default function CurrencyLogo({
   size?: string
   style?: React.CSSProperties
 }) {
-  const uriLocations = useHttpLocations(currency instanceof WrappedTokenInfo ? currency.logoURI : undefined)
+  const uriLocations = useHttpLocations(currency instanceof WrappedTokenInfo ? currency?.logoURI : undefined)
   const srcs: string[] = useMemo(() => {
     if (currency === ETHER) return []
     if (currency && currency.symbol === 'ZERO') return []
@@ -100,8 +100,8 @@ export default function CurrencyLogo({
     return []
   }, [currency, uriLocations])
 
-  if(currency.logoURI) {
-    return <StyledLogoURI src={currency.logoURI} alt={`${currency?.symbol ?? 'token'} logo`} />
+  if(currency?.logoURI) {
+    return <StyledLogoURI src={currency?.logoURI} alt={`${currency?.symbol ?? 'token'} logo`} />
   }
   if (currency === ETHER) {
     return <StyledEthereumLogo src={EthereumLogo} size={size} style={style} />
