@@ -119,6 +119,7 @@ function CurrencyRow({
   isEnd,
   hasQuery,
   tokenBalances,
+  unseenCustomToken = false
 }: {
   isUserTokens?: boolean
   currency: any
@@ -129,6 +130,7 @@ function CurrencyRow({
   isEnd: boolean
   hasQuery: any
   tokenBalances: any
+  unseenCustomToken?: boolean
 }) {
   const { account, chainId } = useActiveWeb3React()
   const key = currencyKey(currency)
@@ -145,6 +147,14 @@ function CurrencyRow({
   // only show add or remove buttons if not on selected list
   const isNative = () => {
     return [ETHER, AVAX, BNB, DEV, MATIC].includes(currency)
+  }
+
+  if (unseenCustomToken && customAdded) {
+    return null
+  }
+
+  if (!currency) {
+    return <></>
   }
 
   return (
@@ -271,10 +281,10 @@ export default function CurrencyList({
   sortedTokensByAmount.forEach
     ((token: TokenAmount) => {
       const currency = itemData.find(curr => curr.name === token.token.name)
-      if(currency) {
+      if (currency) {
         sortedCurrencies.push(currency)
       }
-      
+
     })
   const sortItemDataByBalance = sortedTokensByAmount.length && isAdditionalCurrency ? [nativeToken, ...sortedCurrencies]
     : itemData
@@ -342,8 +352,8 @@ export default function CurrencyList({
       height={height}
       ref={fixedListRef as any}
       width="100%"
-      itemData={sortItemDataByBalance}
-      itemCount={sortItemDataByBalance?.length}
+      itemData={itemData}
+      itemCount={itemData?.length}
       itemSize={56}
       itemKey={itemKey}
       overscanCount={30}

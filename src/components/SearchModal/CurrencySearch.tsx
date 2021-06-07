@@ -32,6 +32,7 @@ import { useUserAddedTokens, useRemoveUserAddedToken } from '../../state/user/ho
 import { Info } from 'react-feather'
 import { checksumedCoingeckoList } from 'constants/coingnecko'
 import { useIsMountedRef } from 'state/swap/hooks'
+import { toCheckSumAddress } from '../../state/crosschain/hooks'
 
 interface CurrencySearchProps {
   isOpen: boolean
