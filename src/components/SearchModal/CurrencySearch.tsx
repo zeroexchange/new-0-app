@@ -32,6 +32,7 @@ import { useUserAddedTokens, useRemoveUserAddedToken } from '../../state/user/ho
 import { Info } from 'react-feather'
 import { checksumedCoingeckoList } from 'constants/coingnecko'
 import { useIsMountedRef } from 'state/swap/hooks'
+import useDebounce from 'hooks/useDebounce'
 
 interface CurrencySearchProps {
   isOpen: boolean
@@ -86,14 +87,15 @@ export function CurrencySearch({
   const [isManageTokenList, setIsManageTokenList] = useState<boolean>(false)
   const fixedList = useRef<FixedSizeList>()
   const [searchQuery, setSearchQuery] = useState<string>('')
+  const debouncedQuery = useDebounce(searchQuery, 200)
   const [isManageLists, setManageListsToggle] = useState<boolean>(true)
   const [isCoingeckoListOn, showCoinGeckoList] = useState<boolean>(false)
   const [invertSearchOrder, setInvertSearchOrder] = useState<boolean>(false)
 
   // if they input an address, use it
-  const isAddressSearch = isAddress(searchQuery)
-  const searchToken = useToken(searchQuery)
-  const allTokens = useAllTokens()
+  const isAddressSearch = isAddress(debouncedQuery)
+  const searchToken = useToken(debouncedQuery)
+  // const allTokens = useAllTokens()
   const isMountedRef = useIsMountedRef()
   // manage focus on modal show
   const inputRef = useRef<HTMLInputElement>()
@@ -167,7 +169,7 @@ export function CurrencySearch({
     if (isAddressSearch) return searchToken ? [searchToken] : []
 
     // the search list should only show by default tokens that are in our pools
-    return filterTokens([...uniqueAvailableTokensArray], searchQuery)
+    return filterTokens([...uniqueAvailableTokensArray], debouncedQuery)
 
     // return filterTokens(
     //   chainId === ChainId.MAINNET || chainId === ChainId.RINKEBY
@@ -175,12 +177,12 @@ export function CurrencySearch({
     //     : [...uniqueAvailableTokensArray, ...Object.values(allTokens)],
     //   searchQuery
     // )
-  }, [isAddressSearch, searchToken, searchQuery, chainId, uniqueAvailableTokensArray])
+  }, [isAddressSearch, searchToken, debouncedQuery, chainId, uniqueAvailableTokensArray])
 
   const filteredSortedTokens: Token[] = useMemo(() => {
     if (searchToken) return [searchToken]
     const sorted = filteredTokens.sort(tokenComparator)
-    const symbolMatch = searchQuery
+    const symbolMatch = debouncedQuery
       .toLowerCase()
       .split(/\s+/)
       .filter(s => s.length > 0)
@@ -192,7 +194,7 @@ export function CurrencySearch({
       ...sorted.filter(token => token.symbol?.toLowerCase() === symbolMatch[0]),
       ...sorted.filter(token => token.symbol?.toLowerCase() !== symbolMatch[0])
     ]
-  }, [filteredTokens, searchQuery, searchToken, tokenComparator])
+  }, [filteredTokens, debouncedQuery, searchToken, tokenComparator])
 
   const [arrayToShow, setArrayToShow] = useState<Token[]>(
     filteredSortedTokens.length > 40 ? filteredSortedTokens.slice(0, 40) : filteredSortedTokens
@@ -202,7 +204,7 @@ export function CurrencySearch({
     if (isMountedRef && isCoingeckoListOn) {
       setArrayToShow(filteredSortedTokens.length > 40 ? filteredSortedTokens.slice(0, 40) : filteredSortedTokens)
     }
-  }, [isCoingeckoListOn, searchQuery, invertSearchOrder])
+  }, [isCoingeckoListOn, debouncedQuery, invertSearchOrder])
 
   const loadMore = (startIndex: any, stopIndex: any) => {
     return new Promise(resolve => {
@@ -244,12 +246,12 @@ export function CurrencySearch({
   const handleEnter = useCallback(
     (e: KeyboardEvent<HTMLInputElement>) => {
       if (e.key === 'Enter') {
-        const s = searchQuery.toLowerCase().trim()
+        const s = debouncedQuery.toLowerCase().trim()
         if (s === 'eth') {
           handleCurrencySelect(ETHER)
         } else if (filteredSortedTokens.length > 0) {
           if (
-            filteredSortedTokens[0].symbol?.toLowerCase() === searchQuery.trim().toLowerCase() ||
+            filteredSortedTokens[0].symbol?.toLowerCase() === debouncedQuery.trim().toLowerCase() ||
             filteredSortedTokens.length === 1
           ) {
             handleCurrencySelect(filteredSortedTokens[0])
@@ -257,7 +259,7 @@ export function CurrencySearch({
         }
       }
     },
-    [filteredSortedTokens, handleCurrencySelect, searchQuery]
+    [filteredSortedTokens, handleCurrencySelect, debouncedQuery]
   )
 
   interface ManageListProps {
@@ -352,7 +354,7 @@ export function CurrencySearch({
                     otherCurrency={otherSelectedCurrency}
                     selectedCurrency={selectedCurrency}
                     fixedListRef={fixedList}
-                    searchQuery={searchQuery}
+                    searchQuery={debouncedQuery}
                   />
                 )}
               </AutoSizer>
@@ -421,7 +423,7 @@ export function CurrencySearch({
                   otherCurrency={otherSelectedCurrency}
                   selectedCurrency={selectedCurrency}
                   fixedListRef={fixedList}
-                  searchQuery={searchQuery}
+                  searchQuery={debouncedQuery}
                 />
               )}
             </AutoSizer>
