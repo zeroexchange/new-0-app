@@ -32,8 +32,8 @@ import {
   zZERO,
   zCHART,
   bscWISB,
-  WMATIC,
-  MZERO
+  MZERO,
+  MINT
 } from '../../constants'
 import { NEVER_RELOAD, useMultipleContractSingleData } from '../multicall/hooks'
 
@@ -251,8 +251,13 @@ export const STAKING_REWARDS_INFO: {
     //   tokens: [bscBUSD, bscINDA],
     //   stakingRewardAddress: '0x337BDB3197e705c5E2b2630dC571d08608204001'
     // },
+    // {
+    //   tokens: [bscZERO, bscINDA],
+    //   stakingRewardAddress: '0xb466598db72798Ec6118afbFcA29Bc7F1009cad6',
+    //   rewardInfo: { rewardToken: bscINDA }
+    // },
     {
-      tokens: [bscZERO, bscINDA],
+      tokens: [bscINDA, bscINDA],
       stakingRewardAddress: '0xb466598db72798Ec6118afbFcA29Bc7F1009cad6',
       rewardInfo: { rewardToken: bscINDA }
     },
@@ -296,6 +301,11 @@ export const STAKING_REWARDS_INFO: {
     {
       tokens: [WETH[ChainId.MATIC], MZERO],
       stakingRewardAddress: '0x90466Fa3B137b56e52eF987BD6e26aca87A32fF2'
+    },
+    {
+      tokens: [MINT, MINT],
+      stakingRewardAddress: '0xd705223747c7af3386a70abbe586d390a6877687',
+      rewardInfo: { rewardToken: MINT },
     },
   ]
 }
@@ -422,14 +432,19 @@ export function useStakingInfo(pairToFilterBy?: Pair | null): StakingInfo[] {
 
         // get the LP token
         const tokens = info[index].tokens
-        const dummyPair = new Pair(new TokenAmount(tokens[0], '0'), new TokenAmount(tokens[1], '0'))
+        let liquidityToken;
+        if (tokens[0] === tokens[1]) {
+          liquidityToken = tokens[0];
+        } else {
+          liquidityToken = new Pair(new TokenAmount(tokens[0], '0'), new TokenAmount(tokens[1], '0')).liquidityToken;
+        }
 
         // check for account, if no account set to 0
         const currentPair = info.find(pair => pair.stakingRewardAddress === rewardsAddress)
 
         const rewardsToken = currentPair?.rewardInfo?.rewardToken ?? ZERO;
-        const stakedAmount = new TokenAmount(dummyPair.liquidityToken, JSBI.BigInt(balanceState?.result?.[0] ?? 0))
-        const totalStakedAmount = new TokenAmount(dummyPair.liquidityToken, JSBI.BigInt(totalSupplyState.result?.[0]))
+        const stakedAmount = new TokenAmount(liquidityToken, JSBI.BigInt(balanceState?.result?.[0] ?? 0))
+        const totalStakedAmount = new TokenAmount(liquidityToken, JSBI.BigInt(totalSupplyState.result?.[0]))
         const totalRewardRate = new TokenAmount(rewardsToken, JSBI.BigInt(rewardRateState.result?.[0]))
 
         const getHypotheticalRewardRate = (
@@ -463,8 +478,6 @@ export function useStakingInfo(pairToFilterBy?: Pair | null): StakingInfo[] {
         // compare period end timestamp vs current block timestamp (in seconds)
         const active =
           periodFinishSeconds && currentBlockTimestamp ? periodFinishSeconds > currentBlockTimestamp.toNumber() : true
-
-        const lpToken = currentPair?.rewardInfo?.lpToken
 
         memo.push({
           stakingRewardAddress: rewardsAddress,
