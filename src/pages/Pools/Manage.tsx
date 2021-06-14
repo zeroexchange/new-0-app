@@ -15,6 +15,7 @@ import ClaimRewardModal from '../../components/pools/ClaimRewardModal'
 import { CountUp } from 'use-count-up'
 import { Dots } from '../../components/swap/styleds'
 import DoubleCurrencyLogo from '../../components/DoubleLogo'
+import CurrencyLogo from '../../components/CurrencyLogo'
 import FullPositionCard from '../../components/PositionCard'
 import { Link } from 'react-router-dom'
 import PageContainer from './../../components/PageContainer'
@@ -246,7 +247,7 @@ export default function Manage({
   const history = useHistory()
 
   const locationState: any = props?.location?.state
-  const stakingRewardAddress: any = locationState?.stakingRewardAddress ? locationState?.stakingRewardAddress : null
+  const stakingRewardAddress: any = locationState?.stakingRewardAddress ?? null;
 
   if (!stakingRewardAddress) {
     history.push('/pools')
@@ -258,8 +259,10 @@ export default function Manage({
   const tokenA = wrappedCurrency(currencyA ?? undefined, chainId)
   const tokenB = wrappedCurrency(currencyB ?? undefined, chainId)
 
+  const isSingleSided = tokenA?.address === tokenB?.address;
+
   const [, stakingTokenPair] = usePair(tokenA, tokenB)
-  const baseStakingInfo = useStakingInfo(stakingTokenPair)
+  const baseStakingInfo = useStakingInfo(isSingleSided ? undefined : stakingTokenPair)
   const stakingInfo = baseStakingInfo.find(x => x.stakingRewardAddress === stakingRewardAddress)
 
   // detect existing unstaked LP position to show add button if none found
@@ -397,11 +400,16 @@ export default function Manage({
         {account !== null && (
           <>
             <SymbolTitleWrapper>
-              <SymbolTitleInner>
-                {currencyA?.symbol}/{currencyB?.symbol}
-                <span style={{ marginLeft: '10px', marginRight: '10px' }}>Liquidity Mining</span>
-                <DoubleCurrencyLogo currency0={currencyA ?? undefined} currency1={currencyB ?? undefined} size={30} />
-              </SymbolTitleInner>
+              {isSingleSided
+                ? <SymbolTitleInner>
+                    <span style={{ marginLeft: '10px', marginRight: '10px' }}>Single token Mining</span>
+                    <CurrencyLogo currency={currencyA ?? undefined} />
+                  </SymbolTitleInner>
+              : <SymbolTitleInner>
+                  {currencyA?.symbol}/{currencyB?.symbol}
+                  <span style={{ marginLeft: '10px', marginRight: '10px' }}>Liquidity Mining</span>
+                  <DoubleCurrencyLogo currency0={currencyA ?? undefined} currency1={currencyB ?? undefined} size={30} />
+                </SymbolTitleInner>}     
             </SymbolTitleWrapper>
             <span
               style={{
@@ -446,6 +454,7 @@ export default function Manage({
                   <ButtonOutlined className="add-liquidity-button">Trade</ButtonOutlined>
                 </StyledTradelLink>
 
+                {isSingleSided ? <></> :
                 <StyledInternalLink
                   className="add-liquidity-link"
                   to={{
@@ -454,10 +463,13 @@ export default function Manage({
                   }}
                 >
                   <ButtonOutlined className="add-liquidity-button">Add Liquidity</ButtonOutlined>
-                </StyledInternalLink>
-                {!userLiquidityUnstaked ? null : userLiquidityUnstaked.equalTo(
-                    '0'
-                  ) ? null : !stakingInfo?.active ? null : (
+                </StyledInternalLink>}
+                { 
+                  !userLiquidityUnstaked ? null 
+                  : userLiquidityUnstaked.equalTo('0') ? null 
+                  : !stakingInfo?.active ? null 
+                  : isSingleSided ? null
+                  : (
                   <StyledInternalLink
                     className="remove-liquidity-link"
                     to={{
@@ -536,13 +548,13 @@ export default function Manage({
                       '0'
                     ) ? null : !stakingInfo?.active ? null : (
                     <>
-                      <StatLabel style={{ color: '#A7B1F4' }}>LP To Deposit:</StatLabel>
+                      <StatLabel style={{ color: '#A7B1F4' }}>{isSingleSided ? `${stakingInfo?.rewardsTokenSymbol} to deposit` : 'LP To Deposit:'}</StatLabel>
                       <RowBetween className="is-mobile" style={{ marginBottom: '2rem' }}>
                         <TYPE.white fontWeight={600} fontSize={[24, 32]} style={{ textOverflow: 'ellipsis' }}>
                           {userLiquidityUnstaked?.toSignificant(
                             Math.min(6, stakingInfo?.earnedAmount?.currency.decimals)
                           )}
-                          <span style={{ opacity: '.8', marginLeft: '5px', fontSize: '16px' }}>ZERO LP tokens</span>
+                          <span style={{ opacity: '.8', marginLeft: '5px', fontSize: '16px' }}>{isSingleSided ? `${stakingInfo?.rewardsTokenSymbol} tokens` : 'ZERO LP tokens'}</span>
                         </TYPE.white>
                         <ButtonOutlined
                           className="remove-liquidity-button green"
