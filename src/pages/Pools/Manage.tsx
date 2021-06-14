@@ -4,7 +4,7 @@ import { ButtonOutlined, ButtonPrimary, ButtonSuccess } from '../../components/B
 import { CardBGImage, CardNoise, CardSection, DataCard } from '../../components/pools/styled'
 import React, { useCallback, useContext, useMemo, useState } from 'react'
 import { RowBetween, RowCenter } from '../../components/Row'
-import { StyledInternalLink, TYPE, Title } from '../../theme'
+import { StyledInternalLink, TYPE, Title, ExternalLink } from '../../theme'
 import styled, { ThemeContext } from 'styled-components'
 import { toV2LiquidityToken, useTrackedTokenPairs } from '../../state/user/hooks'
 import { useTokenBalance, useTokenBalancesWithLoadingIndicator } from '../../state/wallet/hooks'
@@ -454,7 +454,13 @@ export default function Manage({
                   <ButtonOutlined className="add-liquidity-button">Trade</ButtonOutlined>
                 </StyledTradelLink>
 
-                {isSingleSided ? <></> :
+                {isSingleSided ? <></> 
+                : 
+                stakingInfo?.rewardInfo?.addLiquidityLink ?
+                <ExternalLink href={stakingInfo?.rewardInfo?.addLiquidityLink}>
+                  <ButtonOutlined className="add-liquidity-button">Add Liquidity</ButtonOutlined>
+                </ExternalLink>
+                :
                 <StyledInternalLink
                   className="add-liquidity-link"
                   to={{
@@ -464,8 +470,11 @@ export default function Manage({
                 >
                   <ButtonOutlined className="add-liquidity-button">Add Liquidity</ButtonOutlined>
                 </StyledInternalLink>}
-                { 
-                  !userLiquidityUnstaked ? null 
+                { stakingInfo?.rewardInfo?.removeLiquidityLink ?
+                  <ExternalLink href={stakingInfo?.rewardInfo?.removeLiquidityLink}>
+                    <ButtonOutlined className="add-liquidity-button">Remove Liquidity</ButtonOutlined>
+                  </ExternalLink>
+                  : !userLiquidityUnstaked ? null 
                   : userLiquidityUnstaked.equalTo('0') ? null 
                   : !stakingInfo?.active ? null 
                   : isSingleSided ? null

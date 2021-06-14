@@ -33,7 +33,8 @@ import {
   zCHART,
   bscWISB,
   MZERO,
-  MINT
+  XIOT,
+  BIOS,
 } from '../../constants'
 import { NEVER_RELOAD, useMultipleContractSingleData } from '../multicall/hooks'
 
@@ -101,7 +102,21 @@ export const STAKING_REWARDS_INFO: {
       tokens: [WETH[ChainId.MAINNET], WAS],
       stakingRewardAddress: '0x2b854fAAc04f501ba8183430aA1501Aa8268F575',
       rewardInfo: { rewardToken: WAS },
-    }
+    },
+    {
+      tokens: [WETH[ChainId.MAINNET], BIOS],
+      stakingRewardAddress: '0x2D6d5bc58adEDa28f62B0aBc3f53F5EAef497FCc',
+      rewardInfo: { 
+        rewardToken: XIOT,
+        addLiquidityLink: 'https://app.sushi.com/add/ETH/0xAACa86B876ca011844b5798ECA7a67591A9743C8',
+        removeLiquidityLink: 'https://app.sushi.com/remove/ETH/0xAACa86B876ca011844b5798ECA7a67591A9743C8',
+      },
+    },
+    {
+      tokens: [BIOS, BIOS],
+      stakingRewardAddress: '0x91bCecC4F7ae1F71Ef485102BCABBF0f1D872e00',
+      rewardInfo: { rewardToken: XIOT },
+    },
   ],
   [ChainId.AVALANCHE]: [
     {
@@ -251,13 +266,8 @@ export const STAKING_REWARDS_INFO: {
     //   tokens: [bscBUSD, bscINDA],
     //   stakingRewardAddress: '0x337BDB3197e705c5E2b2630dC571d08608204001'
     // },
-    // {
-    //   tokens: [bscZERO, bscINDA],
-    //   stakingRewardAddress: '0xb466598db72798Ec6118afbFcA29Bc7F1009cad6',
-    //   rewardInfo: { rewardToken: bscINDA }
-    // },
     {
-      tokens: [bscINDA, bscINDA],
+      tokens: [bscZERO, bscINDA],
       stakingRewardAddress: '0xb466598db72798Ec6118afbFcA29Bc7F1009cad6',
       rewardInfo: { rewardToken: bscINDA }
     },
@@ -302,11 +312,6 @@ export const STAKING_REWARDS_INFO: {
       tokens: [WETH[ChainId.MATIC], MZERO],
       stakingRewardAddress: '0x90466Fa3B137b56e52eF987BD6e26aca87A32fF2'
     },
-    {
-      tokens: [MINT, MINT],
-      stakingRewardAddress: '0xd705223747c7af3386a70abbe586d390a6877687',
-      rewardInfo: { rewardToken: MINT },
-    },
   ]
 }
 
@@ -342,7 +347,10 @@ export interface StakingInfo {
     totalRewardRate: TokenAmount,
     seconds: number,
     decimals:number,
-  ) => TokenAmount
+  ) => TokenAmount,
+
+  // all the info from stakingRewards
+  rewardInfo?: any,
 }
 
 // gets the staking info from the network for the active chain id
@@ -356,12 +364,9 @@ export function useStakingInfo(pairToFilterBy?: Pair | null): StakingInfo[] {
     () =>
       chainId
         ? STAKING_REWARDS_INFO[chainId]?.filter(stakingRewardInfo =>
-          pairToFilterBy === undefined
-            ? true
-            : pairToFilterBy === null
-              ? false
-              : pairToFilterBy.involvesToken(stakingRewardInfo.tokens[0]) &&
-              pairToFilterBy.involvesToken(stakingRewardInfo.tokens[1])
+          pairToFilterBy == undefined ? true
+          : pairToFilterBy.involvesToken(stakingRewardInfo.tokens[0]) &&
+          pairToFilterBy.involvesToken(stakingRewardInfo.tokens[1])
         ) ?? []
         : [],
     [chainId, pairToFilterBy]
@@ -432,8 +437,10 @@ export function useStakingInfo(pairToFilterBy?: Pair | null): StakingInfo[] {
 
         // get the LP token
         const tokens = info[index].tokens
+        const isSingleSided = tokens[0] === tokens[1];
+
         let liquidityToken;
-        if (tokens[0] === tokens[1]) {
+        if (isSingleSided) {
           liquidityToken = tokens[0];
         } else {
           liquidityToken = new Pair(new TokenAmount(tokens[0], '0'), new TokenAmount(tokens[1], '0')).liquidityToken;
@@ -493,6 +500,7 @@ export function useStakingInfo(pairToFilterBy?: Pair | null): StakingInfo[] {
           active,
           rewardsTokenSymbol: rewardsToken.symbol,
           chainId,
+          rewardInfo: currentPair?.rewardInfo,
         })
       }
       return memo
