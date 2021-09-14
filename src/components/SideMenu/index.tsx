@@ -143,12 +143,12 @@ export default function SideMenu() {
             </IconLink>
             <span className={pathname === '/swap' ? 'active' : ''}>{t('Swap')}</span>
           </StyledNavLink>
-          <StyledNavLink id={`transfer-nav-link`} to={'/transfer'} onClick={handleSideMenuOpen}>
+          {/* <StyledNavLink id={`transfer-nav-link`} to={'/transfer'} onClick={handleSideMenuOpen}>
             <IconLink>
               <Icon icon="bridges" active={pathname === '/transfer'} />
             </IconLink>
             <span className={pathname === '/transfer' ? 'active' : ''}>{t('Transfer')}</span>
-          </StyledNavLink>
+          </StyledNavLink> */}
           <StyledNavLink id={`pools-nav-link`} to={'/pools'} onClick={handleSideMenuOpen}>
             <IconLink>
               <Icon icon="earn" active={pathname === '/pools'} />
