@@ -87,9 +87,6 @@ function TopLevelModals() {
 }
 
 export default function App() {
-
-  // window.location.href = 'https://app.relaychain.com';
-  // return (<></>)
   return (
     <Suspense fallback={null}>
       <GraphQLProvider>
