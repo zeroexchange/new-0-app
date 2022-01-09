@@ -184,11 +184,11 @@ const swap = ({ color = 'white' }) => (
 const more = ({ color = 'white' }) => (
   <>
     <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
-        <g fill={color}>
-            <rect id="Rectangle" x="0" y="0" width="20" height="3" rx="1.5"></rect>
-            <rect id="Rectangle" x="0" y="6" width="20" height="3" rx="1.5"></rect>
-            <rect id="Rectangle" x="0" y="12" width="20" height="3" rx="1.5"></rect>
-        </g>
+      <g fill={color}>
+        <rect id="Rectangle" x="0" y="0" width="20" height="3" rx="1.5"></rect>
+        <rect id="Rectangle" x="0" y="6" width="20" height="3" rx="1.5"></rect>
+        <rect id="Rectangle" x="0" y="12" width="20" height="3" rx="1.5"></rect>
+      </g>
     </g>
   </>
 )

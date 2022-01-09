@@ -2,7 +2,7 @@ import { AutoColumn } from '../Column'
 import { ButtonOutlined } from '../Button'
 import React from 'react'
 import { RowFixed } from '../Row'
-import {SuccessIllustation} from '../IllustationIcons'
+import { SuccessIllustation } from '../IllustationIcons'
 import { Text } from 'rebass'
 import styled from 'styled-components'
 
@@ -38,7 +38,7 @@ export default function TransferComplete({
   return (
     <AutoColumn gap="12px" justify={'center'}>
       <RowFixed style={{ width: '100%', justifyContent: 'center', alignItems: 'center' }}>
-     <SuccessIllustation />
+        <SuccessIllustation />
       </RowFixed>
       <RowFixed style={{ width: '100%', marginTop: '1rem' }}>
         <Text fontSize={17} textAlign="center" style={{ lineHeight: '20px' }}>
@@ -51,8 +51,7 @@ export default function TransferComplete({
       </RowFixed>
       <RowFixed style={{ width: '100%' }}>
         <Text fontSize={17} textAlign="center" style={{ lineHeight: '20px' }}>
-          We are busy relaying the transaction across the chains, this process can sometimes take up to 15
-          minutes.
+          We are busy relaying the transaction across the chains, this process can sometimes take up to 15 minutes.
         </Text>
       </RowFixed>
       <RowFixed>

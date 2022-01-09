@@ -43,11 +43,11 @@ const StyledLinkMetaMask = styled(TYPE.link)`
   cursor: pointer;
   transition: all ease 0.3s;
   color: #a7b1f4;
-  padding: .5rem 1rem .5rem 1rem;
+  padding: 0.5rem 1rem 0.5rem 1rem;
   border: 1px solid #a7b1f4;
   border-radius: 30px;
   :hover {
-    filter: brightness(.9);
+    filter: brightness(0.9);
   }
 `
 
