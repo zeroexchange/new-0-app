@@ -6,12 +6,12 @@ export const SuccessIllustation = () => {
       <path
         d="M40.5318 141.759C2.57831 112.022 3.68071 94.8702 16.5002 54.4999C30.4608 10.5358 71.1414 -0.41711 143.5 16.5001C226.898 35.9982 226.018 63.6458 241 125C255.982 186.354 171.946 233.248 127.5 222.5C83.0545 211.752 87.9737 178.93 40.5318 141.759Z"
         fill="#724DF8"
-        fill-opacity="0.15"
+        fillOpacity="0.15"
       />
       <path
         d="M24.8929 161.521C7.39285 176.521 17.2929 196.321 40.8929 199.521C70.3929 203.521 42.393 146.521 24.8929 161.521Z"
         fill="#724DF8"
-        fill-opacity="0.15"
+        fillOpacity="0.15"
       />
       <circle cx="130" cy="107" r="66" fill="url(#paint0_radial)" />
       <path
@@ -55,8 +55,8 @@ export const SuccessIllustation = () => {
           gradientUnits="userSpaceOnUse"
           gradientTransform="translate(102.013 76.5063) rotate(54.3653) scale(143.395 221.975)"
         >
-          <stop offset="0.187019" stop-color="#6752F7" />
-          <stop offset="1" stop-color="#BD30FF" />
+          <stop offset="0.187019" stopColor="#6752F7" />
+          <stop offset="1" stopColor="#BD30FF" />
         </radialGradient>
       </defs>
     </svg>
@@ -69,17 +69,17 @@ export const ErrorIllustratiton = () => {
       <path
         d="M54.4999 163C27.4269 123.103 37.0406 72.5748 63.5008 39.4998C91.5008 4.5 149.5 -14 194 15.9998C250.525 54.1063 198.018 71.1457 213 132.5C243.892 259.013 82.9998 205 54.4999 163Z"
         fill="#724DF8"
-        fill-opacity="0.15"
+        fillOpacity="0.15"
       />
       <path
         d="M231.102 100.255C209.335 107.832 226.518 150.234 247.102 138.255C277.21 120.734 252.709 92.7345 231.102 100.255Z"
         fill="#724DF8"
-        fill-opacity="0.15"
+        fillOpacity="0.15"
       />
       <path
         d="M12.2091 67.9998C-2.97637 73.3107 -4.42519 98.5151 12.2091 98.5152C46 98.5155 27.2823 62.7281 12.2091 67.9998Z"
         fill="#724DF8"
-        fill-opacity="0.15"
+        fillOpacity="0.15"
       />
       <circle cx="130" cy="111" r="66" fill="url(#paint0_radial)" />
       <path d="M111 130L149 92" stroke="white" strokeWidth="10.8608" strokeLinecap="round" strokeLinejoin="round" />
@@ -139,8 +139,8 @@ export const ErrorIllustratiton = () => {
           gradientUnits="userSpaceOnUse"
           gradientTransform="translate(102.013 80.5063) rotate(54.3653) scale(143.395 221.975)"
         >
-          <stop offset="0.187019" stop-color="#FF426F" />
-          <stop offset="1" stop-color="#FF30D1" />
+          <stop offset="0.187019" stopColor="#FF426F" />
+          <stop offset="1" stopColor="#FF30D1" />
         </radialGradient>
       </defs>
     </svg>

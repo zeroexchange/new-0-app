@@ -12,7 +12,7 @@ export interface IconProps {
   color?: string
 }
 
-const Icon = ({ icon, active = false, color  }: IconProps) => {
+const Icon = ({ icon, active = false, color }: IconProps) => {
   const IconPath = Icons[icon]
   return (
     <StyledSpan>

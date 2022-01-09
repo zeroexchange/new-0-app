@@ -8,7 +8,7 @@ interface Window {
     on?: (...args: any[]) => void
     removeListener?: (...args: any[]) => void
     request?: (...args: any[]) => Promise<any>
-    enable?:() => Promise<any>
+    enable?: () => Promise<any>
   }
   web3?: {}
 }
